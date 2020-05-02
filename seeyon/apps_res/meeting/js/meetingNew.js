@@ -79,6 +79,18 @@ function initMeetingDefaultValue() {
 	$("#emceeName").attr("title", pageX.meeting.emceeName);
 	$("#emceeName").attr("inputName", pageX.i18n.emceeLabel);
 	$("#emceeName").attr("defaultValue", pageX.i18n.emceeDefaultLabel);
+	
+//	中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者、发起部门、联系方式”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 stater
+	//发起者
+	if(pageX.meeting.userName == "") {
+		$("#userName").val(pageX.i18n.userDefaultLabel);
+	} else {
+		$("#userName").val(pageX.meeting.userName);
+	}
+	$("#userName").attr("title", pageX.meeting.userName);
+	$("#userName").attr("inputName", pageX.i18n.userLabel);
+	$("#userName").attr("defaultValue", pageX.i18n.userDefaultLabel);
+//	中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者、发起部门、联系方式”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 end
 
 	//会议记录人
 	if(pageX.meeting.recorderName == "") {
@@ -306,6 +318,18 @@ function initInputEvent() {
 	$("#emceeName").click(function() {
 		selectMtPeople_emcee("emceeSelect", "emcee");
 	});
+//	中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者、发起部门、联系方式”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 stater
+	//发起者
+	$("#userName").focus(function() {
+		checkDefSubject($(this)[0], true);
+	});
+	$("#userName").blur(function() {
+		checkDefSubject($(this)[0], false);
+	});
+	$("#userName").click(function() {
+		selectMtPeople_user("userSelect", "user");
+	});
+//	中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者、发起部门、联系方式”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 end
 
 	//记录人
 	$("#recorderName").focus(function() {
@@ -521,7 +545,7 @@ function changeMeetingTime() {
     var textArray = new Array();
     var beginTime = "";
     var endTime = "";
-    
+
     //选择已申请的会议室
     if (value != "mtRoom" && value != "mtPlace" && text != "") {
         textArray = text.split(" -- ");
@@ -859,8 +883,12 @@ function sendMeeting() {
 	//客开 胡超 参会人数校验 2020-4-8 start
 	var reg= /^[1-9]\d*$/;
 	var num = $("#numbers").val()
+	if(num==null || $.trim(num)==""){
+		alert("请填写预计人数！")
+		return;
+	}
 	if(!reg.test(num)){
-		alert("预计参会人数必填且必须有效！")
+		alert("预计人数必须整数！")
 		return;
 	}
 	//客开 胡超 参会人数校验 2020-4-8 end
@@ -1011,10 +1039,15 @@ function submitForm() {
 }
 
 function saveMeeting() {
+	//客开 胡超 参会人数校验 2020-4-8 start
 	var reg= /^[1-9]\d*$/;
-	var num = $("#numbers").val()
+	var num = $("#numbers").val();
+	if(num==null || $.trim(num)==""){
+		alert("请填写预计人数")
+		return;
+	}
 	if(!reg.test(num)){
-		alert("预计参会人数必填且必须有效！")
+		alert("预计人数必须整数！")
 		return;
 	}
 	//客开 胡超 参会人数校验 2020-4-8 end
@@ -1505,6 +1538,7 @@ function checkConfereesConflict(beginDatetime, endDatetime) {
 	if(document.getElementById("periodicityType").value == "") {
 		var meetingId = document.getElementById("id").value;
 		var emceeId = document.getElementById("emceeId").value;
+		var userId = document.getElementById("userId").value;
 		var recorderId = document.getElementById("recorderId").value;
 		var conferees = document.getElementById("conferees").value;
 		var leaderIdEle = document.getElementById("leader");
@@ -1689,10 +1723,10 @@ function gotoList(fromOpen, msg) {
 	}
 	refreshSection();
 	try{
-		if (getA8Top().isCtpTop == undefined) {
+		if (!getA8Top().isCtpTop) {
 			var winOpener = getA8Top().opener;
-			if (winOpener.getCtpTop) {
-				var _win = winOpener.getCtpTop().mainIframe;
+			if (winOpener.getA8Top) {
+				var _win = winOpener.getA8Top().mainIframe;
 				if (_win && _win.detailIframe && _win.detailIframe.meetingMainIframe && _win.detailIframe.meetingMainIframe.listFrame) {
 					var win = _win.detailIframe.meetingMainIframe.listFrame;
 					var url = win.location.href;

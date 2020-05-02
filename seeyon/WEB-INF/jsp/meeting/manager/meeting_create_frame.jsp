@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <html class="h100b over_hidden">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -52,7 +53,6 @@
             width: 50px;
             align: right;
             white-space: nowrap;
-            padding-left: 25px;
         }
         th.firstLine{
             padding-left: 15px;
@@ -78,6 +78,12 @@
             top: 5px;
             background: url(<c:url value="/apps_res/meeting/images/help.png" />) center center no-repeat;
         }
+        .padding_r_5{
+        	text-align: right;
+        }
+        .bg-gray {
+		    padding-right: 0px;
+		}
     </style>
 </head>
 <body class="h100b over_hidden">
@@ -127,7 +133,7 @@
                     <!-- 发送 -->
                     <td rowspan="3" style="width: 5%; padding-left: 10px;"><a id="send" class="align_center display_inline-block new_btn" style="line-height: 26px;margin-top: -36px;">${sendBtn }</a></td>
                     <!-- 会议名称 -->
-                    <th class="firstLine" align="right" style="width: 30px;">
+                    <th class="firstLine" style="width: 30px;">
                         <div class="padding_r_5">${fn:escapeXml(subjectLabel)}${fn:escapeXml(colonLabel)}</div>
                     </th>
                     <td colspan="3">
@@ -136,7 +142,7 @@
                         </div>
                     </td>
                     <!-- 开始时间 -->
-                    <th align="right">
+                    <th>
                         <div class="padding_r_5">${fn:escapeXml(beginDateLabel) }${colonLabel}</div>
                     </th>
                     <td style="width: 120px;">
@@ -145,7 +151,7 @@
                         </div>
                     </td>
                     <!-- 结束时间 -->
-                    <th align="right" style="padding-left:0px;">
+                    <th style="padding-left:0px;">
                         <div class="padding_r_5">${fn:escapeXml(endDateLabel) }${colonLabel }</div>
                     </th>
                     <td style="width: 120px;">
@@ -174,17 +180,33 @@
                     <td style="width: 70px">&nbsp;</td>
                 </tr>
                 <tr>
-                    <!-- 主持人 -->
+                	<!-- 中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者、发起部门、联系方式”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 start -->
+                    <!-- 发起者 -->
                     <th class="firstLine">
+                        <div class="padding_r_5">发起者${colonLabel }</div>
+                    </th>
+                    <td>
+                        <div class="common_txtbox_wrap" >
+                        	<input type="hidden" id="userId" name="userId" value="${user.id}" />
+							<input type="text" class="cursor-hand" id="userName" name="userName" readonly="true" />
+                        </div>
+                    </td>
+                    <!-- 中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者、发起部门、联系方式”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 end -->
+                            
+                    <!-- 主持人 -->
+                    <th>
                         <div class="padding_r_5">${emceeIdLabel }${colonLabel }</div>
                     </th>
                     <td>
                         <div class="common_txtbox_wrap">
-                            <input type="hidden" id="emceeId" name="emceeId" value="${newVo.meeting.emceeId }" /> <input type="text" class="cursor-hand" id="emceeName" name="emceeName" readonly="true" validate="notNull,isDefaultValue" />
+                            <!-- 中国石油天然气股份有限公司西南油气田分公司  【新建会议时主持人和记录人不设置必填】  lixuqiang 2020年4月28日 start -->
+                            <input type="hidden" id="emceeId" name="emceeId" value="${newVo.meeting.emceeId }" />
+<input type="text" class="cursor-hand" id="emceeName" name="emceeName" readonly="true" />
+                        	<!-- 中国石油天然气股份有限公司西南油气田分公司  【新建会议时主持人和记录人不设置必填】  lixuqiang 2020年4月28日 end -->
                         </div>
                     </td>
                     <!-- 记录人 -->
-                    <th align="right">
+                    <th>
                         <div class="padding_r_5">${recorderIdLabel }${colonLabel }</div>
                     </th>
                     <td>
@@ -193,10 +215,10 @@
                         </div>
                     </td>
                     <!-- 会议地点 -->
-                    <th align="right">
+                    <th>
                         <div class="padding_r_5">${placeLabel }${colonLabel }</div>
                     </th>
-                    <td colspan="3" style="width: 200px;">
+                    <td colspan="1" style="width: 200px;">
                         <div class="common_selectbox_wrap">
                             <select id="selectRoomType" name="selectRoomType">
                                 <c:choose>
@@ -238,21 +260,41 @@
                     </c:if>
                     </td>
                     <!-- 提前提醒 -->
-                    <th align="right">
+                    <th>
                         <div class="padding_r_5">${beforeTimeLabel }${mtMtMeetingRemind }${colonLabel }</div>
                     </th>
-                    <td colspan="3"><input type="hidden" id="remindFlag" name="remindFlag" value="${newVo.meeting.remindFlag}" />
+                    <td colspan="1"><input type="hidden" id="remindFlag" name="remindFlag" value="${newVo.meeting.remindFlag}" />
                         <div class="common_selectbox_wrap">
-                            <select id="beforeTime" name="beforeTime" onchange="changeRemindFlag(this)" value="${newVo.meeting.beforeTime}" align="right">
+                            <select style="width:70px;" id="beforeTime" name="beforeTime" onchange="changeRemindFlag(this)" value="${newVo.meeting.beforeTime}" align="right">
                                 <v3x:metadataItem metadata="${newVo.meetingRemindTimeEnum}" showType="option" name="beforeTime" selected="${newVo.meeting.beforeTime}" />
                             </select>
                         </div>
                     </td>
-                    <td style="width: 70px">&nbsp;</td>
                 </tr>
                 <tr>
+                    <!-- 联系方式 -->
+                    <th class="firstLine">
+                        <div class="padding_r_5">联系方式${colonLabel }</div>
+                    </th>
+                    <td>
+                        <div class="common_txtbox_wrap" style="background: #D4D4D4">
+                            <input id="phoneInfo" disabled="disabled" style="background: #D4D4D4" name="phoneInfo" value="${userPhone}" type="text" />
+                        </div>
+                    </td>
+                	<!-- 中国石油天然气股份有限公司西南油气田分公司  【参会领导字段放在与会人员前边，且该字段为非必填项】  lixuqiang 2020年4月28日 start -->
+                    <th>
+                        <div class="padding_r_5">${leaderLabel}${colonLabel }</div>
+                    </th>
+                    <td colspan="1.5">
+                        <div class="common_txtbox_wrap">
+                        <input type="hidden" id="leader" name="leader" value="${fn:escapeXml(leaderNameList )}" />
+						<input type="text" id="leaderNames" name="leaderNames" value="${leaderDefaultLabel }" readonly="true"  defaultvalue="${leaderDefaultLabel }" onfocus="checkDefSubject(this,true)" onblur="checkDefSubject(this,true)" maxlength="85" />
+                        </div>
+                    </td>
+                    <!-- 中国石油天然气股份有限公司西南油气田分公司  【参会领导字段放在与会人员前边，且该字段为非必填项】  lixuqiang 2020年4月28日 end -->
+                    
                     <!-- 参会人员 -->
-                    <th class="firstLine" align="right">
+                    <th class="firstLine">
                         <div class="padding_r_5">${joinLabel }${colonLabel }</div>
                     </th>
                     <td colspan="1.5">
@@ -261,27 +303,26 @@
                         </div>
                     </td>
                     <!--客开胡超 会议人数展示 2020-04-15 start   -->
-                    <th class="firstLine" align="right">
-                        <div class="padding_r_5">预计参会人数</div>
+                    <th class="firstLine">
+                        <div class="padding_r_5">预计人数${colonLabel }</div>
                     </th>
-                    <td colspan="1.5">
+                    <td colspan="0.5">
                         <div class="common_txtbox_wrap">
-                            <input type="number" class="cursor-hand" id="numbers" name="numbers" value ="${numbers}"  />
+                         <input type="number" class="cursor-hand" id="numbers" name="numbers" value ="${numbers}"  />
                         </div>
                     </td>
                     <!--客开胡超 会议人数展示 2020-04-15 end   -->
                     <!-- 告知人 -->
-                    <th align="right">
+                    <th>
                         <div class="padding_r_5">${impartLabel }${colonLabel }</div>
                     </th>
-                    <td colspan="3" style="width: 200px;">
+                    <td colspan="1" style="width: 200px;">
                         <div class="common_txtbox_wrap">
                             <input type="hidden" id="impart" name="impart" value="${fn:escapeXml(newVo.meeting.impart)}" /> <input type="text" class="cursor-hand" id="impartNames" name="impartNames" readonly="true" />
                         </div>
                     </td>
-                    <td style="width: 120px;">&nbsp;</td>
                     <!--所属项目 -->
-                    <th align="right" style="visibility:<c:if test="${!ctp:hasPlugin('project')}">hidden;</c:if>">
+                    <th style="visibility:<c:if test="${!ctp:hasPlugin('project')}">hidden;</c:if>">
                         <div class="padding_r_5">${projectIdLabel }${colonLabel }</div>
                     </th>
                     <td colspan="3" style="visibility:<c:if test="${!ctp:hasPlugin('project')}">hidden;</c:if>">
@@ -302,8 +343,17 @@
                 <!--更多-->
                 <tr class="newinfo_more">
                     <td style="width: 80px;">&nbsp;</td>
+                    <!-- 发起部门 -->
+                    <th class="firstLine">
+                        <div class="padding_r_5" id="userDepartmentName">${userDepartmentName}${colonLabel }</div>
+                    </th>
+                    <td>
+                        <div class="common_txtbox_wrap" style="background: #D4D4D4">
+                            <input type="text" style="background: #D4D4D4" id="currentDepartment" disabled="disabled" name="currentDepartment" value="${userDepartment }"/>
+                        </div>
+                    </td>
                     <!-- 会议格式 -->
-                    <th class="firstLine" align="right">
+                    <th>
                         <div class="padding_r_5">${templateIdLabel }${colonLabel }</div>
                     </th>
                     <td>
@@ -317,7 +367,7 @@
                         </div>
                     </td>
                     <%--会议用品 --%>
-                    <th align="right">
+                    <th>
                         <div class="padding_r_5">${resourceLabel }${colonLabel }</div>
                     </th>
                     <td>
@@ -327,10 +377,10 @@
                     </td>
                     <c:if test="${!newVo.isChooseVideoMeetingRoom }">
                         <%--会议方式 --%>
-                        <th align="right">
+                        <th>
                             <div class="padding_r_5">${meetingNatureLabel }${colonLabel }</div>
                         </th>
-                        <td style="width: 130px;" colspan="2">
+                        <td style="width: 130px;">
                             <div style="min-width: 80px;" class="common_selectbox_wrap clearfix">
                                 <select id="meetingNature" name="meetingNature">
                                     <c:forEach items="${newVo.meetingNatureNameList}" var="listVo">
@@ -343,7 +393,7 @@
                     <c:if test="${newVo.isChooseVideoMeetingRoom }">
                         <input type="hidden" id="meetingNature"  name="meetingNature" value="1"/>
                         <!-- 视频会议地点 -->
-                        <th align="right">
+                        <th>
                             <div class="padding_r_5">${videoLabel } ${colonLabel }</div>
                         </th>
                         <td style="width: 130px;" colspan="3">
@@ -361,7 +411,7 @@
 
                     </c:if>
                     <%--会议分类 --%>
-                    <th align="right" style="padding-left:0px;">
+                    <th style="padding-left:0px;">
                         <div class="padding_r_5">${categoryLabel }${colonLabel }</div>
                     </th>
                     <td colspan="${ctp:hasPlugin('sms') ? '1' : '3' }">
@@ -381,7 +431,7 @@
                     </td>
                     <!-- 发送短信 -->
                     <c:if test="${ctp:hasPlugin('sms') }">
-                        <th align="right">
+                        <th>
                             <div class="padding_r_5">${mtMtMeetingMessages}${colonLabel }</div>
                         </th>
                         <td style="width:4%;" colspan="3">
@@ -399,7 +449,7 @@
                     <tr id="passwordArea" class="hidden">
                         <td style="width: 80px;">&nbsp;</td>
                         <!-- 参会密码 -->
-                        <th colspan="1" nowrap="nowrap" align="right" style="padding: 6px">
+                        <th colspan="1" nowrap="nowrap" style="padding: 6px">
                             <div class="padding_r_5">${passwordLabel }${colonLabel }</div>
                         </th>
                         <td>

@@ -1005,7 +1005,17 @@ public class MtMeetingController extends BaseController {
 
         String idStr = request.getParameter("id");
         MtMeeting bean = meetingManager.getMeetingById(Long.valueOf(idStr));
-
+        
+//		中国石油天然气股份有限公司西南油气田分公司  【新建会议界面，会议方式增加“视频会议”】  lixuqiang 2020年4月28日 start
+        try {
+        	if(bean.getMeetingType().equals("5")){
+            	bean.setMeetingTypeId(-2760253892673387458L);
+            }
+		} catch (Exception e) {
+			log.error("将普通会议更改为视频会议异常！",e);
+		}
+//		中国石油天然气股份有限公司西南油气田分公司  【新建会议界面，会议方式增加“视频会议”】  lixuqiang 2020年4月28日 end
+        
         mav.addObject("bean", bean);
         mav.addObject("id", idStr);
 
@@ -1040,6 +1050,21 @@ public class MtMeetingController extends BaseController {
         //主持人的回执
         List<MtReplyWithAgentInfo> emceeExList = MeetingHelper.getReplyWithAgent(meetingMember.getEmceeMembers(),list_allReply);
 
+//    	中国石油天然气股份有限公司西南油气田分公司  【新建会议时主持人和记录人不设置必填】  lixuqiang 2020年4月28日 end
+        try{
+	        if(emceeExList.size()==0){
+	        	MtReplyWithAgentInfo mtReplyWithAgentInfo = new MtReplyWithAgentInfo();
+	        	mtReplyWithAgentInfo.setFeedbackFlag(1);
+	        	mtReplyWithAgentInfo.setLookState(1);
+	        	mtReplyWithAgentInfo.setReplyUserId(com.seeyon.ctp.common.constants.Constants.GLOBAL_NULL_ID);
+	        	mtReplyWithAgentInfo.setReplyUserName("");
+	        	emceeExList.add(mtReplyWithAgentInfo);
+	        }
+	    } catch (Exception e) {
+			log.error("新建会议时主持人和记录人不设置必填异常！",e);
+		}
+//	中国石油天然气股份有限公司西南油气田分公司  【新建会议时主持人和记录人不设置必填】  lixuqiang 2020年4月28日 end
+        
         //记录人的回执
         List<MtReplyWithAgentInfo> recorderExList = MeetingHelper.getReplyWithAgent(meetingMember.getRecorderMembers(),list_allReply);
 

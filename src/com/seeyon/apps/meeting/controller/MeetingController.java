@@ -9,8 +9,10 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.seeyon.ctp.util.*;
+import com.seeyon.ctp.util.annotation.AjaxAccess;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -43,6 +45,7 @@ import com.seeyon.apps.performancereport.api.PerformanceReportApi;
 import com.seeyon.ctp.common.AppContext;
 import com.seeyon.ctp.common.SystemEnvironment;
 import com.seeyon.ctp.common.affair.manager.PendingManager;
+import com.seeyon.ctp.common.authenticate.domain.User;
 import com.seeyon.ctp.common.constants.ApplicationCategoryEnum;
 import com.seeyon.ctp.common.constants.Constants;
 import com.seeyon.ctp.common.content.affair.constants.StateEnum;
@@ -55,9 +58,12 @@ import com.seeyon.ctp.common.filemanager.domain.ReplaceBase64Result;
 import com.seeyon.ctp.common.filemanager.manager.AttachmentManager;
 import com.seeyon.ctp.common.filemanager.manager.FileManager;
 import com.seeyon.ctp.common.i18n.ResourceUtil;
+import com.seeyon.ctp.common.po.BasePO;
+import com.seeyon.ctp.organization.bo.V3xOrgDepartment;
 import com.seeyon.ctp.organization.bo.V3xOrgEntity;
 import com.seeyon.ctp.organization.bo.V3xOrgMember;
 import com.seeyon.ctp.organization.manager.OrgManager;
+import com.seeyon.ctp.organization.po.OrgMember;
 import com.seeyon.ctp.portal.api.PortalApi;
 import com.seeyon.ctp.portal.util.PortletPropertyContants.PropertyName;
 import com.seeyon.ctp.rest.resources.MeetingReplyMemberVO;
@@ -68,6 +74,7 @@ import com.seeyon.v3x.meeting.domain.MtReplyWithAgentInfo;
 import com.seeyon.v3x.meeting.manager.MtMeetingManager;
 import com.seeyon.v3x.meeting.manager.MtReplyManager;
 import com.seeyon.v3x.mobile.message.manager.MobileMessageManager;
+import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
 
 /**
  *
@@ -196,9 +203,68 @@ public class MeetingController extends BaseController {
 		mav.addObject("portalRoomAppId", roomAppId);
 		mav.addObject("from", from);
 		mav.addObject("isMeetingPlaceInputAble",isMeetingPlaceInputAble);
+//		中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者、发起部门、联系方式”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 start
+        try {
+        	User user =AppContext.getCurrentUser();
+    		mav.addObject("user",user);
+    		mav.addObject("userList",newVo.getEmceeList());
+    		if(newVo.getEmceeList().size()>0){
+    			V3xOrgMember v3xOrgMember = newVo.getEmceeList().get(0);
+    			OrgMember orgMember = (OrgMember)v3xOrgMember.toPO();
+    			mav.addObject("userPhone",orgMember.getExtAttr1());
+    			V3xOrgDepartment v3xOrgDepartment=orgManager.getDepartmentById(user.getDepartmentId());	
+    			mav.addObject("userDepartment",v3xOrgDepartment.getName());
+    			String userDepartmentName = "发起部门";
+    			if(v3xOrgDepartment.getPath().length()>12){
+    				userDepartmentName = "科室名称";
+    			}else if(v3xOrgDepartment.getPath().length()>8){
+    				userDepartmentName = "处室名称";
+    			}
+    			mav.addObject("userDepartmentName",userDepartmentName);
+    		}
+		} catch (Exception e) {
+			logger.error("新建会议时增加“发起者、发起部门、联系方式”字段异常！",e);
+		}
+//		中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者、发起部门、联系方式”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 end
 		return mav;
 	}
-
+	
+//	中国石油天然气股份有限公司西南油气田分公司  【发起部门和联系方式系统自动带出】  lixuqiang 2020年4月29日 start
+	@AjaxAccess
+	public Map<String,Object> getOtherInfo(HttpServletRequest request, HttpServletResponse response){
+		PrintWriter out = null;
+		try {
+			Map<String,Object> map = new HashMap<String, Object>();
+			String memberId2 = request.getParameter("memberId");
+			V3xOrgMember v3xOrgMember = orgManager.getMemberById(Long.valueOf(memberId2));
+			OrgMember orgMember = (OrgMember)v3xOrgMember.toPO();
+			map.put("userPhone",orgMember.getExtAttr1());
+			V3xOrgDepartment v3xOrgDepartment=orgManager.getDepartmentById(v3xOrgMember.getOrgDepartmentId());	
+			map.put("userDepartment",v3xOrgDepartment.getName());
+			String userDepartmentName = "发起部门";
+			if(v3xOrgDepartment.getPath().length()>12){
+				userDepartmentName = "科室名称";
+			}else if(v3xOrgDepartment.getPath().length()>8){
+				userDepartmentName = "处室名称";
+			}
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType("text/html;charset=UTF-8");
+			out = response.getWriter();
+			map.put("userDepartmentName",userDepartmentName);
+			out.print(orgMember.getExtAttr1()+","+v3xOrgDepartment.getName()+","+userDepartmentName);
+			return map;
+		} catch (Exception e) {
+			logger.error("发起部门和联系方式系统自动带出！",e);
+		}finally{
+			if(out != null){
+				out.flush();
+				out.close();
+			}
+		}
+    	return new HashMap<String, Object>();
+	}
+//	中国石油天然气股份有限公司西南油气田分公司  【发起部门和联系方式系统自动带出】  lixuqiang 2020年4月29日 end
+    
 	/**
 	 * 判断字符串是否long类型
 	 */
@@ -291,7 +357,38 @@ public class MeetingController extends BaseController {
 		newVo.setCategory(category);
 		newVo.setIsBatch(isBatch);
 		newVo.setSelectRoomType(request.getParameter("selectRoomType"));
-		newVo.setCurrentUser(AppContext.getCurrentUser());
+//		中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 start
+		try {
+			String currentUserId = request.getParameter("userId");
+			if(currentUserId!=null && currentUserId!=""){
+				V3xOrgMember v3xOrgMember=orgManager.getMemberById(Long.valueOf(currentUserId));
+				User user = new User();
+				User user2 = AppContext.getCurrentUser();
+				user.setAccountId(v3xOrgMember.getOrgAccountId());
+				user.setId(v3xOrgMember.getId());
+				user.setName(v3xOrgMember.getName());
+				user.setLoginTimestamp(user2.getLoginTimestamp().getTime());
+				user.setSecurityKey(user2.getSecurityKey());
+				user.setLoginName(user2.getLoginName());
+				user.setLoginAccount(user2.getLoginAccount());
+				user.setDepartmentId(user2.getDepartmentId());
+				user.setLevelId(user2.getLevelId());
+				user.setPostId(user2.getPostId());
+				user.setExternalType(user2.getExternalType());
+				user.setUserAgentFrom(user2.getUserAgentFrom());
+				user.setSessionId(user2.getSessionId());
+				user.setRemoteAddr(user2.getRemoteAddr());
+				user.setLocale(user2.getLocale());
+				user.setBrowser(user2.getBrowser());
+				newVo.setCurrentUser(user);
+			}else{
+				newVo.setCurrentUser(AppContext.getCurrentUser());
+			}
+		} catch (Exception e) {
+			logger.error("新建会议时增加“发起者”字段、发起人字段必填，默认是登录人，可以修改。",e);
+			newVo.setCurrentUser(AppContext.getCurrentUser());
+		}
+//		中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 end
 		newVo.setParameterMap(MeetingParamHelper.getMeetingParameterByRequest(request, newVo.getAction()));
 		newVo.setSystemNowDatetime(DateUtil.currentDate());
 		//胡超  与会人员可空 start 2020-4-16 解决Oracle 字段不能为空
@@ -378,7 +475,39 @@ public class MeetingController extends BaseController {
 		newVo.setCategory(category);
 		newVo.setIsBatch(isBatch);
 		newVo.setSelectRoomType(request.getParameter("selectRoomType"));
-		newVo.setCurrentUser(AppContext.getCurrentUser());
+//		中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 start
+		try {
+			String currentUserId = request.getParameter("userId");
+			if(currentUserId!=null && currentUserId!=""){
+				V3xOrgMember v3xOrgMember=orgManager.getMemberById(Long.valueOf(currentUserId));
+				User user = new User();
+				User user2 = AppContext.getCurrentUser();
+				user.setAccountId(v3xOrgMember.getOrgAccountId());
+				user.setId(v3xOrgMember.getId());
+				user.setName(v3xOrgMember.getName());
+				user.setLoginTimestamp(user2.getLoginTimestamp().getTime());
+				user.setSecurityKey(user2.getSecurityKey());
+				user.setLoginName(user2.getLoginName());
+				user.setLoginAccount(user2.getLoginAccount());
+				user.setDepartmentId(user2.getDepartmentId());
+				user.setLevelId(user2.getLevelId());
+				user.setPostId(user2.getPostId());
+				user.setExternalType(user2.getExternalType());
+				user.setUserAgentFrom(user2.getUserAgentFrom());
+				user.setSessionId(user2.getSessionId());
+				user.setRemoteAddr(user2.getRemoteAddr());
+				user.setLocale(user2.getLocale());
+				user.setBrowser(user2.getBrowser());
+				newVo.setCurrentUser(user);
+			}else{
+				newVo.setCurrentUser(AppContext.getCurrentUser());
+			}
+		} catch (Exception e) {
+			logger.error("新建会议时增加“发起者”字段、发起人字段必填，默认是登录人，可以修改。",e);
+			newVo.setCurrentUser(AppContext.getCurrentUser());
+		}
+//		中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 end
+		
 		newVo.setParameterMap(MeetingParamHelper.getMeetingParameterByRequest(request, newVo.getAction()));
 		newVo.setSystemNowDatetime(DateUtil.currentDate());
 		//胡超  与会人员可空 start 2020-4-16 解决Oracle 字段不能为空
