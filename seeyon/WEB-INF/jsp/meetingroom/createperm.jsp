@@ -189,7 +189,7 @@ function _submitCallback(errorMsg) {
 	<td width="35%" nowrap="nowrap" class="new-column ${isProxy }">
 		<input type="text" name="asset_name" inputName="<fmt:message key='mr.label.joinCount'/>" class="input-300px" value="${leaderNames}" readonly />
 	</td>
-	<td width="12%" nowrap="nowrap" class="bg-gray">申请人联系方式:</td>
+	<td width="12%" nowrap="nowrap" class="bg-gray">联系方式:</td>
 	<c:set var="isProxy" value="${proxy?'proxy-true':'' }"/>
 	<td width="35%" nowrap="nowrap" class="new-column ${isProxy }">
 		<input type="text" name="asset_name" inputName="<fmt:message key='mr.label.joinCount'/>" class="input-300px" value="${phone}" readonly />
@@ -203,7 +203,7 @@ function _submitCallback(errorMsg) {
 		<input type="text" name="asset_name" inputName="<fmt:message key='mr.label.joinCount'/>" class="input-300px" value="${count}" readonly />
 	</td>
 	<!--客开胡超 会议添加参会领导和预计参会人员申请联系方式 start 2020-4-7 -->
-	<td width="12%" nowrap="nowrap" class="bg-gray">预计参会人数:</td>
+	<td width="12%" nowrap="nowrap" class="bg-gray">预计人数:</td>
 	<c:set var="isProxy" value="${proxy?'proxy-true':'' }"/>
 	<td width="35%" nowrap="nowrap" class="new-column ${isProxy }">
 		<input type="text" name="asset_name" inputName="<fmt:message key='mr.label.joinCount'/>" class="input-300px" value="${numbers}" readonly />
@@ -212,8 +212,10 @@ function _submitCallback(errorMsg) {
 </tr>
 	
 <tr>
-	<td width="12%" nowrap="nowrap" class="bg-gray"><fmt:message key='mr.label.meetingRoomUse'/>:</td>
-	<td width="35%" nowrap="nowrap" class="new-column ${isProxy }" style="height:40px;">
+	<!-- 中国石油天然气股份有限公司西南油气田分公司  【点击查看会议室申请详情界面，会议室用途字段改为“备注”】  lixuqiang 2020年4月29日 start -->                 
+    <td width="12%" nowrap="nowrap" class="bg-gray">备注:</td>
+	<!-- 中国石油天然气股份有限公司西南油气田分公司  【点击查看会议室申请详情界面，会议室用途字段改为“备注”】  lixuqiang 2020年4月29日 start -->                 
+    <td width="35%" nowrap="nowrap" class="new-column ${isProxy }" style="height:40px;">
 		<textarea rows="2" cols="" name="app_description" style="width:100%;">${bean.meetingRoomApp.description}</textarea>
 	</td>
 

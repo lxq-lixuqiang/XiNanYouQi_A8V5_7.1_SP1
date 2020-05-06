@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 
@@ -28,6 +29,7 @@ import com.seeyon.ctp.common.SystemInitializer;
 import com.seeyon.ctp.common.log.CtpLogFactory;
 import com.seeyon.ctp.datasource.annotation.DataSourceName;
 import com.seeyon.ctp.dubbo.RefreshInterfacesAfterUpdate;
+import com.seeyon.ctp.report.engine.api.ReportConstants;
 import com.seeyon.ctp.report.engine.api.ReportConstants.UnionMode;
 import com.seeyon.ctp.report.engine.api.interfaces.SqlDaoInterface;
 import com.seeyon.ctp.report.engine.api.interfaces.SqlDaoInterface.AbstractSqlDaoInterface;
@@ -228,11 +230,21 @@ public class SQLDaoImpl extends AbstractSqlDaoInterface implements SQLDao,System
     				sql.append(" and ");
     			}
     			SimpleField[] pair = joinTable.getConnect().get(j);
-    			if(JDBCAgent.isPostgreSQLRuntime()){
+    			SimpleField left = pair[0];
+    			SimpleField right = pair[1];
+    			if(ObjectUtils.equals(left.getProp("dbType"), right.getProp("dbType"))) {
+    				sql.append(" ").append(left.whereSql()).append(" = ").append(right.whereSql());
+    			}else {
     				String pattern = "cast({0} as varchar)";
-    				sql.append(" ").append(MessageFormat.format(pattern, pair[0].whereSql())).append(" = ").append(MessageFormat.format(pattern, pair[1].whereSql()));
-    			}else{
-    				sql.append(" ").append(pair[0].whereSql()).append(" = ").append(pair[1].whereSql());
+    				String leftFieldSql = left.whereSql();
+    				if(!ReportConstants.FieldType.VARCHAR.name().equals(left.getProp("dbType"))) {
+    					leftFieldSql = MessageFormat.format(pattern, left.whereSql());
+    				}
+    				String rightFieldSql = right.whereSql();
+    				if(!ReportConstants.FieldType.VARCHAR.name().equals(right.getProp("dbType"))) {
+    					rightFieldSql = MessageFormat.format(pattern, right.whereSql());
+    				}
+    				sql.append(" ").append(leftFieldSql).append(" = ").append(rightFieldSql);
     			}
     		}
     		if(StringUtils.isNotBlank(joinTable.getExtraSql())) {

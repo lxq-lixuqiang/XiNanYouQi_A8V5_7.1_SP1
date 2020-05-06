@@ -253,6 +253,17 @@ public class MeetingNewManagerImpl implements MeetingNewManager {
 
 		/** 会议方式列表(普通会议，红杉树视频会议) */
 		meetingExtManager.setNatureNameList(newVo);
+		
+//		中国石油天然气股份有限公司西南油气田分公司  【新建会议界面，会议方式增加“视频会议”】  lixuqiang 2020年4月28日 start
+		try {
+			MeetingOptionListVO listVo = new MeetingOptionListVO();
+			listVo.setOptionId(Long.valueOf(5L));
+			listVo.setOptionName("视频会议");
+			newVo.getMeetingNatureNameList().add(1,listVo);
+		} catch (Exception e) {
+			LOGGER.error("添加视频会议异常！",e);
+		}
+//		中国石油天然气股份有限公司西南油气田分公司  【新建会议界面，会议方式增加“视频会议”】  lixuqiang 2020年4月28日 end
 
 		/** 设置会议分类列表 */
 		meetingExtManager.setMeetingTypeNameList(newVo);
@@ -315,6 +326,13 @@ public class MeetingNewManagerImpl implements MeetingNewManager {
 
 		MeetingNewHelper.setMeetingDefaultValueByVo(newVo);
 		MeetingNewHelper.setMeetingByVo(newVo);
+//		中国石油天然气股份有限公司西南油气田分公司  【新建会议时主持人和记录人不设置必填】  lixuqiang 2020年4月28日 start
+		if(newVo.getMeeting().getEmceeId() == null){
+			newVo.getMeeting().setEmceeId(Constants.GLOBAL_NULL_ID);
+		}
+//		中国石油天然气股份有限公司西南油气田分公司  【新建会议时主持人和记录人不设置必填】  lixuqiang 2020年4月28日 end
+		
+		
 		ReplaceBase64Result base64Result = fileManager.replaceBase64Image(meeting.getContent());
 		meeting.setContent(base64Result.getHtml());
 
@@ -502,7 +520,7 @@ public class MeetingNewManagerImpl implements MeetingNewManager {
 				this.transFinishMeeting(newVo);
 			}
 		}
-	
+		
 		return true;
 	}
 

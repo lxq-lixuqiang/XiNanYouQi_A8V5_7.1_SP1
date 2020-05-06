@@ -558,8 +558,10 @@
 	<td>
 		<div id="scrollListDiv1" style="width:100%;height:98%;overflow-y:auto; padding-left:10px" class="margin_t_10">
 		 	<!-- 参会领导 -->
-		 	<c:if test="${fn:contains(mtch.typeContent,'2')}">
-		 	
+		 	<!-- 中国石油天然气股份有限公司西南油气田分公司  【直接把参会领导字段放在与会人员前边，且该字段为非必填项】  lixuqiang 2020年4月29日 start -->      
+		 	<c:if test="true"><!-- ${fn:contains(mtch.typeContent,'2')} -->
+		 	<!-- 中国石油天然气股份有限公司西南油气田分公司  【直接把参会领导字段放在与会人员前边，且该字段为非必填项】  lixuqiang 2020年4月29日 end -->
+                            
                 <b><fmt:message key="mt.mtMeeting.leader" />:</b>
                 <br>
 				<%
@@ -815,7 +817,7 @@
 				<div>
 					<b><fmt:message key="mt.mtMeeting.emceeId" />:</b>
 					<div class="margin_t_5">
-					<c:if test="${bean.emceeId != bean.createUser}">
+					<c:if test="${bean.emceeId != bean.createUser && emceeAffair.replyUserId != -1}">
                             <%
                             if(null!=emceeReplyInfo.getFeedbackFlag() && emceeReplyInfo.getFeedbackFlag() != -100){
 

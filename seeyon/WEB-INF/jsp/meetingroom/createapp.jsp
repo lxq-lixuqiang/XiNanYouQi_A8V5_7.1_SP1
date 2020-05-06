@@ -286,8 +286,10 @@ input {
 <tr>
     <td nowrap="nowrap" class="bg-gray" style="padding:6px"><font color="red">*</font><fmt:message key='mr.label.appPerson'/>:</td>
     <td nowrap="nowrap" class="new-column" >
-        <input type='hidden' name='perId' value='${user.id }' />
-        <input type="text" name="perName" inputName="<fmt:message key='mr.label.appPerson'/>" validate="notNull,maxLength" maxSize="80" class="input-100per" maxLength="80" value="${v3x:toHTML(user.name) }" onclick="selectPeopleFun_per()" disabled />
+        <input type='hidden' id='perId' name='perId' value='${user.id }' />
+        <!-- 中国石油天然气股份有限公司西南油气田分公司  【将用途改为“备注”，并且框内提示“请填写桌牌详情和会标内容”。申请人可以选择其他人】  lixuqiang 2020年4月29日 start -->                 
+        <input type="text" id="perName" name="perName" inputName="<fmt:message key='mr.label.appPerson'/>" validate="notNull,maxLength" maxSize="80" class="input-100per" maxLength="80" value="${v3x:toHTML(user.name) }" onclick="selectPeopleFun_per()" />
+    	<!-- 中国石油天然气股份有限公司西南油气田分公司  【将用途改为“备注”，并且框内提示“请填写桌牌详情和会标内容”。申请人可以选择其他人】  lixuqiang 2020年4月29日 end -->                 
     </td>
 </tr>
 <td nowrap="nowrap" class="bg-gray" style="padding:6px"><font color="red">*</font><fmt:message key="mr.label.appDept"/>:</td>
@@ -348,9 +350,9 @@ input {
     </script>
 </tr>
 <tr>
-    <td nowrap="nowrap" class="bg-gray" style="padding:6px"><font color="red">*</font>预计参会人数:</td>
+    <td nowrap="nowrap" class="bg-gray" style="padding:6px"><font color="red">*</font>预计人数:</td>
     <td nowrap="nowrap" class="new-column">
-        <input type="number"  id="numbers" name = "numbers" inputName="预计参会人员数量"  validate="notNull" class="input-100per" />
+        <input type="number"  id="numbers" name = "numbers" inputName="预计人员数量"  validate="notNull" class="input-100per" />
     </td>
 </tr>
 <tr>
@@ -416,10 +418,12 @@ input {
     </td>
 </tr>
 <tr>
-    <td nowrap="nowrap" class="bg-gray" style="padding:6px"><fmt:message key='mr.label.usefor'/>:</td>
+    <!-- 中国石油天然气股份有限公司西南油气田分公司  【将用途改为“备注”，并且框内提示“请填写桌牌详情和会标内容”。申请人可以选择其他人】  lixuqiang 2020年4月29日 start -->                 
+    <td nowrap="nowrap" class="bg-gray" style="padding:6px">备注:</td>
     <td class="new-column" style="padding:6px">
-        <textarea style="height: 60px;" id="description" name="description" inputName="<fmt:message key='mr.label.usefor'/>" validate="maxLength" maxSize="80" class="input-100per"></textarea>
+        <textarea style="height: 60px;" placeholder="请填写桌牌详情和会标内容" id="description" name="description" pla inputName="<fmt:message key='mr.label.usefor'/>" validate="maxLength" maxSize="80" class="input-100per"></textarea>
     </td>
+    <!-- 中国石油天然气股份有限公司西南油气田分公司  【将用途改为“备注”，并且框内提示“请填写桌牌详情和会标内容”。申请人可以选择其他人】  lixuqiang 2020年4月29日 end -->                 
 </tr>
 
 </table>
