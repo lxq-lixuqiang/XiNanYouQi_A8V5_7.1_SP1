@@ -3204,6 +3204,7 @@ public class MeetingResource extends BaseResource {
 
 		//会议室权限
 		r_map.put("haveMeetingRoomApp", menuPurviewUtil.isHaveMeetingRoomApp(user));
+		System.out.println(JSONUtil.toJSONString(r_map));
 		return ok(JSONUtil.toJSONString(r_map));
 	}
 	

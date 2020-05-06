@@ -523,9 +523,10 @@ function setInitiatorValue(result){
             'option.n_a_s' : '1'
         },
         success: function(result){
+        	console.log('result---------------->'+result.userDepartment+result.userPhone)
         	_$("#initiatingDepartment").value = result.userDepartment;
 			_$("#contact").value = result.userPhone;
-			_$("#initiatingDepartmentHtml").html(result.userDepartmentName);
+			document.getElementById("initiatingDepartmentHtml").innerHTML = result.userDepartmentName;
         },
         error: function(error){
             if(!cmp.errorHandler(error)){//错误处理先由cmp平台处理，如果平台处理不了，再使用自己的处理规则
