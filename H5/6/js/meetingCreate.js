@@ -233,8 +233,9 @@ function setDefaultMemberInfo(){
 				_$("#initiator").value = result.userName;
 				_$("#initiator_value").value = result.userId;
 				//设置发起部门、联系方式
-				_$("#initiatingDepartment").value = "部门";
-				_$("#contact").value = "联系方式";
+				_$("#initiatingDepartment").value = result.userDepartment;
+				_$("#contact").value = result.userPhone;
+				_$("#initiatingDepartmentHtml").html(result.userDepartmentName);
 				
 				_$("#recoder").value = result.userName;
 				_$("#recoder_value").value = result.userId;

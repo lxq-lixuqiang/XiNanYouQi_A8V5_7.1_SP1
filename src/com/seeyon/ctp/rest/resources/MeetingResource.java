@@ -27,7 +27,6 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.NumberUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -75,7 +74,6 @@ import com.seeyon.apps.meeting.manager.MeetingValidationManager;
 import com.seeyon.apps.meeting.outer.MeetingM3Manager;
 import com.seeyon.apps.meeting.outer.MeetingRoomM3Manager;
 import com.seeyon.apps.meeting.po.MeetingQrcodeSign;
-import com.seeyon.apps.meeting.po.MeetingResources;
 import com.seeyon.apps.meeting.po.MeetingScreenSet;
 import com.seeyon.apps.meeting.po.MeetingSummary;
 import com.seeyon.apps.meeting.po.MeetingType;
@@ -134,12 +132,13 @@ import com.seeyon.ctp.organization.bo.V3xOrgMember;
 import com.seeyon.ctp.organization.bo.V3xOrgVisitor;
 import com.seeyon.ctp.organization.dao.OrgHelper;
 import com.seeyon.ctp.organization.manager.OrgManager;
+import com.seeyon.ctp.organization.po.OrgMember;
 import com.seeyon.ctp.util.BeanUtils;
 import com.seeyon.ctp.util.DBAgent;
 import com.seeyon.ctp.util.DateUtil;
 import com.seeyon.ctp.util.Datetimes;
-import com.seeyon.ctp.util.JDBCAgent;
 import com.seeyon.ctp.util.FlipInfo;
+import com.seeyon.ctp.util.JDBCAgent;
 import com.seeyon.ctp.util.ParamUtil;
 import com.seeyon.ctp.util.Strings;
 import com.seeyon.ctp.util.UniqueList;
@@ -3161,6 +3160,19 @@ public class MeetingResource extends BaseResource {
 		User user = AppContext.getCurrentUser();
 		r_map.put("userId", String.valueOf(user.getId()));
 		r_map.put("userName", user.getName());
+		V3xOrgMember v3xOrgMember = orgManager.getMemberById(user.getId());
+		OrgMember orgMember = (OrgMember)v3xOrgMember.toPO();
+		r_map.put("userPhone", orgMember.getExtAttr1());
+		V3xOrgDepartment v3xOrgDepartment=orgManager.getDepartmentById(user.getDepartmentId());	
+		r_map.put("userDepartment",v3xOrgDepartment.getName());
+		String userDepartmentName = "发起部门";
+		if(v3xOrgDepartment.getPath().length()>12){
+			userDepartmentName = "科室名称";
+		}else if(v3xOrgDepartment.getPath().length()>8){
+			userDepartmentName = "处室名称";
+		}
+		r_map.put("userDepartmentName",userDepartmentName);
+		
 		List<MeetingType> meetingTypeList = meetingTypeManager.getMeetingTypeList(user.getLoginAccount());
 		for (MeetingType meetingType : meetingTypeList) {
 			meetingType.setShowName(ResourceUtil.getString(meetingType.getName()));
@@ -3192,6 +3204,30 @@ public class MeetingResource extends BaseResource {
 
 		//会议室权限
 		r_map.put("haveMeetingRoomApp", menuPurviewUtil.isHaveMeetingRoomApp(user));
+		return ok(JSONUtil.toJSONString(r_map));
+	}
+	
+	/**
+	 * 获取用户所属部门
+	 * @return com.seeyon.ctp.common.authenticate.domain.User
+	 * @throws BusinessException
+	 */
+	@GET
+	@Path("getUserDepartment")
+	public Response getUserDepartment(@QueryParam("id") Long id) throws BusinessException{
+		Map<String, Object> r_map = new HashMap<String, Object>();
+		V3xOrgMember v3xOrgMember = orgManager.getMemberById(id);
+		OrgMember orgMember = (OrgMember)v3xOrgMember.toPO();
+		r_map.put("userPhone", orgMember.getExtAttr1());
+		V3xOrgDepartment v3xOrgDepartment=orgManager.getDepartmentById(orgMember.getOrgDepartmentId());	
+		r_map.put("userDepartment",v3xOrgDepartment.getName());
+		String userDepartmentName = "发起部门";
+		if(v3xOrgDepartment.getPath().length()>12){
+			userDepartmentName = "科室名称";
+		}else if(v3xOrgDepartment.getPath().length()>8){
+			userDepartmentName = "处室名称";
+		}
+		r_map.put("userDepartmentName",userDepartmentName);
 		return ok(JSONUtil.toJSONString(r_map));
 	}
 	
@@ -3367,7 +3403,38 @@ public class MeetingResource extends BaseResource {
 		newVo.setCategory(MeetingCategoryEnum.single.key());
 		newVo.setIsBatch(false);
 		newVo.setSelectRoomType(ParamUtil.getString(params, "selectRoomType"));
+		
 		newVo.setCurrentUser(AppContext.getCurrentUser());
+		try {
+			String currentUserId = ParamUtil.getString(params, "userId");
+			if(currentUserId!=null && currentUserId!=""){
+				V3xOrgMember v3xOrgMember=orgManager.getMemberById(Long.valueOf(currentUserId));
+				User user = new User();
+				User user2 = AppContext.getCurrentUser();
+				user.setAccountId(v3xOrgMember.getOrgAccountId());
+				user.setId(v3xOrgMember.getId());
+				user.setName(v3xOrgMember.getName());
+				user.setLoginTimestamp(user2.getLoginTimestamp().getTime());
+				user.setSecurityKey(user2.getSecurityKey());
+				user.setLoginName(user2.getLoginName());
+				user.setLoginAccount(user2.getLoginAccount());
+				user.setDepartmentId(user2.getDepartmentId());
+				user.setLevelId(user2.getLevelId());
+				user.setPostId(user2.getPostId());
+				user.setExternalType(user2.getExternalType());
+				user.setUserAgentFrom(user2.getUserAgentFrom());
+				user.setSessionId(user2.getSessionId());
+				user.setRemoteAddr(user2.getRemoteAddr());
+				user.setLocale(user2.getLocale());
+				user.setBrowser(user2.getBrowser());
+				newVo.setCurrentUser(user);
+			}else{
+				newVo.setCurrentUser(AppContext.getCurrentUser());
+			}
+		} catch (Exception e) {
+			newVo.setCurrentUser(AppContext.getCurrentUser());
+		}
+		
 		//客开kekai
 		newVo.setResourcesId(newStrMeetingTools);
 		newVo.setResourcesName(newStrMeetingToolsName);

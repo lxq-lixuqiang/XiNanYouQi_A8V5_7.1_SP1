@@ -512,8 +512,27 @@ function setConfereesValue(result){
 function setInitiatorValue(result){
 	_$("#initiator_value").value = result[0].id;
 	//设置发起部门、联系方式
-	_$("#initiatingDepartment").value = "部门";
-	_$("#contact").value = "联系方式";
+	cmp.ajax({
+        url :cmp.seeyonbasepath + '/rest/meeting/getUserDepartment',
+        type: "GET",
+        headers: {
+            'Accept' : 'application/json; charset=utf-8',
+            'Accept-Language' : cmp.language,
+            'Content-Type': 'application/json; charset=utf-8',
+            'token' : cmp.token,
+            'option.n_a_s' : '1'
+        },
+        success: function(result){
+        	_$("#initiatingDepartment").value = result.userDepartment;
+			_$("#contact").value = result.userPhone;
+			_$("#initiatingDepartmentHtml").html(result.userDepartmentName);
+        },
+        error: function(error){
+            if(!cmp.errorHandler(error)){//错误处理先由cmp平台处理，如果平台处理不了，再使用自己的处理规则
+                alert("请求发生错误了");
+            }
+        }
+    });
 	
 	//处理互斥情况
 	dealCache();
@@ -1035,7 +1054,9 @@ function send(type){
 		number:_$("#number").value,
 		//客开kekai 添加会议用品ID及名称 2020年3月26日
 		meetingTools : getCheckedValue(),
-		meetingToolsName : getCheckedText()
+		meetingToolsName : getCheckedText(),
+		//发起者
+		initiator : _$("#initiator_value").value
 	};
 	
 	
