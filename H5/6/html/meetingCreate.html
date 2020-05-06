@@ -81,6 +81,33 @@
 							</div>
 						</div>
 					</li>
+					
+					<!-- 增加“发起者，发起部门和联系方式”字段，发起人字段必填，默认是登录人，可以修改。发起部门和联系方式系统自动带出：
+						注：发起部门若为机关或直属机构为处室名称，若为二级单位此项为科室名称，这里把预计参会人数改为预计人数，使其为一行。 -->
+					<!--发起者-->
+					<li class="cmp-table-view-cell item-list-no-border" id="initiatorCell" style="padding-left: 14px;">
+						 <span class="see-icon-must"></span>
+						 <span class="title"><span class="start-left-label"><i18n key="meeting.meetingRoomCommon.initiator"></i18n></span></span>
+						 <span id="initiatorAlways" class="right_arrow see-icon-v5-common-arrow-right"></span>
+	               		 <span class="headline">
+	               		 	<input id="initiator" type="text" readonly="readonly"/>
+	               		 	<input id="initiator_value" style="display:none"/>
+	               		 </span>
+					</li>
+					<!--发起部门 不可修改-->
+					<li class="cmp-table-view-cell " id="initiatingDepartmentCell" style="padding-left: 14px;">
+						 <span class="title"><span class="start-left-label"><i18n key="meeting.meetingRoomCommon.initiatingDepartment"></i18n></span></span>
+	               		 <span class="headline">
+	               		 	<input id="initiatingDepartment" type="text" readonly="readonly"/>
+	               		 </span>
+					</li>
+					<!-- 联系方式 不可修改 -->
+					<li class="cmp-table-view-cell " id="contactCell" style="padding-left: 14px;">
+						 <span class="title"><span class="start-left-label"><i18n key="meeting.meetingRoomCommon.contact"></i18n></span></span>
+	               		 <span class="headline">
+	               		 	<input id="contact" type="text" readonly="readonly"/>
+	               		 </span>
+					</li>
 
 					<li id="liMeetingPlace" class="cmp-table-view-cell cmp-before-line"
 						style="padding-left: 14px;">
@@ -122,7 +149,7 @@
 					<!-- 客开 会议用品 2020年3月24日 start -->
 					<li class="cmp-table-view-cell" id="meetingTools"
 						style="padding-left: 14px;"><span class="title"><span
-							class="start-left-label">会议用品</i18n></span></span> <!-- <span id="meetingToolsAlways"  class="right_arrow see-icon-v5-common-arrow-right"></span> -->
+							class="start-left-label"><i18n key="meeting.meetingRoomCommon.resources"></i18n></i18n></span></span> <!-- <span id="meetingToolsAlways"  class="right_arrow see-icon-v5-common-arrow-right"></span> -->
 						<span class="headline"> <input id="meetingTool" type="text"
 							onclick="showHidden()" readonly="readonly" placeholder="请选择会议用品" />
 							<input id="meetingTool_value" style="display: none" />
@@ -135,9 +162,8 @@
 					
 					<!-- 参会领导参会人数 start -->
 					<li class="cmp-table-view-cell" id="leaderCell"
-						style="padding-left: 14px;">
-						<span class="title"><span class="start-left-label">参会领导</span></span>
-						<span id="leaderAlways"
+						style="padding-left: 14px;"><span class="title"><span
+							class="start-left-label"><i18n key="meeting.meetingRoomCommon.leader"></i18n></span></span> <span id="leaderAlways"
 						class="right_arrow see-icon-v5-common-arrow-right"></span> <span
 						class="headline"> <input id="leader" type="text"
 							readonly="readonly" /> <input id="leader_value"
@@ -145,7 +171,7 @@
 					</span></li>
 					<li class="cmp-table-view-cell " id="numberCell" style="padding-left: 14px;">
 						 <span class="see-icon-must"></span>
-						 <span class="title"><span class="start-left-label">预计参会人数</span></span>
+						 <span class="title"><span class="start-left-label"><i18n key="meeting.meetingRoomCommon.estimatedNumber"></i18n></span></span>
 	               		 <span class="headline">
 	               		 	<input id="number" type="number" />
 	               		 </span>

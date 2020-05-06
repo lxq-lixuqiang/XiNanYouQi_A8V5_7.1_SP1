@@ -215,6 +215,7 @@ function setDefaultMemberInfo(){
 					type : "Member"
 				});
 				cmp.storage.save("m3_v5_meeting_selectOrg_bachCache_host", cmp.toJSON(userInfo), true);
+				cmp.storage.save("m3_v5_meeting_selectOrg_bachCache_initiator", cmp.toJSON(userInfo), true);
 				cmp.storage.save("m3_v5_meeting_selectOrg_bachCache_recoder", cmp.toJSON(userInfo), true);
 				var meetingType = new Array();
 				meetingType.push({
@@ -229,6 +230,12 @@ function setDefaultMemberInfo(){
 				
 				_$("#host").value = result.userName;
 				_$("#host_value").value = result.userId;
+				_$("#initiator").value = result.userName;
+				_$("#initiator_value").value = result.userId;
+				//设置发起部门、联系方式
+				_$("#initiatingDepartment").value = "部门";
+				_$("#contact").value = "联系方式";
+				
 				_$("#recoder").value = result.userName;
 				_$("#recoder_value").value = result.userId;
 				

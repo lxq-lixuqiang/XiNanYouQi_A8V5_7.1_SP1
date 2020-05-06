@@ -198,6 +198,21 @@ function initEvent(){
 			type : 2
 		})
 	});
+	_$("#initiator").addEventListener("tap", function(){
+		MeetingUtils.selectOrg("initiator", setInitiatorValue, {
+			showBusinessOrganization:true,
+			maxSize : 1,
+			minSize : 1,
+			type : 2
+		})
+	});
+	_$("#initiatorAlways").addEventListener("tap", function(){
+		MeetingUtils.selectOrg("initiator", setInitiatorValue, {
+			maxSize : 1,
+			minSize : 1,
+			type : 2
+		})
+	});
 	_$("#recoder").addEventListener("tap", function(){
 		MeetingUtils.selectOrg("recoder", setRecoderValue, {
 			showBusinessOrganization:true,
@@ -493,6 +508,16 @@ function setConfereesValue(result){
 	//处理互斥情况
 	dealCache();
 }
+//设置发起者
+function setInitiatorValue(result){
+	_$("#initiator_value").value = result[0].id;
+	//设置发起部门、联系方式
+	_$("#initiatingDepartment").value = "部门";
+	_$("#contact").value = "联系方式";
+	
+	//处理互斥情况
+	dealCache();
+}
 //设置主持人
 function setHostValue(result){
 	_$("#host_value").value = result[0].id;
@@ -540,6 +565,7 @@ function dealCache(){
 	var cache_host = cmp.storage.get("m3_v5_meeting_selectOrg_bachCache_host", true);//主持人
 	var cache_recoder = cmp.storage.get("m3_v5_meeting_selectOrg_bachCache_recoder", true);//记录人
 	var cache_notify = cmp.storage.get("m3_v5_meeting_selectOrg_bachCache_notify", true);//告知人
+	var cache_initiator = cmp.storage.get("m3_v5_meeting_selectOrg_bachCache_initiator", true);//发起者
 	
 	var hideObj_conferees = MeetingUtils.mergeArray(cmp.parseJSON(cache_host), cache_recoder ? cmp.parseJSON(cache_recoder) : {});
 	hideObj_conferees = MeetingUtils.mergeArray(hideObj_conferees, cache_notify ? cmp.parseJSON(cache_notify) : {});
@@ -549,6 +575,10 @@ function dealCache(){
 	var hideObj_host = MeetingUtils.mergeArray(cache_conferees ? cmp.parseJSON(cache_conferees) : {}, cache_notify ? cmp.parseJSON(cache_notify) : {});
 	addExceptStyle(hideObj_host);
 	cmp.storage.save("m3_v5_meeting_selectOrg_bachCache_except_host", cmp.toJSON(hideObj_host), true);
+	
+	var hideObj_initiator = MeetingUtils.mergeArray(cache_conferees ? cmp.parseJSON(cache_conferees) : {}, cache_notify ? cmp.parseJSON(cache_notify) : {});
+	addExceptStyle(hideObj_initiator);
+	cmp.storage.save("m3_v5_meeting_selectOrg_bachCache_except_initiator", cmp.toJSON(hideObj_initiator), true);
 	
 	var hideObj_recoder = MeetingUtils.mergeArray(cache_conferees ? cmp.parseJSON(cache_conferees) : {}, cache_notify ? cmp.parseJSON(cache_notify) : {});
 	addExceptStyle(hideObj_recoder);
@@ -617,6 +647,7 @@ function setDefaultShowData(){
 	setAttValue("meetingType", "placeholder", cmp.i18n("meeting.meetingCreate.inputMeetingType"));
 	setAttValue("conferees", "placeholder", cmp.i18n("meeting.meetingCreate.inputConferees"));
 	setAttValue("notify", "placeholder", cmp.i18n("meeting.meetingCreate.inputNotify"));
+	setAttValue("initiator", "placeholder", cmp.i18n("meeting.meetingCreate.inputInitiator"));
 	setAttValue("reminder", "placeholder", cmp.i18n("meeting.meetingCreate.none"));
 	setAttValue("meetingNature", "placeholder", cmp.i18n("meeting.meetingCreate.NatureNormal"));
 	setAttValue("content", "placeholder", cmp.i18n("meeting.page.lable.pleaseInputContent"));
@@ -633,7 +664,7 @@ function setCacheDatas(){
 		}
 	}
 	
-	var cacheKey = new Array("host", "recoder", "conferees", "notify");
+	var cacheKey = new Array("host", "recoder", "conferees", "notify", "initiator");
 	cmp.storage.save("m3_v5_meeting_selectOrg_bachCacheKey", cmp.toJSON(cacheKey), true);
 }
 
@@ -1142,7 +1173,7 @@ function hasEmpty(){
 	var reg= /^[1-9]\d*$/;
 	var num = _$("#number").value
 	if(!reg.test(num)){
-		createAlter("预计参会人数" + empty, null);
+		createAlter("预计人数" + empty, null);
 		return true;
 	}
 	//胡超客开 数据校验 end 2020-4-24

@@ -129,8 +129,56 @@
 			</form>
 		</div>
 		<div class="apply_wrap">
+			<div><i18n key="meeting.meetingRoomApply.description"></div>
 			<textarea id="description" maxlength="80" rows="1" style="height:130px; border:none;padding: 0"></textarea>
 		</div>
+		<!-- *申请人，*申请部门，*联系方式，参会领导，预计人数，会议用品 -->
+		<ul class="cmp-table-view">
+			<!-- *申请人 -->
+			<li id="roomSentPer" class="cmp-table-view-cell">
+				<div class="list_item">
+					<div class="left_name"><i18n key="meeting.meetingRoomCommon.applicant"></i18n></div>
+					<div id="appPerName" class="right_text" style="color:#297FFB;word-break:break-all"></div>
+				</div>
+			</li>
+			<!-- *申请部门 -->
+			<li id="roomSentPer" class="cmp-table-view-cell">
+				<div class="list_item">
+					<div class="left_name"><i18n key="meeting.meetingRoomCommon.department"></i18n></div>
+					<div id="appPerName" class="right_text" style="color:#297FFB;word-break:break-all"></div>
+				</div>
+			</li>
+			<!-- *联系方式 -->
+			<li id="roomSentPer" class="cmp-table-view-cell">
+				<div class="list_item">
+					<div class="left_name"><i18n key="meeting.meetingRoomCommon.contact"></i18n></div>
+					<div id="appPerName" class="right_text" style="color:#297FFB;word-break:break-all"></div>
+				</div>
+			</li>
+			<!-- 参会领导 -->
+			<li id="leader" class="cmp-table-view-cell">
+				<div class="list_item">
+					<div class="left_name"><i18n key="meeting.meetingRoomCommon.leader"></i18n></div>
+					<div id="leaderName" class="right_text" style="color:#297FFB;word-break:break-all"></div>
+				</div>
+			</li>
+			<!-- 预计人数-->
+			<li id="numbers" class="cmp-table-view-cell">
+				<div class="list_item">
+					<div class="left_name"><i18n key="meeting.meetingRoomCommon.estimatedNumber"></i18n></div>
+					<div id="number" class="right_text" style="color:#297FFB;word-break:break-all"></div>
+				</div>
+			</li>
+			<!-- 会议用品 -->
+			<li id="meetResource" class="cmp-table-view-cell"  style="display: none;">
+				<table class="table_wrap" style="width:100%;">
+					<tr>
+						<th class="left_name"><i18n key="meeting.meetingRoomCommon.resources"></i18n></th>
+						<th id="meetResources" class="right_text" style="word-break:break-all"></th>
+					</tr>
+				</table>
+			</li>
+		</ul>
 	</div>
 	<footer class="cmp-bar cmp-bar-footer single_btn back_white">
 	    <div class="wh100 border_t relative">
