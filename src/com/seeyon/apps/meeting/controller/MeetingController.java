@@ -63,10 +63,17 @@ import com.seeyon.ctp.organization.bo.V3xOrgDepartment;
 import com.seeyon.ctp.organization.bo.V3xOrgEntity;
 import com.seeyon.ctp.organization.bo.V3xOrgMember;
 import com.seeyon.ctp.organization.manager.OrgManager;
-import com.seeyon.ctp.organization.po.OrgMember;
 import com.seeyon.ctp.portal.api.PortalApi;
+import com.seeyon.ctp.organization.po.OrgMember;
 import com.seeyon.ctp.portal.util.PortletPropertyContants.PropertyName;
 import com.seeyon.ctp.rest.resources.MeetingReplyMemberVO;
+import com.seeyon.ctp.util.DBAgent;
+import com.seeyon.ctp.util.DateUtil;
+import com.seeyon.ctp.util.Datetimes;
+import com.seeyon.ctp.util.FlipInfo;
+import com.seeyon.ctp.util.ParamUtil;
+import com.seeyon.ctp.util.ReqUtil;
+import com.seeyon.ctp.util.Strings;
 import com.seeyon.v3x.common.taglibs.functions.Functions;
 import com.seeyon.v3x.meeting.domain.MtMeeting;
 import com.seeyon.v3x.meeting.domain.MtReply;
@@ -77,14 +84,14 @@ import com.seeyon.v3x.mobile.message.manager.MobileMessageManager;
 import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
 
 /**
- *
+ * 
  * @author 唐桂林
  *
  */
 public class MeetingController extends BaseController {
 
 	private static final Log LOGGER = LogFactory.getLog(MeetingController.class);
-
+	
 	private MeetingNewManager meetingNewManager;
 	private MeetingManager meetingManager;
 	private PublicResourceManager publicResourceManager;
@@ -92,8 +99,8 @@ public class MeetingController extends BaseController {
 	private MeetingExtManager meetingExtManager;
 	private ConfereesConflictManager confereesConflictManager;
 	private PendingManager pendingManager;
-	private MtMeetingManager mtMeetingManager;
-	private AttachmentManager attachmentManager;
+    private MtMeetingManager mtMeetingManager;
+    private AttachmentManager attachmentManager;
 	private MeetingSummaryManager meetingSummaryManager;
 	private FileToExcelManager fileToExcelManager;
 	private MobileMessageManager mobileMessageManager;
@@ -109,7 +116,7 @@ public class MeetingController extends BaseController {
 		this.meetingSettingManager = meetingSettingManager;
 	}
 /****************************** 会议数据加载 **********************************/
-
+	
 	/**
 	 * 创建会议
 	 * @param request
@@ -117,58 +124,58 @@ public class MeetingController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	public ModelAndView create(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		ModelAndView mav = new ModelAndView(MeetingPathConstant.meeting_create_frame);
-		if(!AppContext.getCurrentUser().hasResourceCode("F09_meetingArrange")){
-			StringBuilder sb = new StringBuilder();
-			sb.append("alert('"+ResourceUtil.getString("meeting.permission.no")+"');");
-			sb.append("parent.parent.parent.close();");
-			super.rendJavaScript(response, sb.toString());
-			return null;
-		}
-		Long id = Strings.isBlank(request.getParameter("id")) ? -1L : Long.parseLong(request.getParameter("id"));
-		Long projectId = Strings.isBlank(request.getParameter("projectId")) ? -1L : Long.parseLong(request.getParameter("projectId"));
-		Long templateId = Strings.isBlank(request.getParameter("templateId")) ? -1L : Long.parseLong(request.getParameter("templateId"));
-		Long contentTemplateId = Strings.isBlank(request.getParameter("contentTemplateId")) ? -1L : Long.parseLong(request.getParameter("contentTemplateId"));
-		Long roomAppId = Strings.isBlank(request.getParameter("portalRoomAppId")) ? -1L : Long.parseLong(request.getParameter("portalRoomAppId"));
-		Long affairId = Strings.isBlank(request.getParameter("affairId")) ? -1L : Long.parseLong(request.getParameter("affairId"));
-		Long summaryId = Strings.isBlank(request.getParameter("summaryId")) ? -1L : Long.parseLong(request.getParameter("summaryId"));
-		String appFrom = request.getParameter("collaborationFrom");
-		String appName = request.getParameter("moduleTypeFlag");
-		String from = request.getParameter("from");
-		Boolean isBatch = MeetingUtil.getBoolean(request, "isBatch", false);
-		String action = Strings.isBlank(request.getParameter("actionName")) ? "create" : request.getParameter("actionName");
-		String time = request.getParameter("time");
-		//since V7.1  (致信需求)新增URL参数conferee，用于默认回填参会人员，可传递人员id，多个以逗号分割
-		String confereeIds = ReqUtil.getString(request, "conferee", null);
-
-		MeetingNewVO newVo = new MeetingNewVO();
-		try {
-			newVo.setAction(action);
-			newVo.setMeetingId(id);
-			newVo.setProjectId(projectId);
-			newVo.setTemplateId(templateId);
-			newVo.setRoomAppId(roomAppId);
-			newVo.setContentTemplateId(contentTemplateId);
-			newVo.setAppSummaryId(summaryId);
-			newVo.setAppAffairId(affairId);
-			newVo.setAppFrom(appFrom);
-			newVo.setAppName(appName);
-			newVo.setCurrentUser(AppContext.getCurrentUser());
-			newVo.setAttachmentList(attachmentManager.getAttachmentsFromRequestNotRelition(request));
-			newVo.setParameterMap(MeetingParamHelper.getMeetingParameterByRequest(request, newVo.getAction()));
-			newVo.setSystemNowDatetime(DateUtil.currentDate());
-			newVo.setIsBatch(isBatch);
-			//快速需求：如会议创建入口为时间视图新建的会议，创建时间取视图点击的时间
-			if(time != null && !"undefined".equals(time)&& !"".equals(time)){
-				if(isValidLong(time)){
-					Date d = new Date();
-					d.setTime(Long.parseLong(time));
-					newVo.setSystemNowDatetime(d);
-				}else{
-					newVo.setSystemNowDatetime(DateUtil.toDate(time));
-				}
-			}else{
+    public ModelAndView create(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    	ModelAndView mav = new ModelAndView(MeetingPathConstant.meeting_create_frame);
+    	if(!AppContext.getCurrentUser().hasResourceCode("F09_meetingArrange")){
+    		StringBuilder sb = new StringBuilder();
+    		sb.append("alert('"+ResourceUtil.getString("meeting.permission.no")+"');");
+            sb.append("parent.parent.parent.close();");
+            super.rendJavaScript(response, sb.toString());
+    		return null;
+    	}
+    	Long id = Strings.isBlank(request.getParameter("id")) ? -1L : Long.parseLong(request.getParameter("id"));
+    	Long projectId = Strings.isBlank(request.getParameter("projectId")) ? -1L : Long.parseLong(request.getParameter("projectId"));
+    	Long templateId = Strings.isBlank(request.getParameter("templateId")) ? -1L : Long.parseLong(request.getParameter("templateId"));
+    	Long contentTemplateId = Strings.isBlank(request.getParameter("contentTemplateId")) ? -1L : Long.parseLong(request.getParameter("contentTemplateId"));
+    	Long roomAppId = Strings.isBlank(request.getParameter("portalRoomAppId")) ? -1L : Long.parseLong(request.getParameter("portalRoomAppId"));
+    	Long affairId = Strings.isBlank(request.getParameter("affairId")) ? -1L : Long.parseLong(request.getParameter("affairId"));
+    	Long summaryId = Strings.isBlank(request.getParameter("summaryId")) ? -1L : Long.parseLong(request.getParameter("summaryId"));
+    	String appFrom = request.getParameter("collaborationFrom");
+    	String appName = request.getParameter("moduleTypeFlag");
+    	String from = request.getParameter("from");
+    	Boolean isBatch = MeetingUtil.getBoolean(request, "isBatch", false);
+    	String action = Strings.isBlank(request.getParameter("actionName")) ? "create" : request.getParameter("actionName");
+    	String time = request.getParameter("time");
+    	//since V7.1  (致信需求)新增URL参数conferee，用于默认回填参会人员，可传递人员id，多个以逗号分割
+    	String confereeIds = ReqUtil.getString(request, "conferee", null);
+    	
+    	MeetingNewVO newVo = new MeetingNewVO();
+    	try {
+	    	newVo.setAction(action);
+	    	newVo.setMeetingId(id);
+	    	newVo.setProjectId(projectId);
+	    	newVo.setTemplateId(templateId);
+	    	newVo.setRoomAppId(roomAppId);
+	    	newVo.setContentTemplateId(contentTemplateId);
+	    	newVo.setAppSummaryId(summaryId);
+	    	newVo.setAppAffairId(affairId);
+	    	newVo.setAppFrom(appFrom);
+	    	newVo.setAppName(appName);
+	    	newVo.setCurrentUser(AppContext.getCurrentUser());
+	    	newVo.setAttachmentList(attachmentManager.getAttachmentsFromRequestNotRelition(request));
+	    	newVo.setParameterMap(MeetingParamHelper.getMeetingParameterByRequest(request, newVo.getAction()));
+	    	newVo.setSystemNowDatetime(DateUtil.currentDate());
+	    	newVo.setIsBatch(isBatch);
+	    	//快速需求：如会议创建入口为时间视图新建的会议，创建时间取视图点击的时间
+	    	if(time != null && !"undefined".equals(time)&& !"".equals(time)){
+	    		if(isValidLong(time)){
+	    			Date d = new Date();
+	    			d.setTime(Long.parseLong(time));
+	    			newVo.setSystemNowDatetime(d);
+	    		}else{
+	    			newVo.setSystemNowDatetime(DateUtil.toDate(time));
+	    		}
+	    	}else{
 				newVo.setSystemNowDatetime(DateUtil.currentDate());
 			}
 			//给致信提供：增加新建时传入会人员默认值
@@ -198,10 +205,10 @@ public class MeetingController extends BaseController {
 		mav.addObject("openFrom", ParamUtil.getString(request.getParameterMap(),"openFrom"));
 		mav.addObject("roomParam", ParamUtil.getString(request.getParameterMap(),"roomParam"));
 
-		mav.addObject("newVo", newVo);
-		mav.addObject("attachments", newVo.getAttachmentList());
-		mav.addObject("portalRoomAppId", roomAppId);
-		mav.addObject("from", from);
+    	mav.addObject("newVo", newVo);
+    	mav.addObject("attachments", newVo.getAttachmentList());
+    	mav.addObject("portalRoomAppId", roomAppId);
+    	mav.addObject("from", from);
 		mav.addObject("isMeetingPlaceInputAble",isMeetingPlaceInputAble);
 //		中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者、发起部门、联系方式”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 start
         try {
@@ -226,9 +233,9 @@ public class MeetingController extends BaseController {
 			logger.error("新建会议时增加“发起者、发起部门、联系方式”字段异常！",e);
 		}
 //		中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者、发起部门、联系方式”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 end
-		return mav;
-	}
-	
+    	return mav;
+    }
+    
 //	中国石油天然气股份有限公司西南油气田分公司  【发起部门和联系方式系统自动带出】  lixuqiang 2020年4月29日 start
 	@AjaxAccess
 	public Map<String,Object> getOtherInfo(HttpServletRequest request, HttpServletResponse response){
@@ -276,37 +283,37 @@ public class MeetingController extends BaseController {
 			return false;
 		}
 	}
-
-	/**
-	 * 编辑会议
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	public ModelAndView edit(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		ModelAndView mav = new ModelAndView(MeetingPathConstant.meeting_create_frame);
-		Long id = Strings.isBlank(request.getParameter("id")) ? -1L : Long.parseLong(request.getParameter("id"));
-		Long projectId = Strings.isBlank(request.getParameter("projectId")) ? -1L : Long.parseLong(request.getParameter("projectId"));
-		Long templateId = Strings.isBlank(request.getParameter("templateId")) ? -1L : Long.parseLong(request.getParameter("templateId"));
-		Long contentTemplateId = Strings.isBlank(request.getParameter("contentTemplateId")) ? -1L : Long.parseLong(request.getParameter("contentTemplateId"));
-		Boolean isBatch = MeetingUtil.getBoolean(request, "isBatch", true);
-
-		MeetingNewVO newVo = new MeetingNewVO();
-		try {
-			newVo.setAction("edit");
-			newVo.setIsBatch(isBatch);
-			newVo.setMeetingId(id);
-			newVo.setProjectId(projectId);
-			newVo.setTemplateId(templateId);
-			newVo.setContentTemplateId(contentTemplateId);
-			newVo.setCurrentUser(AppContext.getCurrentUser());
-			newVo.setParameterMap(MeetingParamHelper.getMeetingParameterByRequest(request, newVo.getAction()));
-			newVo.setSystemNowDatetime(DateUtil.currentDate());
-			meetingNewManager.newMeeting(newVo);
-		} catch(Exception e) {
-			LOGGER.error("编辑会议报错", e);
-		}
+    
+    /**
+     * 编辑会议
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    public ModelAndView edit(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    	ModelAndView mav = new ModelAndView(MeetingPathConstant.meeting_create_frame);
+    	Long id = Strings.isBlank(request.getParameter("id")) ? -1L : Long.parseLong(request.getParameter("id"));
+    	Long projectId = Strings.isBlank(request.getParameter("projectId")) ? -1L : Long.parseLong(request.getParameter("projectId"));
+    	Long templateId = Strings.isBlank(request.getParameter("templateId")) ? -1L : Long.parseLong(request.getParameter("templateId"));
+    	Long contentTemplateId = Strings.isBlank(request.getParameter("contentTemplateId")) ? -1L : Long.parseLong(request.getParameter("contentTemplateId"));
+    	Boolean isBatch = MeetingUtil.getBoolean(request, "isBatch", true);
+    	
+    	MeetingNewVO newVo = new MeetingNewVO();
+    	try {
+	    	newVo.setAction("edit");
+	    	newVo.setIsBatch(isBatch);
+	    	newVo.setMeetingId(id);
+	    	newVo.setProjectId(projectId);
+	    	newVo.setTemplateId(templateId);
+	    	newVo.setContentTemplateId(contentTemplateId);
+	    	newVo.setCurrentUser(AppContext.getCurrentUser());
+	    	newVo.setParameterMap(MeetingParamHelper.getMeetingParameterByRequest(request, newVo.getAction()));
+	    	newVo.setSystemNowDatetime(DateUtil.currentDate());
+	    	meetingNewManager.newMeeting(newVo);
+    	} catch(Exception e) {
+    		LOGGER.error("编辑会议报错", e);
+    	}
 		//会议地点是否可编辑
 		boolean isMeetingPlaceInputAble = meetingSettingManager.isMeetingPlaceInputAble();
 
@@ -330,11 +337,11 @@ public class MeetingController extends BaseController {
 		}
 		//客开胡超 会议展示预计数量 end
 		mav.addObject("isMeetingPlaceInputAble",isMeetingPlaceInputAble);
-
-		return mav;
-	}
-
-	/****************************** 会议数据保存 **********************************/
+    	
+    	return mav;
+    }
+    
+    /****************************** 会议数据保存 **********************************/
 	/**
 	 * 发送会议
 	 * @param request
@@ -342,21 +349,21 @@ public class MeetingController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	public ModelAndView send(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		/******************************** 1 获取参数，组装bean **********************************/
-		Long id = Strings.isBlank(request.getParameter("id")) ? -1L : Long.parseLong(request.getParameter("id"));
-		Long roomId = Strings.isBlank(request.getParameter("roomId")) ? -1L : Long.parseLong(request.getParameter("roomId"));
-		Long roomAppId = Strings.isBlank(request.getParameter("roomAppId")) ? -1L : Long.parseLong(request.getParameter("roomAppId"));
-		Integer category = Strings.isBlank(request.getParameter("category")) ? MeetingCategoryEnum.single.key() : Integer.parseInt(request.getParameter("category"));
-		Boolean isBatch = MeetingUtil.getBoolean(request, "isBatch", false);
-		MeetingNewVO newVo = new MeetingNewVO();
-		newVo.setAction("send");
-		newVo.setMeetingId(id);
-		newVo.setRoomId(roomId);
-		newVo.setRoomAppId(roomAppId);
-		newVo.setCategory(category);
-		newVo.setIsBatch(isBatch);
-		newVo.setSelectRoomType(request.getParameter("selectRoomType"));
+    public ModelAndView send(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    	/******************************** 1 获取参数，组装bean **********************************/
+        Long id = Strings.isBlank(request.getParameter("id")) ? -1L : Long.parseLong(request.getParameter("id"));
+        Long roomId = Strings.isBlank(request.getParameter("roomId")) ? -1L : Long.parseLong(request.getParameter("roomId"));
+        Long roomAppId = Strings.isBlank(request.getParameter("roomAppId")) ? -1L : Long.parseLong(request.getParameter("roomAppId"));
+        Integer category = Strings.isBlank(request.getParameter("category")) ? MeetingCategoryEnum.single.key() : Integer.parseInt(request.getParameter("category"));
+        Boolean isBatch = MeetingUtil.getBoolean(request, "isBatch", false);
+        MeetingNewVO newVo = new MeetingNewVO();
+        newVo.setAction("send");
+        newVo.setMeetingId(id);
+        newVo.setRoomId(roomId);
+        newVo.setRoomAppId(roomAppId);
+        newVo.setCategory(category);
+        newVo.setIsBatch(isBatch);
+        newVo.setSelectRoomType(request.getParameter("selectRoomType"));
 //		中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 start
 		try {
 			String currentUserId = request.getParameter("userId");
@@ -388,15 +395,15 @@ public class MeetingController extends BaseController {
 			logger.error("新建会议时增加“发起者”字段、发起人字段必填，默认是登录人，可以修改。",e);
 			newVo.setCurrentUser(AppContext.getCurrentUser());
 		}
-//		中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 end
-		newVo.setParameterMap(MeetingParamHelper.getMeetingParameterByRequest(request, newVo.getAction()));
-		newVo.setSystemNowDatetime(DateUtil.currentDate());
-		//胡超  与会人员可空 start 2020-4-16 解决Oracle 字段不能为空
-		if(StringUtils.isBlank(newVo.getParameterMap().get("conferees"))) {
-			newVo.getParameterMap().put("conferees", "Member|"+AppContext.getCurrentUser().getId());
-		}
-		//胡超  与会人员可空 end 2020-4-16 解决Oracle 字段不能为空
-		String errorMsg = "";
+		//		中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 end
+        newVo.setParameterMap(MeetingParamHelper.getMeetingParameterByRequest(request, newVo.getAction()));
+        newVo.setSystemNowDatetime(DateUtil.currentDate());
+        //胡超  与会人员可空 start 2020-4-16 解决Oracle 字段不能为空
+      	if(StringUtils.isBlank(newVo.getParameterMap().get("conferees"))) {
+      		newVo.getParameterMap().put("conferees", "Member|"+AppContext.getCurrentUser().getId());
+      	}
+      	//胡超  与会人员可空 end 2020-4-16 解决Oracle 字段不能为空
+      	String errorMsg = "";
 		try {
 			boolean result = meetingNewManager.transSend(newVo);
 			if(!result) {
@@ -447,34 +454,34 @@ public class MeetingController extends BaseController {
 			MeetingRoomAppVO appVo = newVo.getMeetingRoomAppVO();
 			meetingValidationManager.clearMeetingRoomAppCache(appVo);
 		}
-
-		/******************************** 12 跳转页面 **********************************/
-		super.rendJavaScript(response, "parent.gotoList('send');");
-		return null;
-	}
-	/**
-	 * 保存待发
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	public ModelAndView save(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		/******************************** 1 获取参数，组装bean **********************************/
-		Long id = Strings.isBlank(request.getParameter("id")) ? -1L : Long.parseLong(request.getParameter("id"));
-		Long roomId = Strings.isBlank(request.getParameter("roomId")) ? -1L : Long.parseLong(request.getParameter("roomId"));
-		Long roomAppId = Strings.isBlank(request.getParameter("roomAppId")) ? -1L : Long.parseLong(request.getParameter("roomAppId"));
-		Integer category = Strings.isBlank(request.getParameter("category")) ? MeetingCategoryEnum.single.key() : Integer.parseInt(request.getParameter("category"));
-		Boolean isBatch = MeetingUtil.getBoolean(request, "isBatch", true);
-
-		MeetingNewVO newVo = new MeetingNewVO();
-		newVo.setAction("save");
-		newVo.setMeetingId(id);
-		newVo.setRoomId(roomId);
-		newVo.setRoomAppId(roomAppId);
-		newVo.setCategory(category);
-		newVo.setIsBatch(isBatch);
-		newVo.setSelectRoomType(request.getParameter("selectRoomType"));
+        
+        /******************************** 12 跳转页面 **********************************/
+        super.rendJavaScript(response, "parent.gotoList('send');");
+        return null;
+    }
+    
+    /**
+     * 保存待发
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    public ModelAndView save(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    	/******************************** 1 获取参数，组装bean **********************************/
+        Long id = Strings.isBlank(request.getParameter("id")) ? -1L : Long.parseLong(request.getParameter("id"));
+        Long roomId = Strings.isBlank(request.getParameter("roomId")) ? -1L : Long.parseLong(request.getParameter("roomId"));
+        Long roomAppId = Strings.isBlank(request.getParameter("roomAppId")) ? -1L : Long.parseLong(request.getParameter("roomAppId"));
+        Integer category = Strings.isBlank(request.getParameter("category")) ? MeetingCategoryEnum.single.key() : Integer.parseInt(request.getParameter("category"));
+        Boolean isBatch = MeetingUtil.getBoolean(request, "isBatch", true);
+        MeetingNewVO newVo = new MeetingNewVO();
+        newVo.setAction("save");
+        newVo.setMeetingId(id);
+        newVo.setRoomId(roomId);
+        newVo.setRoomAppId(roomAppId);
+        newVo.setCategory(category);
+        newVo.setIsBatch(isBatch);
+        newVo.setSelectRoomType(request.getParameter("selectRoomType"));
 //		中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 start
 		try {
 			String currentUserId = request.getParameter("userId");
@@ -508,14 +515,14 @@ public class MeetingController extends BaseController {
 		}
 //		中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 end
 		
-		newVo.setParameterMap(MeetingParamHelper.getMeetingParameterByRequest(request, newVo.getAction()));
-		newVo.setSystemNowDatetime(DateUtil.currentDate());
-		//胡超  与会人员可空 start 2020-4-16 解决Oracle 字段不能为空
-		if(StringUtils.isBlank(newVo.getParameterMap().get("conferees"))) {
-			newVo.getParameterMap().put("conferees", "Member|"+AppContext.getCurrentUser().getId());
-		}
+        newVo.setParameterMap(MeetingParamHelper.getMeetingParameterByRequest(request, newVo.getAction()));
+        newVo.setSystemNowDatetime(DateUtil.currentDate());
+        //胡超  与会人员可空 start 2020-4-16 解决Oracle 字段不能为空
+      	if(StringUtils.isBlank(newVo.getParameterMap().get("conferees"))) {
+      		newVo.getParameterMap().put("conferees", "Member|"+AppContext.getCurrentUser().getId());
+      	}
 		//胡超  与会人员可空 end 2020-4-16 解决Oracle 字段不能为空
-		try {
+      	try {
 			meetingNewManager.transSave(newVo);
 			JDBCAgent agent = new JDBCAgent();
 			try {
@@ -542,60 +549,60 @@ public class MeetingController extends BaseController {
 		super.rendJavaScript(response, "parent.gotoList('save');");
 		return null;
 	}
-
-	/**
-	 * 保存会议为个人模板
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	public ModelAndView saveAsTemplate(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		Long id = Strings.isBlank(request.getParameter("id")) ? -1L : Long.parseLong(request.getParameter("id"));
-
-		MeetingNewVO newVo = new MeetingNewVO();
-		newVo.setMeetingId(id);
-		newVo.setAction(request.getParameter("operation"));
-		newVo.setCurrentUser(AppContext.getCurrentUser());
-		newVo.setParameterMap(MeetingParamHelper.getMeetingParameterByRequest(request, newVo.getAction()));
-		newVo.setSystemNowDatetime(DateUtil.currentDate());
-		try {
-			meetingNewManager.transSaveAsTemplate(newVo);
-		} catch(Exception e) {
+    
+    /**
+     * 保存会议为个人模板
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    public ModelAndView saveAsTemplate(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Long id = Strings.isBlank(request.getParameter("id")) ? -1L : Long.parseLong(request.getParameter("id"));
+        
+        MeetingNewVO newVo = new MeetingNewVO();
+        newVo.setMeetingId(id);
+        newVo.setAction(request.getParameter("operation"));
+        newVo.setCurrentUser(AppContext.getCurrentUser());
+        newVo.setParameterMap(MeetingParamHelper.getMeetingParameterByRequest(request, newVo.getAction()));
+        newVo.setSystemNowDatetime(DateUtil.currentDate());
+        try {   
+        	meetingNewManager.transSaveAsTemplate(newVo);
+	    } catch(Exception e) {
 			LOGGER.error("保存会议个人模板报错", e);
 		}
-		super.rendJavaScript(response, "parent.enableBtnAndPrintMsg();");
-		return null;
-	}
+        super.rendJavaScript(response, "parent.enableBtnAndPrintMsg();");
+        return null;
+    }
 
-	/****************************** 打开弹出框 **********************************/
-	/**
-	 * 打开会议周期性设置弹出框
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
+    /****************************** 打开弹出框 **********************************/
+    /**
+     * 打开会议周期性设置弹出框
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
 	public ModelAndView openPeriodicityDialog(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		ModelAndView mav = new ModelAndView(MeetingPathConstant.meeting_periodicity_dialog);
 		Long meetingId = Strings.isBlank(request.getParameter("meetingId")) ? -1L : Long.parseLong(request.getParameter("meetingId"));
 		Long periodicityId = Strings.isBlank(request.getParameter("periodicityId")) ? -1L : Long.parseLong(request.getParameter("periodicityId"));
-
+		
 		MeetingNewVO newVo = new MeetingNewVO();
 		newVo.setMeetingId(meetingId);
 		newVo.setPeriodicityId(periodicityId);
 		newVo.setSystemNowDatetime(DateUtil.currentDate());
 		this.meetingNewManager.newPeriodicity(newVo);
-
+		
 		mav.addObject("newVo", newVo);
-
+		
 		//将现在的时间按照客户端的时区转换
 		String now = Datetimes.format(new Date(), DateUtil.YEAR_MONTH_DAY_PATTERN);
 		mav.addObject("todayDateValue", now);
-
-		return mav;
+		
+        return mav;
 	}
-
+    
 	/**
 	 * 打开手动输入会议地址弹出框
 	 * @param request
@@ -608,29 +615,29 @@ public class MeetingController extends BaseController {
 		mav.addObject("meetingPlace", request.getParameter("meetingPlace"));
 		return mav;
 	}
-
+	
 	/**
 	 * 打开会议用品选择框
 	 * @param request
 	 * @param response
 	 * @return
 	 */
-	public ModelAndView openResourceDialog(HttpServletRequest request, HttpServletResponse response) {
-		ModelAndView mav = new ModelAndView(MeetingPathConstant.meeting_resource_dialog);
-		try {
-			List<PublicResource> meetingResourceList = publicResourceManager.findResourceList(AppContext.currentAccountId());
-			mav.addObject("resourceMap", meetingResourceList);
-			String selectedResourceIds = request.getParameter("type");
-			if(selectedResourceIds != null && !"".equals(selectedResourceIds.trim())) {
-				mav.addObject("oldResourceIds", selectedResourceIds);
-			}
-		} catch(Exception e) {
-			LOGGER.error("打开会议用品出错", e);
-		}
-		return mav;
-	}
-
-	/**
+    public ModelAndView openResourceDialog(HttpServletRequest request, HttpServletResponse response) {
+    	ModelAndView mav = new ModelAndView(MeetingPathConstant.meeting_resource_dialog);
+    	try {
+	        List<PublicResource> meetingResourceList = publicResourceManager.findResourceList(AppContext.currentAccountId());
+	        mav.addObject("resourceMap", meetingResourceList);
+	        String selectedResourceIds = request.getParameter("type");
+	        if(selectedResourceIds != null && !"".equals(selectedResourceIds.trim())) {
+	            mav.addObject("oldResourceIds", selectedResourceIds);
+	        }
+        } catch(Exception e) {
+        	LOGGER.error("打开会议用品出错", e);
+        }
+        return mav;
+    }
+    
+    /**
 	 * 打开会议议程
 	 * @param request
 	 * @param response
@@ -677,28 +684,28 @@ public class MeetingController extends BaseController {
 				} catch (Exception e) {// 查看时，如果转换失败就不转换了
 					logger.error("将正文中base64编码图片转为URL时发生异常！",e);
 				}
-			}
-			mav.addObject("personTemplateList", personTemplateList);
+	        }
+	        mav.addObject("personTemplateList", personTemplateList);
+        
+    	} catch(Exception e) {
+    		LOGGER.error("打开会议个人模板出错", e);
+    	}
+    	return mav;
+    }
 
-		} catch(Exception e) {
-			LOGGER.error("打开会议个人模板出错", e);
-		}
-		return mav;
-	}
-
-	/**
-	 *
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	public ModelAndView openEditDialog(HttpServletRequest request, HttpServletResponse response) {
-		ModelAndView mav = new ModelAndView(MeetingPathConstant.meeting_template_dialog);
-
-		return mav;
-	}
-
-	public ModelAndView openCancelDialog(HttpServletRequest request, HttpServletResponse response) {
+    /**
+     * 
+     * @param request
+     * @param response
+     * @return
+     */
+    public ModelAndView openEditDialog(HttpServletRequest request, HttpServletResponse response) {
+    	ModelAndView mav = new ModelAndView(MeetingPathConstant.meeting_template_dialog);
+        
+    	return mav;
+    }
+    
+    public ModelAndView openCancelDialog(HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView mav = new ModelAndView(MeetingPathConstant.meeting_cancel_dialog);
 		try {
 			mav.addObject("isCanSendSMS", meetingExtManager.isCanSendSMS());
@@ -708,29 +715,29 @@ public class MeetingController extends BaseController {
 		}
 		return mav;
 	}
-
-	public ModelAndView openPeriodicityBatchDialog(HttpServletRequest request, HttpServletResponse response) {
+    
+    public ModelAndView openPeriodicityBatchDialog(HttpServletRequest request, HttpServletResponse response) {
 		return new ModelAndView(MeetingPathConstant.periodicity_batch_dialog);
 	}
-
-	public ModelAndView openMeetingRoomPromptDialog(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    
+    public ModelAndView openMeetingRoomPromptDialog(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		ModelAndView mav = new ModelAndView(MeetingPathConstant.meetingroom_prompt_dialog);
 		mav.addObject("hasMeetingArrangeMenu", AppContext.getCurrentUser().hasResourceCode("F09_meetingArrange"));
 		return mav;
 	}
-
-	public ModelAndView openMeetingConfereesRepeatDialog(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		ModelAndView mav = new ModelAndView(MeetingPathConstant.conferees_conflict_dialog);
-		return mav;
+    
+    public ModelAndView openMeetingConfereesRepeatDialog(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	    ModelAndView mav = new ModelAndView(MeetingPathConstant.conferees_conflict_dialog);
+	    return mav;
 	}
-
-	public ModelAndView listConfereesConflict(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		ModelAndView mav = new ModelAndView(MeetingPathConstant.conferees_conflict_list_frame);
-
+    
+    public ModelAndView listConfereesConflict(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	    ModelAndView mav = new ModelAndView(MeetingPathConstant.conferees_conflict_list_frame);
+	    
 		Long meetingId = Strings.isBlank(request.getParameter("meetingId")) ? Constants.GLOBAL_NULL_ID : Long.parseLong(request.getParameter("meetingId"));
 		Long emceeId = Strings.isBlank(request.getParameter("emceeId")) ? Constants.GLOBAL_NULL_ID : Long.parseLong(request.getParameter("emceeId"));
 		Long recorderId = Strings.isBlank(request.getParameter("recorderId")) ? Constants.GLOBAL_NULL_ID : Long.parseLong(request.getParameter("recorderId"));
-
+		
 		MtMeeting meeting = new MtMeeting();
 		meeting.setMeetingId(meetingId);
 		meeting.setCreateUser(AppContext.currentUserId());
@@ -742,12 +749,12 @@ public class MeetingController extends BaseController {
 		meeting.setEndDate(new Date(Long.parseLong(request.getParameter("endDatetime"))));
 		List<ConfereesConflictVO> list = confereesConflictManager.findConflictVOListForShow(meeting);
 		mav.addObject("list", list);
-		return mav;
+	    return mav;
 	}
-
-	public ModelAndView showReplyCardDetail(HttpServletRequest request, HttpServletResponse response) {
-		ModelAndView mav = new ModelAndView(MeetingPathConstant.meeting_reply_detail);
-		long meetingId = Long.parseLong(ReqUtil.getString(request, "meetingId"));
+    
+    public ModelAndView showReplyCardDetail(HttpServletRequest request, HttpServletResponse response) {
+    	ModelAndView mav = new ModelAndView(MeetingPathConstant.meeting_reply_detail);
+        long meetingId = Long.parseLong(ReqUtil.getString(request, "meetingId"));
 		Map<Long, MtReply> replyMap = replyManager.findAllByMeetingId(meetingId);
 
 		List<MeetingReplyMemberVO> joinList = new ArrayList<MeetingReplyMemberVO>();
@@ -786,10 +793,10 @@ public class MeetingController extends BaseController {
 		mav.addObject("waitJoinList", waitJoinList);
 		mav.addObject("allList", allList);
 
-		return mav;
-	}
-
-	/**
+        return mav;
+    }
+    
+    /**
 	 * 已办会议 栏目 【更多】
 	 * @param request
 	 * @param response
@@ -845,47 +852,47 @@ public class MeetingController extends BaseController {
 	 * @throws Exception
 	 */
 	public ModelAndView listMeetingByReportIframe(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		ModelAndView mav = new ModelAndView("meeting/user/listMeetingByReport");
-		//统计类型（mtReply:会议回执情况,mtRole:会议角色,workStat:日常工作统计,affairStat:事项统计）
-		String statType = request.getParameter("statType");
-		String reportName = request.getParameter("reportName");
-		String time = request.getParameter("time");//0 为统计本日
-		Long reportId = Strings.isNotBlank(request.getParameter("reportId"))? Long.parseLong(request.getParameter("reportId")) : -1L;
-		Long userId = Strings.isNotBlank(request.getParameter("userid"))? Long.parseLong(request.getParameter("userid")) : AppContext.getCurrentUser().getId();
-
-		String begindate = request.getParameter("begindate");
-		String beginDateStr = Strings.isNotBlank(begindate) ? begindate.trim():null;
-		Date beginDate = Strings.isNotBlank(beginDateStr)? Datetimes.getTodayFirstTime(beginDateStr) : null;
-
-		String enddate = request.getParameter("enddate");
+	    ModelAndView mav = new ModelAndView("meeting/user/listMeetingByReport");
+	    //统计类型（mtReply:会议回执情况,mtRole:会议角色,workStat:日常工作统计,affairStat:事项统计）
+        String statType = request.getParameter("statType");
+        String reportName = request.getParameter("reportName");
+        String time = request.getParameter("time");//0 为统计本日
+        Long reportId = Strings.isNotBlank(request.getParameter("reportId"))? Long.parseLong(request.getParameter("reportId")) : -1L;
+	    Long userId = Strings.isNotBlank(request.getParameter("userid"))? Long.parseLong(request.getParameter("userid")) : AppContext.getCurrentUser().getId();
+	    
+	    String begindate = request.getParameter("begindate");
+	    String beginDateStr = Strings.isNotBlank(begindate) ? begindate.trim():null;
+	    Date beginDate = Strings.isNotBlank(beginDateStr)? Datetimes.getTodayFirstTime(beginDateStr) : null;
+	   
+	    String enddate = request.getParameter("enddate");
 		String endDateStr = Strings.isNotBlank(enddate) ?enddate.trim():null;
-		Date endDate = Strings.isNotBlank(endDateStr)? Datetimes.getTodayFirstTime(endDateStr) : null;
-
-
-		String personGroupTab=request.getParameter("personGroupTab");//(1 个人报表,2 团队报表)
+	    Date endDate = Strings.isNotBlank(endDateStr)? Datetimes.getTodayFirstTime(endDateStr) : null;
+	    
+	    
+	    String personGroupTab=request.getParameter("personGroupTab");//(1 个人报表,2 团队报表)
 //	    if("2".equals(personGroupTab)&&!performancereportApi.isAuth4Report(AppContext.currentUserId(), reportId)){
-		if("2".equals(personGroupTab)&&!performanceReportApi.checkReport(reportId, AppContext.currentAccountId(), AppContext.currentUserId())){
-			return null;
-		}
-		if(!"0".equals(time) && ("affairStat".equals(statType) || "mtReply".equals(statType) || "mtRole".equals(statType))){
-			endDate = Strings.isNotBlank(endDateStr)? Datetimes.getTodayLastTime(endDateStr) : null;
-		}
-		//字段类型[mtReply:31(参加) 32(不参加) 33(待定) 11,12(未回执)],[mtRole:create(发起人) emcee(主持人) recorder(记录人) conferee(与会人) ]
-		String fieldType = request.getParameter("fieldType");
-		//日常工作统计 状态字段，其他会议统计该字段为null，已完成:4，待办:3，已发:2，未回执:11 ，已回执:31，已归档:-10
-		Integer status = Strings.isNotBlank(request.getParameter("status"))? Integer.parseInt(request.getParameter("status")) : null;
-		List<MtMeeting> mtList = this.mtMeetingManager.getMeetingListByPerformance(userId, beginDate, endDate, statType, fieldType, status, true);
-		mav.addObject("list", mtList);
-		mav.addObject("userId", userId);
-		mav.addObject("statType", statType);
-		mav.addObject("time", time);
-		mav.addObject("begindate", request.getParameter("begindate"));
-		mav.addObject("enddate", request.getParameter("enddate"));
-		mav.addObject("fieldType", fieldType);
-		mav.addObject("status", status);
-		mav.addObject("reportName", reportName);
-		mav.addObject("currentUser", AppContext.getCurrentUser().getId());
-		return mav;
+	    if("2".equals(personGroupTab)&&!performanceReportApi.checkReport(reportId, AppContext.currentAccountId(), AppContext.currentUserId())){
+	        return null;
+	    }
+	    if(!"0".equals(time) && ("affairStat".equals(statType) || "mtReply".equals(statType) || "mtRole".equals(statType))){
+	        endDate = Strings.isNotBlank(endDateStr)? Datetimes.getTodayLastTime(endDateStr) : null;
+	    }
+	    //字段类型[mtReply:31(参加) 32(不参加) 33(待定) 11,12(未回执)],[mtRole:create(发起人) emcee(主持人) recorder(记录人) conferee(与会人) ]
+	    String fieldType = request.getParameter("fieldType");
+	    //日常工作统计 状态字段，其他会议统计该字段为null，已完成:4，待办:3，已发:2，未回执:11 ，已回执:31，已归档:-10
+	    Integer status = Strings.isNotBlank(request.getParameter("status"))? Integer.parseInt(request.getParameter("status")) : null;
+	    List<MtMeeting> mtList = this.mtMeetingManager.getMeetingListByPerformance(userId, beginDate, endDate, statType, fieldType, status, true);
+	    mav.addObject("list", mtList);
+	    mav.addObject("userId", userId);
+	    mav.addObject("statType", statType);
+	    mav.addObject("time", time);
+	    mav.addObject("begindate", request.getParameter("begindate"));
+	    mav.addObject("enddate", request.getParameter("enddate"));
+	    mav.addObject("fieldType", fieldType);
+	    mav.addObject("status", status);
+	    mav.addObject("reportName", reportName);
+	    mav.addObject("currentUser", AppContext.getCurrentUser().getId());
+	    return mav;
 	}
 
 	/**
@@ -896,50 +903,50 @@ public class MeetingController extends BaseController {
 	 * @throws Exception
 	 */
 	public ModelAndView listMeetingExport(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		//统计类型（mtReply:会议回执情况,mtRole:会议角色,workStat:日常工作统计,affairStat:事项统计）
-		String statType = request.getParameter("statType");
-		String time = request.getParameter("time");//0 为统计本日
-		Long userId = Strings.isNotBlank(request.getParameter("userid"))? Long.parseLong(request.getParameter("userid")) : AppContext.getCurrentUser().getId();
-
-		String begindate = request.getParameter("begindate");
-		String beginDateStr = Strings.isNotBlank(begindate) ? begindate.trim():null;
-		Date beginDate = Strings.isNotBlank(beginDateStr)? Datetimes.getTodayFirstTime(beginDateStr) : null;
-
-		String enddate = request.getParameter("enddate");
+	    //统计类型（mtReply:会议回执情况,mtRole:会议角色,workStat:日常工作统计,affairStat:事项统计）
+        String statType = request.getParameter("statType");
+        String time = request.getParameter("time");//0 为统计本日
+	    Long userId = Strings.isNotBlank(request.getParameter("userid"))? Long.parseLong(request.getParameter("userid")) : AppContext.getCurrentUser().getId();
+	    
+	    String begindate = request.getParameter("begindate");
+	    String beginDateStr = Strings.isNotBlank(begindate) ? begindate.trim():null;
+	    Date beginDate = Strings.isNotBlank(beginDateStr)? Datetimes.getTodayFirstTime(beginDateStr) : null;
+	   
+	    String enddate = request.getParameter("enddate");
 		String endDateStr = Strings.isNotBlank(enddate) ?enddate.trim():null;
-		Date endDate = Strings.isNotBlank(endDateStr)? Datetimes.getTodayFirstTime(endDateStr) : null;
-
-		if(!"0".equals(time) && ("affairStat".equals(statType) || "mtReply".equals(statType) || "mtRole".equals(statType))){
-			endDate = Strings.isNotBlank(endDateStr)? Datetimes.getTodayLastTime(endDateStr) : null;
-		}
-		//字段类型[mtReply:31(参加) 32(不参加) 33(待定) 11,12(未回执)],[mtRole:create(发起人) emcee(主持人) recorder(记录人) conferee(与会人) ]
-		String fieldType = request.getParameter("fieldType");
-		//日常工作统计 状态字段，其他会议统计该字段为null，已完成:4，待办:3，已发:2，未回执:11 ，已回执:31，已归档:-10
-		Integer status = Strings.isNotBlank(request.getParameter("status"))? Integer.parseInt(request.getParameter("status")) : null;
-		List<MtMeeting> mtList = this.mtMeetingManager.getMeetingListByPerformance(userId, beginDate, endDate, statType, fieldType, status, false);
-		DataRecord dr = new DataRecord();
-		String[] colNames = new String[3];
-		colNames[0] = ResourceUtil.getString("mt.list.column.mt_name");
-		colNames[1] = ResourceUtil.getString("mt.mtMeeting.beginDate");
-		colNames[2] = ResourceUtil.getString("mt.mtMeeting.endDate");
-		dr.setColumnName(colNames);
-		dr.setTitle(ResourceUtil.getString("mt.mtMeeting.stat"));
-		dr.setSheetName(ResourceUtil.getString("mt.mtMeeting.stat"));
-		if (mtList != null && mtList.size() > 0) {
-			DataRow[] datarow = new DataRow[mtList.size()];
-			for (int i = 0; i < mtList.size(); i++) {
-				datarow[i] = new DataRow();
-				datarow[i].addDataCell(mtList.get(i).getTitle(),1);
-				datarow[i].addDataCell(Datetimes.format(mtList.get(i).getBeginDate(), Datetimes.datetimeWithoutSecondStyle), 1);
-				datarow[i].addDataCell(Datetimes.format(mtList.get(i).getEndDate(), Datetimes.datetimeWithoutSecondStyle), 1);
-			}
-			dr.addDataRow(datarow);
-		}
-		this.fileToExcelManager.save(response, ResourceUtil.getString("mt.mtMeeting.stat"), new DataRecord[] { dr });
-		return null;
+	    Date endDate = Strings.isNotBlank(endDateStr)? Datetimes.getTodayFirstTime(endDateStr) : null;
+	    
+	    if(!"0".equals(time) && ("affairStat".equals(statType) || "mtReply".equals(statType) || "mtRole".equals(statType))){
+	        endDate = Strings.isNotBlank(endDateStr)? Datetimes.getTodayLastTime(endDateStr) : null;
+	    }
+	    //字段类型[mtReply:31(参加) 32(不参加) 33(待定) 11,12(未回执)],[mtRole:create(发起人) emcee(主持人) recorder(记录人) conferee(与会人) ]
+	    String fieldType = request.getParameter("fieldType");
+	    //日常工作统计 状态字段，其他会议统计该字段为null，已完成:4，待办:3，已发:2，未回执:11 ，已回执:31，已归档:-10
+	    Integer status = Strings.isNotBlank(request.getParameter("status"))? Integer.parseInt(request.getParameter("status")) : null;
+	    List<MtMeeting> mtList = this.mtMeetingManager.getMeetingListByPerformance(userId, beginDate, endDate, statType, fieldType, status, false);
+	    DataRecord dr = new DataRecord();
+        String[] colNames = new String[3];
+        colNames[0] = ResourceUtil.getString("mt.list.column.mt_name");
+        colNames[1] = ResourceUtil.getString("mt.mtMeeting.beginDate");
+        colNames[2] = ResourceUtil.getString("mt.mtMeeting.endDate");
+        dr.setColumnName(colNames);
+        dr.setTitle(ResourceUtil.getString("mt.mtMeeting.stat"));
+        dr.setSheetName(ResourceUtil.getString("mt.mtMeeting.stat"));
+        if (mtList != null && mtList.size() > 0) {
+            DataRow[] datarow = new DataRow[mtList.size()];
+            for (int i = 0; i < mtList.size(); i++) {
+                datarow[i] = new DataRow();
+                datarow[i].addDataCell(mtList.get(i).getTitle(),1);
+                datarow[i].addDataCell(Datetimes.format(mtList.get(i).getBeginDate(), Datetimes.datetimeWithoutSecondStyle), 1);
+                datarow[i].addDataCell(Datetimes.format(mtList.get(i).getEndDate(), Datetimes.datetimeWithoutSecondStyle), 1);
+            }
+            dr.addDataRow(datarow);
+        }
+        this.fileToExcelManager.save(response, ResourceUtil.getString("mt.mtMeeting.stat"), new DataRecord[] { dr });
+        return null;
 	}
-
-	public ModelAndView cancelMeeting(HttpServletRequest request, HttpServletResponse response) throws Exception {
+   
+   public ModelAndView cancelMeeting(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String listType = MeetingUtil.getString(request, "listType", ListTypeEnum.listSendMeeting.name());
 		int type = MeetingListTypeEnum.getTypeName(listType);
 		Boolean isBatch = MeetingUtil.getBoolean(request, "isBatch", false);
@@ -1002,7 +1009,7 @@ public class MeetingController extends BaseController {
 
 		return this.redirectModelAndView("/"+MeetingPathConstant.NAVIGATION_DO+"?method=list&listType=" + listType + Functions.csrfSuffix());
 	}
-
+	
 	/**
 	 * 会议列表操作:归档
 	 * @param request
@@ -1069,19 +1076,19 @@ public class MeetingController extends BaseController {
 		MtMeeting bean = meetingManager.getMeetingById(Long.parseLong(meetingId));
 		List<Long> leaderIdList = new ArrayList<Long>();//存放参会领导ID
 		Map<Long, MtReply> list_allReply = replyManager.findAllByMeetingId(bean.getId());
-		List<MtReplyWithAgentInfo> replyLeaderExList = mtMeetingManager.getMtReplyInfoByLeader(bean, leaderIdList, list_allReply);
+        List<MtReplyWithAgentInfo> replyLeaderExList = mtMeetingManager.getMtReplyInfoByLeader(bean, leaderIdList, list_allReply);
 		List<MtReplyWithAgentInfo> replyExList = mtMeetingManager.getMtReplyInfo(bean, leaderIdList, list_allReply);
 		if(Strings.isNotEmpty(replyLeaderExList) && Strings.isNotEmpty(replyExList)){
-			List<MtReplyWithAgentInfo> leaderInfoList = new ArrayList<MtReplyWithAgentInfo>();
-			for (MtReplyWithAgentInfo mtReplyWithAgentInfo : replyExList) {
-				if(mtReplyWithAgentInfo.getReplyUserId()!=null && leaderIdList.contains(mtReplyWithAgentInfo.getReplyUserId())){
-					leaderInfoList.add(mtReplyWithAgentInfo);
-				}
-			}
-			replyExList.removeAll(leaderInfoList);
-		}
+            List<MtReplyWithAgentInfo> leaderInfoList = new ArrayList<MtReplyWithAgentInfo>();
+            for (MtReplyWithAgentInfo mtReplyWithAgentInfo : replyExList) {
+                if(mtReplyWithAgentInfo.getReplyUserId()!=null && leaderIdList.contains(mtReplyWithAgentInfo.getReplyUserId())){
+                    leaderInfoList.add(mtReplyWithAgentInfo);
+                }
+            }
+            replyExList.removeAll(leaderInfoList);
+        }
 		Object[] feedbackUsers = mtMeetingManager.getMeetingReplyUsers(Long.parseLong(meetingId),null);
-
+		
 		String type = request.getParameter("type");
 		List<Map<String,Object>> members = (List<Map<String, Object>>) feedbackUsers[Integer.parseInt(type)];
 		for(Map<String,Object> userInfo : members){
@@ -1103,9 +1110,9 @@ public class MeetingController extends BaseController {
 		ModelAndView mav = new ModelAndView(MeetingPathConstant.at_dialog);
 		return mav;
 	}
+	
 
-
-	/****************************** 依赖注入 **********************************/
+    /****************************** 依赖注入 **********************************/
 	public void setMeetingNewManager(MeetingNewManager meetingNewManager) {
 		this.meetingNewManager = meetingNewManager;
 	}
@@ -1136,12 +1143,12 @@ public class MeetingController extends BaseController {
 	public void setOrgManager(OrgManager orgManager) {
 		this.orgManager = orgManager;
 	}
-	public void setMobileMessageManager(MobileMessageManager mobileMessageManager) {
+    public void setMobileMessageManager(MobileMessageManager mobileMessageManager) {
 		this.mobileMessageManager = mobileMessageManager;
 	}
-	public void setReplyManager(MtReplyManager replyManager) {
-		this.replyManager = replyManager;
-	}
+    public void setReplyManager(MtReplyManager replyManager) {
+        this.replyManager = replyManager;
+    }
 	public void setAttachmentManager(AttachmentManager attachmentManager) {
 		this.attachmentManager = attachmentManager;
 	}
@@ -1152,8 +1159,8 @@ public class MeetingController extends BaseController {
 		this.meetingValidationManager = meetingValidationManager;
 	}
 	public void setPortalApi(PortalApi portalApi) {
-		this.portalApi = portalApi;
-	}
+        this.portalApi = portalApi;
+    }
 
 	public void setPerformanceReportApi(PerformanceReportApi performanceReportApi) {
 		this.performanceReportApi = performanceReportApi;

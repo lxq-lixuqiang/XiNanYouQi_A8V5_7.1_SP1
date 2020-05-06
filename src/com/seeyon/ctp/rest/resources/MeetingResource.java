@@ -138,8 +138,8 @@ import com.seeyon.ctp.util.BeanUtils;
 import com.seeyon.ctp.util.DBAgent;
 import com.seeyon.ctp.util.DateUtil;
 import com.seeyon.ctp.util.Datetimes;
-import com.seeyon.ctp.util.FlipInfo;
 import com.seeyon.ctp.util.JDBCAgent;
+import com.seeyon.ctp.util.FlipInfo;
 import com.seeyon.ctp.util.ParamUtil;
 import com.seeyon.ctp.util.Strings;
 import com.seeyon.ctp.util.UniqueList;
@@ -2672,52 +2672,52 @@ public class MeetingResource extends BaseResource {
 		}
 		mrRestVO.setMeetingResources(resourcesNames);
 		//客开 会议用品 参会领导 参会人数的相关处理 胡超 2020-4-8 start	
-		JDBCAgent agent = new JDBCAgent();
-		try {
-			agent.execute("select * from meeting_room_app where id = ?",roomAppId);
-			Map map = agent.resultSetToMap();
-			String numbers = (String) map.get("numbers");
-			String leader = (String) map.get("leader");
-			String name = "";
-			if(StringUtils.isNotBlank(leader)) {
-				String[] members = leader.split(",");
-				for (String m : members) {
-					String[] split = m.split("[|]");
-					name += orgManager.getMemberById(Long.valueOf(split[1])).getName()+",";
-				}
-				if(name.length()>1) {
-					name = name.substring(0, name.length()-1);
-				}
-			}
-			JSONObject data = (JSONObject)JSON.toJSON(mrRestVO);
-			data.put("leader", name);
-			data.put("numbers", numbers);
-			if(StringUtils.isBlank(mrRestVO.getMeetingResources())) {
-				agent.execute("select resources from meeting_room_app where  id = ?",roomAppId);
-				String res = String.valueOf(agent.resultSetToMap().get("resources"));
-				if(!StringUtils.isBlank(res)) {
-					agent.execute("select name from public_resource where id in ("+res+")");
-					List<Map<String,Object>> list = (List<Map<String,Object>>)agent.resultSetToList();
-					for (Map o : list) {
-						resourcesNames+=o.get("name")+",";
+				JDBCAgent agent = new JDBCAgent();
+				try {
+					agent.execute("select * from meeting_room_app where id = ?",roomAppId);
+					Map map = agent.resultSetToMap();
+					String numbers = (String) map.get("numbers");
+					String leader = (String) map.get("leader");
+					String name = "";
+					if(StringUtils.isNotBlank(leader)) {
+						String[] members = leader.split(",");
+						for (String m : members) {
+							String[] split = m.split("[|]");
+							name += orgManager.getMemberById(Long.valueOf(split[1])).getName()+",";
+						}
+						if(name.length()>1) {
+							name = name.substring(0, name.length()-1);
+						}
 					}
+					JSONObject data = (JSONObject)JSON.toJSON(mrRestVO);
+					data.put("leader", name);
+					data.put("numbers", numbers);
+					if(StringUtils.isBlank(mrRestVO.getMeetingResources())) {
+						agent.execute("select resources from meeting_room_app where  id = ?",roomAppId);
+						String res = String.valueOf(agent.resultSetToMap().get("resources"));
+						if(!StringUtils.isBlank(res)) {
+							agent.execute("select name from public_resource where id in ("+res+")");
+							List<Map<String,Object>> list = (List<Map<String,Object>>)agent.resultSetToList();
+							for (Map o : list) {
+								resourcesNames+=o.get("name")+",";
+							}
+						}
+						if (StringUtils.isNotBlank(resourcesNames)) {
+							resourcesNames = resourcesNames.substring(0,resourcesNames.length()-1);
+						}
+						data.put("meetingResources", resourcesNames);
+					}
+					return ok(data);
+				}catch(Exception e) {
+					LOGGER.error("展示参会领导，人员数量，会议用品出错",e);
+					JSONObject data = (JSONObject)JSON.toJSON(mrRestVO);
+					data.put("leader", "");
+					data.put("numbers", "");
+					return ok(data);
+				}finally {
+					agent.close();
 				}
-				if (StringUtils.isNotBlank(resourcesNames)) {
-					resourcesNames = resourcesNames.substring(0,resourcesNames.length()-1);
-				}
-				data.put("meetingResources", resourcesNames);
-			}
-			return ok(data);
-		}catch(Exception e) {
-			LOGGER.error("展示参会领导，人员数量，会议用品出错",e);
-			JSONObject data = (JSONObject)JSON.toJSON(mrRestVO);
-			data.put("leader", "");
-			data.put("numbers", "");
-			return ok(data);
-		}finally {
-			agent.close();
-		}
-		//客开 会议用品 参会领导 参会人数的相关处理 胡超 2020-4-8 end
+				//客开 会议用品 参会领导 参会人数的相关处理 胡超 2020-4-8 end
 	}
 	
 	/**
@@ -3345,7 +3345,6 @@ public class MeetingResource extends BaseResource {
 			parameterMap.put("sourceType",ApplicationCategoryEnum.xiaoz.key()+"");
 			parameterMap.put("sourceId",ParamUtil.getString(params,"sourceId"));
 		}else{
-			
 			parameterMap.put("emceeId", ParamUtil.getString(params, "emceeId"));
 			parameterMap.put("recorderId", ParamUtil.getString(params, "recorderId"));
 			String conferees = ParamUtil.getString(params, "conferees");
@@ -3359,7 +3358,6 @@ public class MeetingResource extends BaseResource {
 			parameterMap.put("meetingNature", ParamUtil.getString(params, "meetingNature"));
 			parameterMap.put("sourceType",ParamUtil.getString(params,"sourceType"));
 			parameterMap.put("sourceId",ParamUtil.getString(params,"sourceId"));
-			
 		}
 		
 		newVo.setAction(type);
@@ -4363,5 +4361,5 @@ public class MeetingResource extends BaseResource {
 		}
 		return success(file);
 	}
-
+	
 }

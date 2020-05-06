@@ -1050,7 +1050,7 @@ public class MtMeetingController extends BaseController {
         //主持人的回执
         List<MtReplyWithAgentInfo> emceeExList = MeetingHelper.getReplyWithAgent(meetingMember.getEmceeMembers(),list_allReply);
 
-//    	中国石油天然气股份有限公司西南油气田分公司  【新建会议时主持人和记录人不设置必填】  lixuqiang 2020年4月28日 end
+        //    	中国石油天然气股份有限公司西南油气田分公司  【新建会议时主持人和记录人不设置必填】  lixuqiang 2020年4月28日 end
         try{
 	        if(emceeExList.size()==0){
 	        	MtReplyWithAgentInfo mtReplyWithAgentInfo = new MtReplyWithAgentInfo();
@@ -1063,7 +1063,7 @@ public class MtMeetingController extends BaseController {
 	    } catch (Exception e) {
 			log.error("新建会议时主持人和记录人不设置必填异常！",e);
 		}
-//	中国石油天然气股份有限公司西南油气田分公司  【新建会议时主持人和记录人不设置必填】  lixuqiang 2020年4月28日 end
+        //	中国石油天然气股份有限公司西南油气田分公司  【新建会议时主持人和记录人不设置必填】  lixuqiang 2020年4月28日 end
         
         //记录人的回执
         List<MtReplyWithAgentInfo> recorderExList = MeetingHelper.getReplyWithAgent(meetingMember.getRecorderMembers(),list_allReply);

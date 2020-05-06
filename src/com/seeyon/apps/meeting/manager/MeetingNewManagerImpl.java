@@ -520,7 +520,7 @@ public class MeetingNewManagerImpl implements MeetingNewManager {
 				this.transFinishMeeting(newVo);
 			}
 		}
-	
+		
 		return true;
 	}
 

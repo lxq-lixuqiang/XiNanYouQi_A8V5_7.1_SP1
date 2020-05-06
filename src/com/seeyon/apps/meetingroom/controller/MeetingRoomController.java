@@ -90,7 +90,7 @@ import com.seeyon.v3x.mobile.message.manager.MobileMessageManager;
  *
  */
 public class MeetingRoomController extends BaseController {
-
+	
 	
 	private static final Log LOGGER = LogFactory.getLog(MeetingRoomController.class);
 
@@ -98,7 +98,7 @@ public class MeetingRoomController extends BaseController {
 	private MeetingValidationManager meetingValidationManager;
 	private MeetingManager meetingManager;
 	private OrgManager orgManager;
-
+	
 	private AttachmentManager attachmentManager;
 	private AffairManager affairManager;
 	private MobileMessageManager mobileMessageManager;
@@ -498,7 +498,7 @@ public class MeetingRoomController extends BaseController {
 				LOCK.unlock();
 			}
 		}
-		
+
 		//客开 胡超
 		JDBCAgent agent = new JDBCAgent();
 		List list = new ArrayList();
@@ -819,62 +819,62 @@ public class MeetingRoomController extends BaseController {
 			}
 		}
 		//客开 胡超 展示参会领导和参会人数  2020-4-7 start
-		JDBCAgent agent = new JDBCAgent();
-		try {
-			agent.execute("select * from meeting_room_app where id = ?", roomAppId);
-			Map map = agent.resultSetToMap();
-			String numbers = (String) map.get("numbers");
-			String leader = (String) map.get("leader");
-			String name = "";
-			if (StringUtils.isNotBlank(leader)) {
-				String[] members = leader.split(",");
-				for (String m : members) {
-					String[] split = m.split("[|]");
-					name += orgManager.getMemberById(Long.valueOf(split[1])).getName() + ",";
-				}
-				if (name.length() > 1) {
-					name = name.substring(0, name.length() - 1);
-				}
-			}
-			mav.addObject("numbers", numbers);
-			mav.addObject("leaderNames", name);
-			V3xOrgMember member = orgManager.getMemberById(appVo.getMeetingRoomApp().getPerId());
-			mav.addObject("phone", member.getProperty("telnumber"));
-			mav.addObject("count", confereeCount);//参会人数
-			mav.addObject("proxy", "1".equals(proxy));
-			mav.addObject("bean", appVo);
-			mav.addObject("affairId", affairId);
-			mav.addObject("isReadOnly", isReadOnly);
-			// 会议用品
-			Long meetingId = null;
-			if (roomApp != null) {
-				meetingId = roomApp.getMeetingId();
-			}
-			String resourcesNames = new String();
-			if (null != meetingId) {
-				resourcesNames = meetingResourcesManager.getResourceNamesByMeetingId(meetingId);
-			}
-			if (StringUtils.isEmpty(resourcesNames)) {
-				agent.execute("select resources from meeting_room_app where  id = ?",
-						appVo.getMeetingRoomApp().getId());
-				String res = String.valueOf(agent.resultSetToMap().get("resources"));
-				if (StringUtils.isNotBlank(res)) {
-					agent.execute("select name from public_resource where id in (" + res + ")");
-					List<Map<String, Object>> list = (List<Map<String, Object>>) agent.resultSetToList();
-					for (Map o : list) {
-						resourcesNames += o.get("name") + ",";
+				JDBCAgent agent = new JDBCAgent();
+				try {
+					agent.execute("select * from meeting_room_app where id = ?", roomAppId);
+					Map map = agent.resultSetToMap();
+					String numbers = (String) map.get("numbers");
+					String leader = (String) map.get("leader");
+					String name = "";
+					if (StringUtils.isNotBlank(leader)) {
+						String[] members = leader.split(",");
+						for (String m : members) {
+							String[] split = m.split("[|]");
+							name += orgManager.getMemberById(Long.valueOf(split[1])).getName() + ",";
+						}
+						if (name.length() > 1) {
+							name = name.substring(0, name.length() - 1);
+						}
 					}
-					if (StringUtils.isNotBlank(resourcesNames)) {
-						resourcesNames = resourcesNames.substring(0, resourcesNames.length() - 1);
+					mav.addObject("numbers", numbers);
+					mav.addObject("leaderNames", name);
+					V3xOrgMember member = orgManager.getMemberById(appVo.getMeetingRoomApp().getPerId());
+					mav.addObject("phone", member.getProperty("telnumber"));
+					mav.addObject("count", confereeCount);//参会人数
+					mav.addObject("proxy", "1".equals(proxy));
+					mav.addObject("bean", appVo);
+					mav.addObject("affairId", affairId);
+					mav.addObject("isReadOnly", isReadOnly);
+					// 会议用品
+					Long meetingId = null;
+					if (roomApp != null) {
+						meetingId = roomApp.getMeetingId();
 					}
+					String resourcesNames = new String();
+					if (null != meetingId) {
+						resourcesNames = meetingResourcesManager.getResourceNamesByMeetingId(meetingId);
+					}
+					if (StringUtils.isEmpty(resourcesNames)) {
+						agent.execute("select resources from meeting_room_app where  id = ?",
+								appVo.getMeetingRoomApp().getId());
+						String res = String.valueOf(agent.resultSetToMap().get("resources"));
+						if (StringUtils.isNotBlank(res)) {
+							agent.execute("select name from public_resource where id in (" + res + ")");
+							List<Map<String, Object>> list = (List<Map<String, Object>>) agent.resultSetToList();
+							for (Map o : list) {
+								resourcesNames += o.get("name") + ",";
+							}
+							if (StringUtils.isNotBlank(resourcesNames)) {
+								resourcesNames = resourcesNames.substring(0, resourcesNames.length() - 1);
+							}
+						}
+					}
+					mav.addObject("resourcesName", resourcesNames);
+				} catch (Exception e) {
+					logger.error("展示参会领导和参会人数失败",e);
+				}finally {
+					agent.close();
 				}
-			}
-			mav.addObject("resourcesName", resourcesNames);
-		} catch (Exception e) {
-			logger.error("展示参会领导和参会人数失败",e);
-		}finally {
-			agent.close();
-		}
 		//客开 胡超 展示参会领导和参会人数  2020-4-7 end
 		// 谁审核的 原逻辑取的是perid,现在的逻辑是在perm表中添加审核人字段，如果审核人为空，取会议室的全部管理员
 		if (appVo.getMeetingRoomApp().getAuditingId() != null) {
