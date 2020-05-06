@@ -115,7 +115,7 @@ public class MeetingController extends BaseController {
 	public void setMeetingSettingManager(MeetingSettingManager meetingSettingManager) {
 		this.meetingSettingManager = meetingSettingManager;
 	}
-/****************************** 会议数据加载dfd **********************************/
+/****************************** 会议数据加载 **********************************/
 	
 	/**
 	 * 创建会议
