@@ -1,5 +1,4 @@
-/bin/
 *.classpath
 *.prefs
 *.class
-/bin/
+*.project
