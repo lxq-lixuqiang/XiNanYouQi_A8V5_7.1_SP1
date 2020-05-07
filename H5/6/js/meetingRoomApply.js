@@ -72,27 +72,27 @@ cmp.ready(function () {
 //	中国石油天然气股份有限公司西南油气田分公司  【增加申请人，申请部门，联系方式，参会领导预计人数，会议用品字段】  lixuqiang 2020年5月7日 start
 	var cache = cmp.storage.get(cacheKey_mcStorageDatas, true);
 	if(cache== null){
-		$s.Meeting.create({}, {}, {
-			success : function(result) {
-				var userInfo = new Array();
-				userInfo.push({
-					id : result.userId,
-					name : result.userName,
-					type : "Member"
-				});
-				cmp.storage.save("m3_v5_meeting_selectOrg_bachCache_applicant", cmp.toJSON(userInfo), true);
-				cmp.storage.save("m3_v5_meeting_selectOrg_bachCache_except_applicant", cmp.toJSON(""), true);
-				_$("#applicant").value = result.userName;
-				_$("#applicant_value").value = result.userId;
-				_$("#applicantDepartment").value = result.userDepartment;
-				_$("#appPerName").value = result.userPhone;
-				loadMeetingTools();
-			},
-	        error : function(result){
-	        	//处理异常
-	        	MeetingUtils.dealError(result);
-	        }
-		});
+//		$s.Meeting.create({}, {}, {
+//			success : function(result) {
+//				var userInfo = new Array();
+//				userInfo.push({
+//					id : result.userId,
+//					name : result.userName,
+//					type : "Member"
+//				});
+//				cmp.storage.save("m3_v5_meeting_selectOrg_bachCache_applicant", cmp.toJSON(userInfo), true);
+//				cmp.storage.save("m3_v5_meeting_selectOrg_bachCache_except_applicant", cmp.toJSON(""), true);
+//				_$("#applicant").value = result.userName;
+//				_$("#applicant_value").value = result.userId;
+//				_$("#applicantDepartment").value = result.userDepartment;
+//				_$("#appPerName").value = result.userPhone;
+//				loadMeetingTools();
+//			},
+//	        error : function(result){
+//	        	//处理异常
+//	        	MeetingUtils.dealError(result);
+//	        }
+//		});
 	}
 	
 	//设置缓存数据
@@ -295,11 +295,31 @@ function initEvent(){
 	
 	_$("#applicant").addEventListener("tap", function(){
 		MeetingUtils.selectOrg("applicant", setApplicantValue, {
-			maxSize : 1,
-			minSize : 1,
-			type : 2
+			showBusinessOrganization:true,
+			selectType:"member",
+			type:2,
 		})
 	});
+	_$("#leader").addEventListener("tap", function(){
+		MeetingUtils.selectOrg("leader", setLeaderValue, {
+			showBusinessOrganization:true,
+			selectType:"member",
+			type:2,
+			maxSize : 1,
+			minSize : 1,
+		})
+	});
+}
+function setLeaderValue(result){
+	var tempHtml = "";
+	for(var i = 0 ; i < result.length ; i++){
+		tempHtml += result[i].type + "|" + result[i].id + ",";
+	}
+	tempHtml = tempHtml.substr(0, tempHtml.length -1);
+	_$("#leader_value").value = tempHtml;
+	
+	//处理互斥情况
+	dealCache();
 }
 //设置缓存中的数据
 function setCacheDatas(){

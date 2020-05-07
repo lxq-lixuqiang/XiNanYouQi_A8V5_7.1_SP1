@@ -169,6 +169,8 @@ function initEvent(){
 			showBusinessOrganization:true,
 			selectType:"member",
 			type:2,
+			maxSize : 1,
+			minSize : 1,
 		})
 	});
 	//客开 胡超 end
