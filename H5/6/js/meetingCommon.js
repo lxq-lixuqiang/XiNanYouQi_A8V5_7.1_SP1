@@ -259,6 +259,9 @@ var MeetingUtils = {
         _$("#content") && _$("#content").blur();
 
     	opts = MeetingUtils.extend(opts, _opts);
+    	console.info(opts)
+    	console.info(key)
+    	console.info(cmp)
     	cmp.selectOrg("selectOrg_" + key, opts);
     },
     clearSelectOrgCache : function(){

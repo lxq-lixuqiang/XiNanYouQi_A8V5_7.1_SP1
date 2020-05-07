@@ -1,4 +1,15 @@
 var urlParam;
+var cacheKey_mcStorageDatas = "m3_v5_meeting_meetingCreate_datas"; //缓存当前已经录入的数据，离开页面返回后回现
+var cacheKey_mcBackDatas = "m3_v5_meeting_meetingCreate_backDatas"; //其他页面返回时，需要带回的数据
+
+var cacheKey_mrQueryParams = "m3_v5_meeting_meetingRoomList_queryParams"; //会议室申请列表所需查询条件
+var meeting_list_type_cache_key= "m3_v5_meeting_list_type"; //首页页面缓存值，需要与首页相同
+var cacheKey_mrAppParams = "m3_v5_meeting_meetingModify_meetingRoomAppQueryParams"; //old会议室申请信息（判断会议室申请是否改变）
+var pageX = {};
+pageX.cache = {};
+pageX.postData = {};
+pageX.fileComponent = null;
+pageX.cache.datas = {};
 
 /**
  * 接收参数描述
@@ -17,7 +28,40 @@ var urlParam;
 //会议室界面tab页签缓存key
 var mrlistKey = "m3_v5_meeting_room_list_type";
 
+//注册缓加载
+function _registLazy(){
+    
+      LazyUtil.addLazyStack({
+          "code" : "lazy_cmp",
+          "css" : [
+                   _cmpPath + "/css/cmp-picker.css" + $verstion,
+                   _cmpPath + "/css/cmp-accDoc.css" + $verstion,
+                   _cmpPath + "/css/cmp-att.css" + $verstion,
+                   _cmpPath + "/css/cmp-search.css" + $verstion,
+                   _cmpPath + "/css/cmp-selectOrg.css" + $verstion,
+				   _cmpPath + "/css/cmp-listView.css" + $verstion,
+				   _cmpPath + "/css/cmp-dateCalender.css" + $verstion
+                   ],
+          "js" : [
+                  _cmpPath + "/js/cmp-picker.js" + $verstion,
+				  _cmpPath + "/js/cmp-popPicker.js" + $verstion,
+				  _cmpPath + "/js/cmp-dateCalender.js" + $verstion,
+				  _cmpPath + "/js/cmp-dtPicker-calender.js" + $verstion,
+                  _cmpPath + "/js/cmp-dtPicker.js" + $verstion,
+                  _cmpPath + "/js/cmp-accDoc.js" + $verstion,
+                  _cmpPath + "/js/cmp-att.js" + $verstion,
+                  _cmpPath + "/js/cmp-search.js" + $verstion,
+                  _cmpPath + "/js/cmp-selectOrg.js" + $verstion,
+                  _cmpPath + "/js/cmp-emoji.js" + $verstion,
+                  _cmpPath + "/js/cmp-listView.js" + $verstion,
+                  _common_v5_path + "/widget/SeeyonAttachment.s3js" + $verstion
+                  ]
+      });
+  }
+
 cmp.ready(function () {
+	//注册懒加载
+    _registLazy();
 	urlParam = cmp.href.getParam();
 	initPageBack();
 	cmp.i18n.init(_meetingPath+"/i18n/", "MeetingResources", function() {
@@ -25,7 +69,198 @@ cmp.ready(function () {
 		initPageData();
 		initEvent();
 	},meetingBuildVersion);
+//	中国石油天然气股份有限公司西南油气田分公司  【增加申请人，申请部门，联系方式，参会领导预计人数，会议用品字段】  lixuqiang 2020年5月7日 start
+	var cache = cmp.storage.get(cacheKey_mcStorageDatas, true);
+	if(cache== null){
+		$s.Meeting.create({}, {}, {
+			success : function(result) {
+				var userInfo = new Array();
+				userInfo.push({
+					id : result.userId,
+					name : result.userName,
+					type : "Member"
+				});
+				cmp.storage.save("m3_v5_meeting_selectOrg_bachCache_applicant", cmp.toJSON(userInfo), true);
+				cmp.storage.save("m3_v5_meeting_selectOrg_bachCache_except_applicant", cmp.toJSON(""), true);
+				_$("#applicant").value = result.userName;
+				_$("#applicant_value").value = result.userId;
+				_$("#applicantDepartment").value = result.userDepartment;
+				_$("#appPerName").value = result.userPhone;
+				loadMeetingTools();
+			},
+	        error : function(result){
+	        	//处理异常
+	        	MeetingUtils.dealError(result);
+	        }
+		});
+	}
+	
+	//设置缓存数据
+	setCacheDatas();
 });
+
+//返回页面时获取缓存数据
+function getCache(){
+	//获取跳转页面前的缓存
+	var cache = cmp.storage.get(cacheKey_mcStorageDatas, true);
+	if (cache!=null) {
+		pageX.cache = cmp.parseJSON(cache);
+	}
+	cmp.storage["delete"](cacheKey_mcStorageDatas, true);
+	
+	//获取其他页面返回的数据
+	var backDatasCache = cmp.storage.get(cacheKey_mcBackDatas, true);
+	if(backDatasCache){
+		var temp_backDatasCache = cmp.parseJSON(backDatasCache);
+		//视频会议室
+		if (temp_backDatasCache.videoRoomId) {
+			//视频会议室
+			pageX.cache.datas.videoRoomId = temp_backDatasCache.videoRoomId;
+			pageX.cache.datas.videoRoomName = temp_backDatasCache.videoRoomName;
+			//视频会议室相关参数
+			if(temp_backDatasCache.videoRoomStartDate){
+				//解析日期与时间
+				var startDate = temp_backDatasCache.videoRoomStartDate;
+				var p_startDate = startDate.substr(0, 10);
+				var p_startDateTime = startDate.substr(11, 5);
+				
+				pageX.cache.datas.videoRoomStartDate = startDate;
+				pageX.cache.datas.startDate = p_startDate;
+				pageX.cache.datas.startDatetimeLabel = p_startDateTime;
+			}
+			if(temp_backDatasCache.videoRoomEndDate){
+				//解析日期与时间
+				var endDate = temp_backDatasCache.videoRoomEndDate;
+				var p_endDate = endDate.substr(0, 10);
+				var p_endDateTime = endDate.substr(11, 5);
+				
+				pageX.cache.datas.videoRoomEndDate = endDate;
+				pageX.cache.datas.endDate = p_endDate;
+				pageX.cache.datas.endDatetimeLabel = p_endDateTime;
+			}
+			if (temp_backDatasCache.meetingNature_value) {//会议分类设置为:视频会议
+				pageX.cache.datas.meetingNature_value = temp_backDatasCache.meetingNature_value;
+			}
+		} else if (temp_backDatasCache.roomName) {//普通会议室
+			pageX.cache.datas.meetingPlace = temp_backDatasCache.roomName;
+			pageX.cache.datas.meetingPlace_value = temp_backDatasCache.roomId;
+			pageX.cache.datas.meetingPlace_value1 = temp_backDatasCache.roomappId;
+			pageX.meetingPlace_type = temp_backDatasCache.meetingPlace_type;
+			//选择会议室类型后，第二次选择的时候直接返回时取值
+			pageX.cache.meetingPlace_type = pageX.meetingPlace_type;
+			if(temp_backDatasCache.startDate){
+				//解析日期与时间
+				var startDate = temp_backDatasCache.startDate;
+				var p_startDate = startDate.substr(0, 10);
+				var p_startDateTime = startDate.substr(11, 5);
+				
+				pageX.cache.datas.roomAppBeginDate = startDate;
+				pageX.cache.datas.startDate = p_startDate;
+				pageX.cache.datas.startDatetimeLabel = p_startDateTime;
+			}
+			if(temp_backDatasCache.endDate){
+				//解析日期与时间
+				var endDate = temp_backDatasCache.endDate;
+				var p_endDate = endDate.substr(0, 10);
+				var p_endDateTime = endDate.substr(11, 5);
+				
+				pageX.cache.datas.roomAppEndDate = endDate;
+				pageX.cache.datas.endDate = p_endDate;
+				pageX.cache.datas.endDatetimeLabel = p_endDateTime;
+			}
+		}
+		if (typeof(pageX.meetingPlace_type) == "undefined"){
+		    //上一次选择的有数据的时候，应该为上一个选择的数据
+		    pageX.meetingPlace_type = pageX.cache.meetingPlace_type ? pageX.cache.meetingPlace_type : "mtRoom";
+		}
+		cmp.storage["delete"](cacheKey_mcBackDatas, true);
+	} else if (pageX.meetingPlace_type != "mtPlace"){
+	    //上一次选择的有数据的时候，应该为上一个选择的数据
+	    pageX.meetingPlace_type = pageX.cache.meetingPlace_type ? pageX.cache.meetingPlace_type : "mtRoom";
+	}
+	
+	//是否展开
+	if(MeetingUtils.isNull(pageX.cache.showMore)){
+		pageX.cache.showMore = false;
+	}else{
+		pageX.cache.showMore = pageX.cache.showMore ? false : true;
+	}
+}
+
+function loadMeetingTools(){
+	cmp.ajax({
+        url :cmp.seeyonbasepath + '/rest/meetingTools/getAll',
+        type: "GET",
+        headers: {
+            'Accept' : 'application/json; charset=utf-8',
+            'Accept-Language' : cmp.language,
+            'Content-Type': 'application/json; charset=utf-8',
+            'token' : cmp.token,
+            'option.n_a_s' : '1'
+        },
+        success: function(result){
+            if(result) {
+            	var tempHtml = "";
+            	for(var i =0;i<result.length;i++){
+            		tempHtml += "<input type='checkbox' id=checked" + i + " name='tools' value="+result[i].id+" /> "+ result[i].name +"<br/>";
+            	}
+            	document.getElementById("toolsText").innerHTML = tempHtml;
+            	console.log(document.getElementById("toolsText"));
+            } else {
+                alert("请求出错！");
+            }
+        },
+        error: function(error){
+            if(!cmp.errorHandler(error)){//错误处理先由cmp平台处理，如果平台处理不了，再使用自己的处理规则
+                alert("请求发生错误了");
+            }
+        }
+    });
+
+}
+function showHidden(){
+	if(document.getElementById("toolsLi").style.display == 'inline'){
+		document.getElementById("toolsLi").style.display = 'none';
+	}else{
+		document.getElementById("toolsLi").style.display = 'inline';
+	}
+}
+//设置申请人
+function setApplicantValue(result){
+	var  returnId= result[0].id;
+	_$("#applicant_value").value = returnId;
+	//设置发起部门、联系方式
+	cmp.ajax({
+        url :cmp.seeyonbasepath + '/rest/meeting/getUserDepartment?id='+returnId,
+        type: "GET",
+        headers: {
+            'Accept' : 'application/json; charset=utf-8',
+            'Accept-Language' : cmp.language,
+            'Content-Type': 'application/json; charset=utf-8',
+            'token' : cmp.token,
+            'option.n_a_s' : '1'
+        },
+        success: function(result){
+        	_$("#applicantDepartment").value = result.userDepartment;
+			_$("#appPerName").value = result.userPhone;
+        },
+        error: function(error){
+            if(!cmp.errorHandler(error)){//错误处理先由cmp平台处理，如果平台处理不了，再使用自己的处理规则
+                alert("请求发生错误了");
+            }
+        }
+    });
+	
+	//处理互斥情况
+	dealCache();
+}
+function dealCache(){
+	var cache_applicant = cmp.storage.get("m3_v5_meeting_selectOrg_bachCache_applicant", true);
+
+	cmp.storage.save("m3_v5_meeting_selectOrg_bachCache_except_applicant", cmp.toJSON(""), true);
+}
+//中国石油天然气股份有限公司西南油气田分公司  【增加申请人，申请部门，联系方式，参会领导预计人数，会议用品字段】  lixuqiang 2020年5月7日 end
+
 
 function initPageBack() {
 	//cmp控制返回
@@ -49,6 +284,7 @@ function initPageData(){
 	}else{
 		setAttValue("description", "placeholder", cmp.i18n("meeting.meetingRoomApply.inputDescription"));
 	}
+
 }
 
 function initEvent(){
@@ -56,6 +292,28 @@ function initEvent(){
 	
 	cmp.event.click(document.querySelector("#showStartDate"), cmpData_start);
 	cmp.event.click(document.querySelector("#showEndDate"), cmpData_end);
+	
+	_$("#applicant").addEventListener("tap", function(){
+		MeetingUtils.selectOrg("applicant", setApplicantValue, {
+			maxSize : 1,
+			minSize : 1,
+			type : 2
+		})
+	});
+}
+//设置缓存中的数据
+function setCacheDatas(){
+	getCache();
+	//还原所有输入数据
+	for(var key in pageX.cache.datas){
+		//客开 胡超
+		if(_$("#" + key)){
+			_$("#" + key).value = pageX.cache.datas[key];
+		}
+	}
+	
+	var cacheKey = new Array("applicant");
+	cmp.storage.save("m3_v5_meeting_selectOrg_bachCacheKey", cmp.toJSON(cacheKey), true);
 }
 
 function cmpData_start(){
@@ -194,6 +452,7 @@ function submitForm() {
 	
 	$s.Meeting.execApp({}, paramData, {
 		success : function(result) {
+			//lixuqiang 
 			if(result["errorMsg"] && result["errorMsg"]!="") {
 				createAlter(result["errorMsg"], null);
         		isSubmit = false;

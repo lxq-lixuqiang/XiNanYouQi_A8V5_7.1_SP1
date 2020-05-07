@@ -95,6 +95,7 @@ function initPageData(){
  * 加载会议室基本信息
  */
 function initRoom(){
+	 
 	$s.Meeting.meetingRoomState({},{
 		meetingRoomId : urlParam.roomId,
 		startDate : getFirstTimeOfDay(pageX.cache.datas.selectDate),
@@ -518,7 +519,6 @@ function createDefaultHtml(){
 		}
 		tempHtml+='<div class="todayTimeDiv" style="top:'+(today.getHours()*72+topNum+48)+'px;"><span>'+hours+':'+minutes+'</span><span></span><span></span></div>';
 	}
-
 	return listHeader() + tempHtml + listFooter();
 }
 

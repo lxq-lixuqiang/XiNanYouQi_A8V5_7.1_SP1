@@ -3074,21 +3074,9 @@ public class MeetingResource extends BaseResource {
 		return ok(r_list);
 	}
 	
-	/**
-	 * 获取会议室申请信息
-	 * @param params
-	 * 	<pre>
-	 *        类型    名称             必填     备注
-	 *        String   roomId     Y     会议室ID
-	 *        String   qDate             Y     查询日期 (yyyy-MM-dd)
-	 *  </pre>
-	 * @return List<com.seeyon.apps.meetingroom.po.MeetingRoomApp>
-	 * @throws BusinessException
-	 * @throws ParseException
-	 */
 	@POST
-	@Path("getMeetingRoomApps")
-	public Response getMeetingRoomApps(Map<String, Object> params) throws BusinessException, ParseException{
+	@Path("getMeetingUserInfo")
+	public Response getMeetingUserInfo(Map<String, Object> params) throws BusinessException, ParseException{
 		String roomId = ParamUtil.getString(params, "roomId");
 		String qDate = ParamUtil.getString(params, "qDate");
 		
@@ -3107,6 +3095,7 @@ public class MeetingResource extends BaseResource {
 		
 		return ok(meetingRoomOccupancys);
 	}
+	
 	
 	/**
 	 * 复制申请信息至占用情况VO

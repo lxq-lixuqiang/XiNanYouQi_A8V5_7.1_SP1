@@ -11,6 +11,14 @@
 <link href="http://meeting.v5.cmp/v1.0.0/css/cmp-meeting.css" rel="stylesheet" type="text/css" />
 <link href="http://meeting.v5.cmp/v1.0.0/css/m3_meeting.css" rel="stylesheet" type="text/css" />
 	<link rel="stylesheet" href="http://cmp/v/css/cmp-picker.css">
+	
+    <link rel="stylesheet" href="http://cmp/v/css/cmp-listView.css">
+	<link rel="stylesheet" href="http://cmp/v/css/cmp-picker.css">
+	<link rel="stylesheet" href="http://cmp/v/css/cmp-accDoc.css">
+	<link rel="stylesheet" href="http://cmp/v/css/cmp-att.css">
+	<link rel="stylesheet" href="http://cmp/v/css/cmp-search.css">
+	<link rel="stylesheet" href="http://cmp/v/css/cmp-selectOrg.css">
+	
 	<title></title>
 	<style type="text/css">
 
@@ -128,58 +136,70 @@
 				</ul>
 			</form>
 		</div>
+
+		<!-- 中国石油天然气股份有限公司西南油气田分公司  【增加申请人，申请部门，联系方式，参会领导预计人数，会议用品字段】  lixuqiang 2020年5月7日 start -->
 		<div class="apply_wrap">
-			<div><i18n key="meeting.meetingRoomApply.description"></div>
-			<textarea id="description" maxlength="80" rows="1" style="height:130px; border:none;padding: 0"></textarea>
+			<div style="width:border:1px solid red;width:50px;"><i18n key="meeting.meetingRoomApply.description"></div>
+			<textarea id="description" maxlength="80" rows="1" style="height:80px; border:none;padding: 0"></textarea>
 		</div>
 		<!-- *申请人，*申请部门，*联系方式，参会领导，预计人数，会议用品 -->
-		<ul class="cmp-table-view">
+		<ul class="cmp-table-view new_header_content" style="margin-top: 0">
 			<!-- *申请人 -->
-			<li id="roomSentPer" class="cmp-table-view-cell">
-				<div class="list_item">
-					<div class="left_name"><i18n key="meeting.meetingRoomCommon.applicant"></i18n></div>
-					<div id="appPerName" class="right_text" style="color:#297FFB;word-break:break-all"></div>
-				</div>
+			<li class="cmp-table-view-cell item-list-no-border" id="applicantCell" style="padding-left: 14px;">
+				<span class="title"><span class="start-left-label"><span style="color:red">*</span><i18n key="meeting.meetingRoomCommon.applicant"></i18n></span></span>
+				<span id="applicantAlways" class="right_arrow see-icon-v5-common-arrow-right"></span>
+	            <span class="headline">
+	            	<input id="applicant" type="text" readonly="readonly"/>
+	               	<input id="applicant_value" style="display:none"/>
+	           </span>
 			</li>
 			<!-- *申请部门 -->
-			<li id="roomSentPer" class="cmp-table-view-cell">
-				<div class="list_item">
-					<div class="left_name"><i18n key="meeting.meetingRoomCommon.department"></i18n></div>
-					<div id="appPerName" class="right_text" style="color:#297FFB;word-break:break-all"></div>
-				</div>
+			<li class="cmp-table-view-cell " id="applicantDepartmentCell" style="padding-left: 14px;">
+				<span class="title"><span id="applicantDepartmentHtml" class="start-left-label"><span style="color:red">*</span><i18n key="meeting.meetingRoomCommon.department"></i18n></span></span>
+	            <span class="headline">
+	               	<input id="applicantDepartment" type="text" readonly="readonly"/>
+	            </span>
 			</li>
 			<!-- *联系方式 -->
-			<li id="roomSentPer" class="cmp-table-view-cell">
-				<div class="list_item">
-					<div class="left_name"><i18n key="meeting.meetingRoomCommon.contact"></i18n></div>
-					<div id="appPerName" class="right_text" style="color:#297FFB;word-break:break-all"></div>
-				</div>
+			<li class="cmp-table-view-cell " id="contactCell" style="padding-left: 14px;">
+				<span class="title"><span class="start-left-label"><span style="color:red">*</span><i18n key="meeting.meetingRoomCommon.contact"></i18n></span></span>
+	            <span class="headline">
+	            	<input id="appPerName" type="text" readonly="readonly"/>
+	            </span>
 			</li>
 			<!-- 参会领导 -->
-			<li id="leader" class="cmp-table-view-cell">
-				<div class="list_item">
-					<div class="left_name"><i18n key="meeting.meetingRoomCommon.leader"></i18n></div>
-					<div id="leaderName" class="right_text" style="color:#297FFB;word-break:break-all"></div>
-				</div>
+			<li class="cmp-table-view-cell" id="leaderNameCell" style="padding-left: 14px;">
+				<span class="title">
+					<span class="start-left-label">
+						<i18n key="meeting.meetingRoomCommon.leader"></i18n>
+					</span>
+				</span> 
+				<span id="leaderNameAlways" class="right_arrow see-icon-v5-common-arrow-right"></span>
+				<span class="headline"> <input id="leaderName" type="text" readonly="readonly" />
+					<input id="leaderName_value" style="display: none" />
+				</span>
 			</li>
 			<!-- 预计人数-->
-			<li id="numbers" class="cmp-table-view-cell">
-				<div class="list_item">
-					<div class="left_name"><i18n key="meeting.meetingRoomCommon.estimatedNumber"></i18n></div>
-					<div id="number" class="right_text" style="color:#297FFB;word-break:break-all"></div>
-				</div>
+			<li class="cmp-table-view-cell " id="numberCell" style="padding-left: 14px;">
+				<span class="title"><span class="start-left-label"><span style="color:red">*</span><i18n key="meeting.meetingRoomCommon.estimatedNumber"></i18n></span></span>
+	            <span class="headline">
+	            	<input id="number" type="number" />
+	            </span>
 			</li>
+			
 			<!-- 会议用品 -->
-			<li id="meetResource" class="cmp-table-view-cell"  style="display: none;">
-				<table class="table_wrap" style="width:100%;">
-					<tr>
-						<th class="left_name"><i18n key="meeting.meetingRoomCommon.resources"></i18n></th>
-						<th id="meetResources" class="right_text" style="word-break:break-all"></th>
-					</tr>
-				</table>
-			</li>
+			<li class="cmp-table-view-cell" id="meetingTools" style="padding-left: 14px;"><span class="title"><span
+							class="start-left-label"><i18n key="meeting.meetingRoomCommon.resources"></i18n></i18n></span></span> <!-- <span id="meetingToolsAlways"  class="right_arrow see-icon-v5-common-arrow-right"></span> -->
+						<span class="headline"> <input id="meetingTool" type="text"
+							onclick="showHidden()" readonly="readonly" placeholder="请选择会议用品" />
+							<input id="meetingTool_value" style="display: none" />
+					</span></li>
+		<li id="toolsLi" style="display: none;">
+			<div id="toolsText" style="margin: 5px 15px 10px" class="cmp-table-view-cell"></div>
+		</li>
 		</ul>
 	</div>
+		<!-- 中国石油天然气股份有限公司西南油气田分公司  【增加申请人，申请部门，联系方式，参会领导预计人数，会议用品字段】  lixuqiang 2020年5月7日 end -->
 	<footer class="cmp-bar cmp-bar-footer single_btn back_white">
 	    <div class="wh100 border_t relative">
 			<div class="btn_wrap">
@@ -192,6 +212,7 @@
 <script src="http://cmp/v/js/cordova/cordova-plugins.js"></script>  
 	<script src="http://cmp/v/js/cmp-i18n.js"></script>
 	<script  src="http://cmp/v/js/cmp.js" type="text/javascript"></script>
+	<script  src="http://cmp/v/js/cmp.js" type="text/javascript"></script>
 <script  src="http://meeting.v5.cmp/v1.0.0/js/meeting-jssdk.js" type="text/javascript"></script>
 <script  src="http://commons.v5.cmp/v/m3-jssdk.js" type="text/javascript"></script>
 <script  src="http://meeting.v5.cmp/v1.0.0/js/meetingCommon.js" type="text/javascript"></script>
@@ -201,7 +222,26 @@
 	<script src="http://cmp/v/js/cmp-emoji.js"></script>
 	<script src="http://cmp/v/js/cmp-webviewListener.js"></script>
 	<script type="text/javascript">
+	var $verstion = "";
     var _meetingPath = "http://meeting.v5.cmp/v1.0.0";
-  var _collPath = "http://collaboration.v5.cmp/v1.0.0";
-</script>    <script src="http://meeting.v5.cmp/v1.0.0/js/meetingRoomApply.js"></script>
+    var _collPath = "http://collaboration.v5.cmp/v1.0.0";  
+    var _common_v5_path = "http://commons.v5.cmp/v";
+    var _cmpPath = "http://cmp/v";
+    cmp.i18n.init("http://meeting.v5.cmp/v1.0.0/i18n/", "MeetingResources");
+</script>    
+
+	<script src="http://cmp/v/js/cmp-imgCache.js"></script>
+<script src="http://cmp/v/js/cmp-listView.js"></script>
+	<script src="http://cmp/v/js/cmp-picker.js"></script>
+	<script src="http://cmp/v/js/cmp-popPicker.js"></script>
+	<script src="http://cmp/v/js/cmp-dtPicker.js"></script>
+	<script src="http://cmp/v/js/cmp-accDoc.js"></script>
+	<script src="http://cmp/v/js/cmp-att.js"></script>
+	<script src="http://cmp/v/js/cmp-search.js"></script>
+	<script src="http://cmp/v/js/cmp-selectOrg.js"></script>
+	<script src="http://cmp/v/js/cmp-emoji.js"></script>
+    <script src="http://commons.v5.cmp/v/widget/SeeyonAttachment.s3js"></script>
+
+<script src="http://meeting.v5.cmp/v1.0.0/js/meetingRoomApply.js"></script>
+
 </html>

@@ -538,6 +538,7 @@ function setInitiatorValue(result){
 	//处理互斥情况
 	dealCache();
 }
+
 //设置主持人
 function setHostValue(result){
 	_$("#host_value").value = result[0].id;
