@@ -2864,19 +2864,24 @@ public class MeetingResource extends BaseResource {
 	public Response execApp(Map<String, Object> params) throws BusinessException{
 		Map<String, Object> r_map = new HashMap<String, Object>();
 
-		User user = AppContext.getCurrentUser();
+		User user2 = AppContext.getCurrentUser();
 		String roomId = ParamUtil.getString(params, "roomId");
 		
 		Map<String, String> parameterMap = new HashMap<String, String>();
+		String userId = ParamUtil.getString(params, "applicantValue");
+		V3xOrgMember v3xOrgMember = orgManager.getMemberById(Long.valueOf(userId));
 		parameterMap.put("roomId", roomId);
-		parameterMap.put("perId", String.valueOf(user.getId()));
-		parameterMap.put("departmentId", String.valueOf(user.getDepartmentId()));
+		parameterMap.put("perId", userId);
+		parameterMap.put("departmentId", v3xOrgMember.getOrgDepartmentId().toString());
 		parameterMap.put("description", ParamUtil.getString(params, "description"));
 		parameterMap.put("startDatetime", ParamUtil.getString(params, "startDatetime"));
 		parameterMap.put("endDatetime", ParamUtil.getString(params, "endDatetime"));
+		parameterMap.put("numbers", ParamUtil.getString(params, "num"));
+		parameterMap.put("resources", ParamUtil.getString(params, "toolIds"));
+		parameterMap.put("leader", ParamUtil.getString(params, "leaderValue"));
 		
 		//rest接口用   防止测试数据不合法
-		List<MeetingRoom> meetingRooms = meetingRoomManager.getMyCanAppRoomList(user, -1, "", null);
+		List<MeetingRoom> meetingRooms = meetingRoomManager.getMyCanAppRoomList(user2, -1, "", null);
 		if(Strings.isEmpty(meetingRooms)){
 			r_map.put("errorMsg", ResourceUtil.getString("meeting.rest.hasNoCanApply"));
 			return ok(r_map);
@@ -2897,7 +2902,8 @@ public class MeetingResource extends BaseResource {
 		appVo.setAction("apply");
 		appVo.setParameterMap(parameterMap);
 		appVo.setSystemNowDatetime(DateUtil.currentDate());
-		appVo.setCurrentUser(AppContext.getCurrentUser());
+		appVo.setCurrentUser(user2);
+	
 
 		//重复提交校验
 		Long submitKey = AppContext.getCurrentUser().getId();
@@ -2919,6 +2925,27 @@ public class MeetingResource extends BaseResource {
 			if(!isLocked){
 				meetingLockManager.unLock(submitKey);
 			}
+		}
+		
+		String errorMsg = "";
+		JDBCAgent agent = new JDBCAgent();
+		try {
+			List list = new ArrayList();
+			list.add(ParamUtil.getString(params, "leaderValue"));
+			list.add(ParamUtil.getString(params, "num"));
+			list.add(ParamUtil.getString(params, "toolIds"));
+			if (appVo != null) {
+				list.add(appVo.getRoomAppId());
+				agent.execute("UPDATE meeting_room_app set leader = ?,numbers = ?,resources = ? where id = ?", list);
+			}
+			List list1 = new ArrayList();
+			list1.add(ParamUtil.getString(params, "num"));
+			list1.add(appVo.getMeetingId());
+			agent.execute("UPDATE meeting set numbers = ? where id =?", list1);
+		} catch (Exception e) {
+			LOGGER.error("更新数据库人数失败！",e);
+		}finally {
+			agent.close();
 		}
 		
 		return ok(r_map);
@@ -4123,6 +4150,40 @@ public class MeetingResource extends BaseResource {
 		return success(roomListVO);
 	}
 
+	/**
+	 * 获取会议室申请信息
+	 * @param params
+	 * 	<pre>
+	 *        类型    名称             必填     备注
+	 *        String   roomId     Y     会议室ID
+	 *        String   qDate             Y     查询日期 (yyyy-MM-dd)
+	 *  </pre>
+	 * @return List<com.seeyon.apps.meetingroom.po.MeetingRoomApp>
+	 * @throws BusinessException
+	 * @throws ParseException
+	 */
+	@POST
+	@Path("getMeetingRoomApps")
+	public Response getMeetingRoomApps(Map<String, Object> params) throws BusinessException, ParseException{
+		String roomId = ParamUtil.getString(params, "roomId");
+		String qDate = ParamUtil.getString(params, "qDate");
+		
+		String sStartDate = qDate + " 00:00:00";
+		String sEndDate = qDate + " 00:00:00";
+		
+		Date startDate = Datetimes.parse(sStartDate, Datetimes.datetimeStyle);
+		Date endDate = DateUtil.addDay(Datetimes.parse(sEndDate, Datetimes.datetimeStyle), 1);
+		
+		List<Long> roomIdList = new ArrayList<Long>();
+		roomIdList.add(Long.valueOf(roomId));
+		
+		List<MeetingRoomApp> meetingRoomApps = meetingRoomManager.getUsedRoomAppListByDate(startDate, endDate, roomIdList, true);
+		
+		List<MeetingRoomOccupancyVO> meetingRoomOccupancys = copyAppToOccupancyVO(meetingRoomApps);
+		
+		return ok(meetingRoomOccupancys);
+	}
+	
 	/**
 	 * 扫码申请会议室的基本情况
 	 * @param param

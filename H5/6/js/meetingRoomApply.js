@@ -72,27 +72,27 @@ cmp.ready(function () {
 //	中国石油天然气股份有限公司西南油气田分公司  【增加申请人，申请部门，联系方式，参会领导预计人数，会议用品字段】  lixuqiang 2020年5月7日 start
 	var cache = cmp.storage.get(cacheKey_mcStorageDatas, true);
 	if(cache== null){
-//		$s.Meeting.create({}, {}, {
-//			success : function(result) {
-//				var userInfo = new Array();
-//				userInfo.push({
-//					id : result.userId,
-//					name : result.userName,
-//					type : "Member"
-//				});
-//				cmp.storage.save("m3_v5_meeting_selectOrg_bachCache_applicant", cmp.toJSON(userInfo), true);
-//				cmp.storage.save("m3_v5_meeting_selectOrg_bachCache_except_applicant", cmp.toJSON(""), true);
-//				_$("#applicant").value = result.userName;
-//				_$("#applicant_value").value = result.userId;
-//				_$("#applicantDepartment").value = result.userDepartment;
-//				_$("#appPerName").value = result.userPhone;
-//				loadMeetingTools();
-//			},
-//	        error : function(result){
-//	        	//处理异常
-//	        	MeetingUtils.dealError(result);
-//	        }
-//		});
+		$s.Meeting.create({}, {}, {
+			success : function(result) {
+				var userInfo = new Array();
+				userInfo.push({
+					id : result.userId,
+					name : result.userName,
+					type : "Member"
+				});
+				cmp.storage.save("m3_v5_meeting_selectOrg_bachCache_applicant", cmp.toJSON(userInfo), true);
+				cmp.storage.save("m3_v5_meeting_selectOrg_bachCache_except_applicant", cmp.toJSON(""), true);
+				_$("#applicant").value = result.userName;
+				_$("#applicant_value").value = result.userId;
+				_$("#applicantDepartment").value = result.userDepartment;
+				_$("#appPerName").value = result.userPhone;
+				loadMeetingTools();
+			},
+	        error : function(result){
+	        	//处理异常
+	        	MeetingUtils.dealError(result);
+	        }
+		});
 	}
 	
 	//设置缓存数据
@@ -255,9 +255,16 @@ function setApplicantValue(result){
 	dealCache();
 }
 function dealCache(){
+	var cache_conferees = cmp.storage.get("m3_v5_meeting_selectOrg_bachCache_conferees", true);//参会人
 	var cache_applicant = cmp.storage.get("m3_v5_meeting_selectOrg_bachCache_applicant", true);
+	
+	var hideObj_conferees = MeetingUtils.mergeArray(cmp.parseJSON(cache_conferees), {});
+	addExceptStyle(hideObj_conferees);
+	cmp.storage.save("m3_v5_meeting_selectOrg_bachCache_except_conferees", cmp.toJSON(hideObj_conferees), true);
 
-	cmp.storage.save("m3_v5_meeting_selectOrg_bachCache_except_applicant", cmp.toJSON(""), true);
+	var hideObj_applicant = MeetingUtils.mergeArray(cmp.parseJSON(cache_conferees), {});
+	addExceptStyle(hideObj_applicant);
+	cmp.storage.save("m3_v5_meeting_selectOrg_bachCache_except_applicant", cmp.toJSON(hideObj_applicant), true);
 }
 //中国石油天然气股份有限公司西南油气田分公司  【增加申请人，申请部门，联系方式，参会领导预计人数，会议用品字段】  lixuqiang 2020年5月7日 end
 
@@ -296,17 +303,17 @@ function initEvent(){
 	_$("#applicant").addEventListener("tap", function(){
 		MeetingUtils.selectOrg("applicant", setApplicantValue, {
 			showBusinessOrganization:true,
+			maxSize : 1,
+			minSize : 1,
 			selectType:"member",
-			type:2,
+			type:2
 		})
 	});
 	_$("#leader").addEventListener("tap", function(){
 		MeetingUtils.selectOrg("leader", setLeaderValue, {
 			showBusinessOrganization:true,
 			selectType:"member",
-			type:2,
-			maxSize : 1,
-			minSize : 1,
+			type:2
 		})
 	});
 }
@@ -359,6 +366,17 @@ function cmpData(id){
 
 var isSubmit = false;
 function submitForm() {
+	var reg= /^[1-9]\d*$/;
+	var num = _$("#number").value;
+	if(num==null || num==""){
+		createAlter("请填写预计人数！", null);
+		return true;
+	}
+	if(!reg.test(num)){
+		createAlter("预计人数必须是正整数！", null);
+		return true;
+	}
+	
 	//防止重复点击
 	if(isSubmit){
 		return;
@@ -439,11 +457,26 @@ function submitForm() {
 	var emojiUtil = cmp.Emoji();
 	var discription = emojiUtil.EmojiToString(_$("#description").value);
 	
+	var obj = document.getElementsByName("tools");  
+	var toolIds=''; //存值
+	for(var i=0;i<obj.length;i++){
+		if(obj[i].checked) 
+			toolIds += obj[i].value+',';   
+	}
+	if(toolIds != ''){
+		toolIds = toolIds.substring(0,toolIds.length-1);
+	}
+	
 	var paramData = {
 		roomId : urlParam.roomId,
 		description : discription,
 		startDatetime : p_startDate,
-		endDatetime : p_endDate
+		endDatetime : p_endDate,
+		num:num,
+		applicantValue:_$("#applicant_value").value,
+		applicantDepartment:_$("#applicantDepartment").value,
+		leaderValue:_$("#leader_value").value,
+		toolIds:toolIds
 	};
 	
 	var temp_empty = checkEmpty();
