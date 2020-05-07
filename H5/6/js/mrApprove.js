@@ -78,6 +78,9 @@ function initPageData(){
 			//客开胡超 会议室展示会议人数 会议用品 参会领导 start 2020-4-8
 			_$("#leaderName").innerHTML = result.leader;
 			_$("#number").innerHTML = result.numbers;
+			// 申请部门、联系方式
+			_$("#appPerDepartName").innerHTML = result.userDepartment;
+			_$("#appPerContact").innerHTML = result.userPhone;
 			//客开胡超 会议室展示会议人数 会议用品 参会领导 end 2020-4-8
 			
 			var cache = cmp.storage.get(cacheKey_mcStorageDatas, true);
@@ -132,14 +135,15 @@ function initPageData(){
 			
 			//申请人在已申请不显示、在审核页面显示
 			if(urlParam.openFrom != "mrAuditList" ) {
-				_$("#roomSentPer").style.display = "none";
+				//_$("#roomSentPer").style.display = "none";
 				_$("#roomAuditPer").style.display = "block";
 			}
 			
 			//会议用品不为空显示
-			if(result.meetingResources != ""){
+			/*if(result.meetingResources != ""){
 				_$("#meetResource").style.display = "block";
-			}
+			}*/
+			_$("#meetResource").style.display = "block";
 			
 			resizeHight();
 			

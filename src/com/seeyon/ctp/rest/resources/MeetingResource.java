@@ -2691,6 +2691,13 @@ public class MeetingResource extends BaseResource {
 					JSONObject data = (JSONObject)JSON.toJSON(mrRestVO);
 					data.put("leader", name);
 					data.put("numbers", numbers);
+					
+					// 获取用户部门、联系方式
+					OrgMember orgMember = (OrgMember) member.toPO();
+					data.put("userPhone", orgMember.getExtAttr1());
+					V3xOrgDepartment v3xOrgDepartment=orgManager.getDepartmentById(mrapp.getDepartmentId());	
+					data.put("userDepartment",v3xOrgDepartment.getName());
+					
 					if(StringUtils.isBlank(mrRestVO.getMeetingResources())) {
 						agent.execute("select resources from meeting_room_app where  id = ?",roomAppId);
 						String res = String.valueOf(agent.resultSetToMap().get("resources"));
@@ -2712,6 +2719,13 @@ public class MeetingResource extends BaseResource {
 					JSONObject data = (JSONObject)JSON.toJSON(mrRestVO);
 					data.put("leader", "");
 					data.put("numbers", "");
+					
+					// 获取用户部门、联系方式
+					OrgMember orgMember = (OrgMember) member.toPO();
+					data.put("userPhone", orgMember.getExtAttr1());
+					V3xOrgDepartment v3xOrgDepartment=orgManager.getDepartmentById(mrapp.getDepartmentId());	
+					data.put("userDepartment",v3xOrgDepartment.getName());
+					
 					return ok(data);
 				}finally {
 					agent.close();
@@ -3204,7 +3218,6 @@ public class MeetingResource extends BaseResource {
 
 		//会议室权限
 		r_map.put("haveMeetingRoomApp", menuPurviewUtil.isHaveMeetingRoomApp(user));
-		System.out.println(JSONUtil.toJSONString(r_map));
 		return ok(JSONUtil.toJSONString(r_map));
 	}
 	

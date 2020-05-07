@@ -510,10 +510,11 @@ function setConfereesValue(result){
 }
 //设置发起者
 function setInitiatorValue(result){
-	_$("#initiator_value").value = result[0].id;
+	var initiatorId = result[0].id;
+	_$("#initiator_value").value = initiatorId;
 	//设置发起部门、联系方式
 	cmp.ajax({
-        url :cmp.seeyonbasepath + '/rest/meeting/getUserDepartment',
+        url :cmp.seeyonbasepath + '/rest/meeting/getUserDepartment?id='+initiatorId,
         type: "GET",
         headers: {
             'Accept' : 'application/json; charset=utf-8',
@@ -523,7 +524,6 @@ function setInitiatorValue(result){
             'option.n_a_s' : '1'
         },
         success: function(result){
-        	console.log('result---------------->'+result.userDepartment+result.userPhone)
         	_$("#initiatingDepartment").value = result.userDepartment;
 			_$("#contact").value = result.userPhone;
 			document.getElementById("initiatingDepartmentHtml").innerHTML = result.userDepartmentName;

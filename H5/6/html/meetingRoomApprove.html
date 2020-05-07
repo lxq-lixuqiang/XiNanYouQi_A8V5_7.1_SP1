@@ -89,7 +89,7 @@
 	</style>
 </head>
 <body  class="cmp-fullscreen cmp-ios cmp-ios-9 cmp-ios-9-1" style="background-color: #F8F9FB">
-	<div id="contentDiv" class="cmp-content back_white cmp-content-none" style="bottom:50px;width:100%;background-color: #F8F9FB;">
+	<div id="contentDiv" class="cmp-content back_white absolute_wrap cmp-content-none" style="bottom:50px;width:100%;background-color: #F8F9FB;">
 		<ul class="cmp-table-view new_header_content">
 			<div class="meetingTimeRow" style="height: 103px">
 				<div class="leftCell">
@@ -147,17 +147,17 @@
 				</div>
 			</li>
 			<!-- 申请部门 -->
-			<li id="roomSentPer" class="cmp-table-view-cell">
+			<li id="roomSentPerDepart" class="cmp-table-view-cell">
 				<div class="list_item">
 					<div class="left_name"><i18n key="meeting.meetingRoomCommon.department"></i18n></div>
-					<div id="appPerName" class="right_text" style="color:#297FFB;word-break:break-all"></div>
+					<div id="appPerDepartName" class="right_text" style="color:#297FFB;word-break:break-all"></div>
 				</div>
 			</li>
 			<!-- 联系方式 -->
-			<li id="roomSentPer" class="cmp-table-view-cell">
+			<li id="roomSentPerContact" class="cmp-table-view-cell">
 				<div class="list_item">
 					<div class="left_name"><i18n key="meeting.meetingRoomCommon.contact"></i18n></div>
-					<div id="appPerName" class="right_text" style="color:#297FFB;word-break:break-all"></div>
+					<div id="appPerContact" class="right_text" style="color:#297FFB;word-break:break-all"></div>
 				</div>
 			</li>
 			<!-- 客开  赵正波 新增会议审核参会领导，参会人数，会议用品显示 2020-4-8 start-->
@@ -174,6 +174,19 @@
 				</div>
 			</li>
 			<!-- 客开  赵正波 新增会议审核参会领导，参会人数，会议用品显示 2020-4-8 end-->
+			<!-- 会议用品 -->
+			<li id="meetResource" class="cmp-table-view-cell"  style="display: none;">
+				<div class="list_item">
+					<div class="left_name"><i18n key="meeting.meetingRoomCommon.resources"></i18n></div>
+					<div id="meetResources" class="right_text" style="color:#297FFB;word-break:break-all"></div>
+				</div>
+				<!-- <table class="list_item" style="width:100%;">
+					<tr>
+						<th class="left_name"><i18n key="meeting.meetingRoomCommon.resources"></i18n></th>
+						<th id="meetResources" class="right_text" style="word-break:break-all"></th>
+					</tr>
+				</table> -->
+			</li>
 			<!-- 审核人 -->
 			<li id="roomAuditPer" class="cmp-table-view-cell" style="display: none;">
 				<div class="list_item">
@@ -187,15 +200,6 @@
 						<!--备注-->
 						<th class="left_name"><i18n key="meeting.meetingRoomApply.description"></i18n></th>
 						<th id="description" class="right_text" style="word-break:break-all;"></th>
-					</tr>
-				</table>
-			</li>
-			<!-- 会议用品 -->
-			<li id="meetResource" class="cmp-table-view-cell"  style="display: none;">
-				<table class="table_wrap" style="width:100%;">
-					<tr>
-						<th class="left_name"><i18n key="meeting.meetingRoomCommon.resources"></i18n></th>
-						<th id="meetResources" class="right_text" style="word-break:break-all"></th>
 					</tr>
 				</table>
 			</li>
@@ -217,7 +221,7 @@
 		</ul>
 
 	</div>
-	<footer id="footerDiv" class="cmp-bar-tab cmp-bar-footer auto-height" style="right:0px;left:0px;">
+	<footer id="footerDiv" class="cmp-bar cmp-bar-tab cmp-bar-footer cmp-bar-tabview attachment-wrap" style="right:0px;left:0px;">
 	 	<div class="cmp-block-with-btn cmp_handler_content_blue footer-btn approveNewBtns">
 			<a id="cancel" href="javascript:void(0)" style="display: none;">
 				<lable id="cancelBtnLable"><i18n key="meeting.meetingRoom.cancel"></i18n></lable>

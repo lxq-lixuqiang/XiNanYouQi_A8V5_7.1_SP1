@@ -1,5 +1,5 @@
 *.classpath
 *.prefs
-*.class
 *.project
 /bin/
+/seeyon/WEB-INF/classes
