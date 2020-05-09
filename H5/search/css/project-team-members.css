@@ -1,0 +1,61 @@
+html,
+body {
+    overflow: hidden;
+}
+/*Android*/
+body.cmp-dd header{height: 44px;padding-top: 0;}/*android header样式*/
+body.cmp-dd .cmp-content{top:44px;}/*android content样式*/
+/*ios*/
+body.cmp-ios-c header{height: 64px;padding-top: 20px}
+body.cmp-ios-c .cmp-content{top:64px;}
+body.cmp-ios-x header{height: 88px;padding-top: 44px}
+body.cmp-ios-x .cmp-content{top:88px;}
+ul.search-depart .cmp-table-view-cell .cmp-pull-left {
+    height: 38px;
+    width: 38px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: .373rem;
+}
+
+ul.search-depart .cmp-table-view-cell .cmp-pull-left > img {
+    height: 38px;
+    width: 38px;
+}
+
+.search-depart li p.message_list_title {
+    font-size: 16px;
+    color: #333;
+}
+
+.search-depart li p.cmp-ellipsis {
+    font-size: 14px;
+    color: #999;
+}
+
+.cmp-table-view-cell:after {
+    left: 1.812rem;
+}
+
+.cmp-table-view-cell:last-child:after {
+    height: 1px;
+}
+
+.cmp-table-view:after {
+    height: 0;
+}
+
+.cmp-table-view-cell {
+    padding: 10px 15px;
+}
+
+div.cmp-loading.cmp-loading-fixed div.cmp-loading-text {
+    line-height: 40px;
+}
+
+.cmp-table-view.search-depart {
+    overflow: scroll;background-color: transparent;
+}
+.cliceName{display:inline-block;width:100%;height:100%;text-align:center;line-height:40px;
+    font-size:15px;border-radius:50px;background-color: #8380FF;color: #fff;}
+    

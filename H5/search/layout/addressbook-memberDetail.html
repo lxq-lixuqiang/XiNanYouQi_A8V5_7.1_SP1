@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <script src="http://commons.m3.cmp/v1.0.0/js/flexible.js"></script>
+    <title>人员卡片详情</title>
+
+    <!--导入v5门户的图标库-->
+        <link rel="stylesheet" href="http://cmp/v1.0.0/css/cmp.css?buildversion=20329212720">
+    <link rel="stylesheet" href="http://cmp/v1.0.0/css/cmp-listView.css?buildversion=20329212720">
+    <link rel="stylesheet" href="http://commons.m3.cmp/v1.0.0/fonts/iconfont.css?buildversion=20329212720">
+    <link rel="stylesheet" href="http://search.m3.cmp/v1.0.0/css/addressbook-memberDetail.css?buildversion=20329212720">
+    
+
+</head>
+
+<body class="bg_gray flex-v">
+
+<script>
+    /**
+     * @description 优化IphoneX的头部交互，组织去抖动
+     */
+    ;(function() {
+        var ua = window.navigator.userAgent.toUpperCase(),
+            curUrl = window.location.href,
+            isNeedShowHeader = curUrl.match(/ParamHrefMark|isfromnative/)
+        window.isNeedShowHeader = isNeedShowHeader;
+        var isFromApp = curUrl.match(/xiaozhiSpeechInput/);
+        if (ua.match(/IPHONEX/)) {
+            document.body.className += ' cmp-ios-x';
+        } else if (ua.match(/IPHONE|IPAD|IPOD/)) {
+            document.body.className += ' cmp-ios';
+        }
+        if (isNeedShowHeader) {
+            document.body.className += ' from-page';
+        } else {
+            document.body.className += ' from-app';
+        }
+        if(isFromApp){
+            document.body.className += " fromApp";
+        }
+    })();
+</script>
+  
+<!-- <header id="userhead" class="cmp-bar cmp-bar-nav cmp-flex-header cmp-header-backHandle">
+        <div class="cmp-action-back cmp-header-left backBtn">
+            <span class="cmp-icon see-icon-v5-common-arrow-back"></span>
+            <span class="nav-text left_word"><i18n key="search.m3.h5.back"></i18n></span>
+        </div>
+        <div class="cmp-title"><i18n key="search.m3.h5.peopleDetail"></i18n></div>
+        <div class="cmp-header-right nav-text">
+            关注按钮
+            <div class="person_focusBtn" style="display:none;">
+                <div id="FocusBtn" class="cmp-btn cmp-btn-outlined focus-btn">
+                    <span class="m3-icon-focus person_focusIcon"></span>
+                    <span class="person_focusText"></span>
+                </div>
+            </div>
+        </div>
+</header> -->
+    
+<div class=" position_relative scroll my_module">
+    <!-- <div class="cmp-control-content cmp-active"> -->
+    <div id="cmp-listview-scroll" class="cmp-listview-scroll">
+        <div class="scroll-move ">
+            <div id="isother" class="isother_header">
+                <div class="person_header isOther">
+                    <!--头像-->
+                    <div class="person_info">
+                        <div class="person_head"></div>
+                        <div class="person_userInfo">
+                            <div class="name cmp-ellipsis-2"></div>
+                            <!-- <span id="my_personDecoder" class="see-icon-v5-common-qrcode qrcode"></span> -->
+                            <div class="station cmp-ellipsis"></div>
+                        </div>
+                    </div>
+                    <div class="wave wave-active">
+                        <!-- <span class="cloud-1"></span>
+                        <span class="cloud-2"></span>
+                        <span class="cloud-3"></span> -->
+                    </div>
+                </div>
+            </div>
+
+            <!--列表-->
+            <ul class="cmp-table-view new_list userDefined fixedField">
+                <!-- 新固定字段 -->
+                <!-- 部门 -->
+                <li class="cmp-table-view-cell" id="deptLi">
+                    <div class="cmp-pull-left">
+                        <div class="datainfo departmentText"></div>
+                        <div class="text"><i18n key="search.m3.h5.department"></i18n></div>
+                    </div>
+                    <!-- <div class="cmp-pull-right arrow-right"><span class="iconfont see-icon-m3-arrow-right arrow-icon"></span></div> -->
+                </li>
+                <!-- 主岗 -->
+                <li class="cmp-table-view-cell" id="mainpostLi">
+                    <div class="cmp-pull-left">
+                        <div class="datainfo mainpostText"></div>
+                        <div class="text"><i18n key="search.m3.h5.mainpost"></i18n></div>
+                    </div>
+                </li>
+                <!-- 职务级别 -->
+                <li class="cmp-table-view-cell" id="vjoinConf">
+                    <div class="cmp-pull-left">
+                        <div class="datainfo positionText"></div>
+                        <div class="text"><i18n key="search.m3.h5.position"></i18n></div>
+                    </div>
+                </li>
+            </ul>
+            <ul class="cmp-table-view new_list margin_top14 userDefined userInfoItems" id="userInfoItems">
+
+            </ul>
+            <ul class="cmp-table-view new_list margin_top14 userDefined" id="userDefined">
+
+            </ul>
+        </div>
+    </div>
+    <!-- </div> -->
+
+</div>
+
+<footer id="myfooter" class="cmp-bar cmp-bar-footer flex cmp-before-line person-footer display_none">
+    <span id="callaffair" class="footer-item flex1"><i18n key="search.m3.h5.sendCoordination"></i18n></span>
+    <!-- <span id="callMeassage" class="footer-item flex1"><i18n key="search.m3.h5.chatByZhixin"></i18n></span>
+    <span id="savephone" class="footer-item flex1"><i18n key="search.m3.h5.savetophone"></i18n></span> -->
+</footer>
+
+
+<script src="http://search.m3.cmp/v1.0.0/i18n/search_zh_CN.js?buildversion=20329212720"></script>
+<script src="http://commons.m3.cmp/v1.0.0/i18n/commons_zh_CN.js?buildversion=20329212720"></script>
+<script src="http://cmp/v1.0.0/js/cmp-i18n.js?buildversion=20329212720"></script>
+<script>
+    cmp.i18n.load("http://commons.m3.cmp/v1.0.0/i18n/", "commons");
+    cmp.i18n.init("http://search.m3.cmp/v1.0.0/i18n/", "search");
+    var m3CommonsPath = "http://commons.m3.cmp/v1.0.0";
+    var m3SearchPath = "http://search.m3.cmp/v1.0.0";
+    var cmpPath = "http://cmp/v1.0.0";
+    // var v5TaskmanagerPath = "";
+    // var v5MeetingPath = "";
+    // var v5CalendarPath = "";
+</script>
+
+<script src="http://cmp/v1.0.0/js/cordova/__CMPSHELL_PLATFORM__/cordova.js"></script>
+<script src="http://cmp/v1.0.0/js/cordova/cordova-plugins.js"></script><script src="http://cmp/v1.0.0/js/cmp.js?buildversion=20329212720"></script>
+<script src="http://cmp/v1.0.0/js/cmp-asyncLoad.js?buildversion=20329212720"></script>
+<script src="http://cmp/v1.0.0/js/cmp-app.js?buildversion=20329212720"></script>
+<!-- <script src="http://cmp/v1.0.0/js/cmp-listView.js?buildversion=20329212720"></script> -->
+<script src="http://cmp/v1.0.0/js/cmp-chat.js?buildversion=20329212720"></script>
+<script src="http://cmp/v1.0.0/js/cmp-server.js?buildversion=20329212720"></script>
+<!-- <script src="http://cmp/v1.0.0/js/cmp-webviewListener.js?buildversion=20329212720"></script> -->
+<script src="http://cmp/v1.0.0/js/cmp-watermark.js?buildversion=20329212720"></script>
+<script src="http://cmp/v1.0.0/js/cmp-head2base64.js?buildversion=20329212720"></script>
+
+<script src="http://commons.m3.cmp/v1.0.0/js/m3-path.s3js?buildversion=20329212720"></script>
+<script type="text/javascript">
+    var _addressbookPath = "http://search.m3.cmp/v1.0.0";var _cmpSeeyonPath = "http://cmp/v1.0.0";;
+</script><!-- seajs -->
+<script src="http://commons.m3.cmp/v1.0.0/lib/seajs-2.2.1.js?buildversion=20329212720"></script>
+<script src="http://commons.m3.cmp/v1.0.0/config.js?buildversion=20329212720"></script>
+<!--微协同导入app映射关系 xinpei 2019-10-21-->
+<!-- 模块入口 -->
+<script>seajs.use('http://search.m3.cmp/v1.0.0/js/addressbook-memberDetail.js')</script>
+
+</body>
+
+</html>

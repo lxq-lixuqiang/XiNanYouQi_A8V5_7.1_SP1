@@ -505,7 +505,6 @@ function submitForm() {
 	
 	$s.Meeting.execApp({}, paramData, {
 		success : function(result) {
-			//lixuqiang 
 			if(result["errorMsg"] && result["errorMsg"]!="") {
 				createAlter(result["errorMsg"], null);
         		isSubmit = false;

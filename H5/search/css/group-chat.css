@@ -1,0 +1,129 @@
+html,
+body {
+    overflow: hidden;
+}
+
+.groupChat.cmp-bar:before {
+    height: 0;
+}
+
+.title {
+    height: 1.06rem;
+    background-color: #f5f5f5;
+}
+
+.title>div {
+    text-align: center;
+    height: 1.06rem;
+}
+
+.title>div>span:first-child {
+    margin-right: 1.5rem;
+}
+
+.title>div>span {
+    display: inline-block;
+    height: 1.066rem;
+    line-height: 1.066rem;
+}
+
+.title>div>span>a {
+    display: inline-block;
+    height: 1.066rem;
+    font-size: 16px;
+    color: #999;
+    text-decoration: none;
+    padding: 0 0.2rem;
+}
+
+.title>div>span>a.active {
+    color: #3AADFB;
+    border-bottom: 2px solid #3AADFB;
+    font-weight: 700;
+}
+
+ul.search-depart {
+    overflow: scroll;background-color: transparent;
+}
+
+ul.search-depart li {
+    padding: .373rem .266rem .373rem .373rem;
+}
+
+ul.search-depart li div.search-list-icon {
+    float: left;
+    width: 1.066rem;
+    height: 1.066rem;
+    border-radius: 50%;
+    overflow: hidden;
+    text-align: center;
+    line-height: 1.066rem;
+    font-size: 16px;
+    color: #fff;
+}
+
+ul.search-depart li div.search-list-icon img {
+    width: 1.066rem;
+}
+
+.search-list-icon img {
+    width: 100%;
+}
+
+ul.search-depart li div.cmp-pull-left {
+    height: 1.066rem;
+    line-height: 1.066rem;
+    font-size: 18px;
+    color: #333;
+    padding-left: .373rem;
+}
+
+ul.search-depart li.cmp-table-view-cell:after {
+    content: "";
+    height: 1px;
+    position: absolute;
+    width: 100%;
+    background-color: #ebebeb;
+    left: 1.812rem;
+}
+
+ul.search-depart li.cmp-table-view-cell .cmp-pull-right {
+    font-size: 14px;
+    color: #999;
+    height: 1.06rem;
+    line-height: 1.06rem;
+    display: inline-block;
+}
+
+ul.search-depart li .cmp-pull-right span {
+    margin-left: .266rem;
+    position: relative;
+    top: 0.03rem;
+    color: #999;
+    font-size: 14px;
+}
+
+header.cmp-bar.cmp-bar-nav {
+    background-color: #fff;
+}
+
+div.title {
+    background-color: #fff;
+    border-bottom: 1px solid #f2f2f2;
+}
+
+div.title div span a {
+    width: 2.72rem;
+}
+
+.cmp-table-view:after {
+    height: 0;
+}
+/*Android*/
+body.cmp-dd header{height: 44px;padding-top: 0;}/*android header样式*/
+body.cmp-dd .cmp-content{top:44px;}/*android content样式*/
+/*ios*/
+body.cmp-ios-c header{height: 64px;padding-top: 20px}
+body.cmp-ios-c .cmp-content{top:64px;}
+body.cmp-ios-x header{height: 88px;padding-top: 44px}
+body.cmp-ios-x .cmp-content{top:88px;}

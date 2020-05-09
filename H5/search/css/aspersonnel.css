@@ -1,0 +1,61 @@
+
+.aspersonel-header::after{
+    content: "";
+    position: absolute;
+    border-bottom: 1px;
+    width: 100%;height: 1px;
+    transform: scaleY(0.5);
+    -webkit-transform: scaleY(0.5);
+    box-sizing: border-box;
+    bottom: 0;left:0;
+    display: inline-block;
+    background-color: #ccc;
+}
+.cmp-bar-nav{box-shadow: none;}
+.aspersonel_conetent{}
+.aspersonel_conetent .personel_refer{overflow: hidden;font-size: 14px;vertical-align: middle;
+    width: 40px;height: 40px;background-color: #7FB1FF;display: inline-block;
+    border-radius: 100px;text-align: center;line-height: 40px;color: #fff;
+    background-size:cover;background-position: center center;
+}
+.aspersonel_conetent .personel_info{
+    width: 80%;    display: inline-block;vertical-align: middle;padding-left: 10px;line-height: 15px;}
+.aspersonel_conetent .personel_info .personel_name{width: 100%;display: inline-block;padding: 2px 0 0 0;}
+.aspersonel_conetent .personel_info p{font-size: 12px;padding: 2px 0 0 0;}
+.aspersonel_conetent .aspersonel_title{
+    height: 40px;line-height: 40px;color: #A1B0C5;font-size: 14px;padding-left: 15px;
+}
+.aspersonel_conetent .personel_info span{font-size: 14px;}
+.aspersonel_conetent .asper-item-block{background-color: #fff;}
+.getSelectOrgIcon{font-size: 23px;margin-left: 40px;color: #3AADFB;}
+#aspersonel .aspersonnel-item-cell::after{
+    left:70px;color: #e4e4e4;height: 1px;
+}
+.cmp-content{background-color: #fff;}
+.cmp-table-view::before{top:-1px;opacity:0;}
+.cmp-table-view:after{left: 70px;color: #e4e4e4;opacity: 0;}
+.cliceName{display:inline-block;width:100%;height:100%;text-align:center;line-height:40px;
+    font-size:15px;border-radius:50px;background-color: #8380FF;color: #fff;}
+    
+.aspersonel_conetent .personel_info .personel_shortname{font-size: 14px;}
+
+/*Android*/
+body.cmp-dd header{height: 44px;padding-top: 0;}/*android header样式*/
+body.cmp-dd .cmp-content{top:44px;}/*android content样式*/
+/*ios*/
+body.cmp-ios-c header{height: 64px;padding-top: 20px}
+body.cmp-ios-c .cmp-content{top:64px;}
+body.cmp-ios-x header{height: 88px;padding-top: 44px}
+body.cmp-ios-x .cmp-content{top:88px;}
+
+
+/*选人组件适配*/
+body.cmp-dd header.cmp-select-header{height: 44px;padding-top: 0;}
+body.cmp-dd .cmp-content.selectOrg{top:44px;}
+/*ios*/
+body.cmp-ios-c header.cmp-select-header{height: 64px;padding-top: 20px;}
+body.cmp-ios-c .cmp-content.selectOrg{top:64px;}
+body.cmp-ios-x header.cmp-select-header{height: 88px;padding-top: 44px;}
+body.cmp-ios-x .cmp-content.selectOrg{top:88px;}
+ul#aspersonel{background-color: transparent;}
+.aspersonnel-item-cell a.cmp-slider-handle{background-color: transparent;}

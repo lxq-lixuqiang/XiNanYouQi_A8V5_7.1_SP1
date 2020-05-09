@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <script src="http://commons.m3.cmp/v/js/flexible.js"></script>
+    <title>项目组</title>
+    <link rel="stylesheet" href="http://cmp/v/css/cmp.css">
+    <link rel="stylesheet" href="http://cmp/v/css/cmp-listView.css?buildversion=20329212720">
+    <link rel="stylesheet" href="http://commons.m3.cmp/v/fonts/iconfont.css?buildversion=20329212720">
+    <link rel="stylesheet" href="http://commons.m3.cmp/v/css/base.css?buildversion=20329212720">
+    <link rel="stylesheet" href="http://search.m3.cmp/v/css/group-chat.css?buildversion=20329212720" />
+</head>
+
+<body>
+    <script>
+        /**
+         * @description 优化IphoneX的头部交互，组织去抖动
+         */
+        ;(function() {
+            var ua = window.navigator.userAgent.toUpperCase();
+            if (ua.match(/IPHONEX/)) {
+                document.body.className += ' cmp-ios-x ';
+            }
+        })();
+    </script>
+    <header class="cmp-bar cmp-bar-nav cmp-flex-header m3-iosx">
+        <div class="cmp-action-back cmp-header-left " style="-webkit-flex: 1.5">
+            <span class="cmp-icon see-icon-v5-common-arrow-back"></span>
+            <span class="nav-text"><i18n key="search.m3.h5.searchPeople"></i18n></span>
+        </div>
+        <div class="cmp-title">
+            <i18n key="search.m3.h5.projectTeam"></i18n>
+        </div>
+        <div class="cmp-header-right">
+        </div>
+    </header>
+    <div class="cmp-content bg_white">
+        <div class="cmp-control-content cmp-active">
+            <div id="pullrefresh" class="cmp-scroll-wrapper">
+                <div class="cmp-scroll">
+                    <ul class="cmp-table-view search-depart">
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="http://search.m3.cmp/v/i18n/search_zh_CN.js?buildversion=20329212720"></script>
+    <script src="http://commons.m3.cmp/v/i18n/commons_zh_CN.js?buildversion=20329212720"></script>
+    <script src="http://cmp/v/js/cmp-i18n.js?buildversion=20329212720"></script>
+    <script>
+        cmp.i18n.init("http://search.m3.cmp/v/i18n/", "search");
+        cmp.i18n.load("http://commons.m3.cmp/v/i18n/", "commons");
+    </script>
+    <script src="http://cmp/v/js/cordova/__CMPSHELL_PLATFORM__/cordova.js"></script>
+    <script src="http://cmp/v/js/cordova/cordova-plugins.js"></script>
+    <script src="http://cmp/v/js/cmp.js?buildversion=20329212720"></script>
+    <script src="http://cmp/v/js/cmp-app.js?buildversion=20329212720"></script>
+    <script src="http://cmp/v/js/cmp-listView.js?buildversion=20329212720"></script>
+    <script src="http://cmp/v/js/cmp-chat.js?buildversion=20329212720"></script>
+    <script src="http://cmp/v/js/cmp-gestureLock.js?buildversion=20329212720"></script>
+    <script src="http://cmp/v/js/cmp-server.js?buildversion=20329212720"></script>
+    <script src="http://cmp/v/js/cmp-watermark.js?buildversion=20329212720"></script>
+
+    <!--<script src="http://commons.m3.cmp/js/zepto-1.2.0.js?buildversion=20329212720"></script>-->
+    <!--<script src="http://commons.m3.cmp/js/m3.js?buildversion=20329212720"></script>-->
+    <!--<script src="http://commons.m3.cmp/js/m3i18n.js?buildversion=20329212720"></script>-->
+    <!--<script src="http://commons.m3.cmp/js/m3Route.s3js"></script>-->
+    <!--<script src="http://commons.m3.cmp/js/m3Ajax.js?buildversion=20329212720"></script>-->
+    <!--<script src="http://commons.m3.cmp/js/m3DB.js?buildversion=20329212720"></script>-->
+    <!--<script src="http://search.m3.cmp/js/project-team.js?buildversion=20329212720"></script>-->
+
+    <script src="http://commons.m3.cmp/v/js/m3-path.s3js"></script>
+    <!-- seajs -->
+    <script src="http://commons.m3.cmp/v/lib/seajs-2.2.1.js?buildversion=20329212720"></script>
+    <script src="http://commons.m3.cmp/v/config.js?buildversion=20329212720"></script>
+    <!-- 模块入口 -->
+    <script>seajs.use('http://search.m3.cmp/v/js/project-team.js?buildversion=20329212720')</script>
+</body>
+
+</html>

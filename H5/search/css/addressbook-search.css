@@ -1,0 +1,75 @@
+/*
+* @Author: mashan
+* @Date:   2016-08-09 11:25:31
+* @Last Modified by:   mashan
+* @Last Modified time: 2016-08-09 14:59:58
+*/
+
+html,
+body {
+    overflow: hidden;
+}
+ul.search-people .cmp-table-view-cell .cmp-pull-left {
+    height: 39px;background-position: center;background-size: 100%;
+    width: 39px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: .373rem;
+}
+.cmp-table-view .cmp-table-view-cell {
+    height: auto;
+    padding: 13px;
+}
+.cmp-table-view .cmp-table-view-cell .cmp-pull-left {
+    height: 38px;
+    /*line-height: 1.065rem;*/
+    font-size: 16px;
+}
+.search-people li img {
+    width: 38px;
+    height: 38px;
+}
+
+.search-people li p.message_list_title {
+    font-size: 16px;
+    color: #333;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.search-people li p.cmp-ellipsis {
+    font-size: 14px;
+    color: #999;
+}
+.cmp-table-view:after {
+    height: 0;
+}
+
+.cmp-table-view-cell:after {
+    z-index: 30;left: 64px;
+}
+
+.cmp-table-view:before {
+    height: 0;display: none;
+}
+.cmp-table-view .cmp-table-view-cell .cmp-pull-left {
+    color: #333333;
+    display: inline-block;
+    vertical-align: middle;
+    float: left;
+    height: 40px;
+    line-height: 40px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 65%;
+}
+.search-title-cancel{font-size: 14px;}
+.from-page .cmp-header-backHandle{
+    display: -webkit-flex;
+}
+.from-app .cmp-header-backHandle{
+    display: none;
+}
+
