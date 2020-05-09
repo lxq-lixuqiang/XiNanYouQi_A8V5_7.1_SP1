@@ -1,0 +1,470 @@
+/*
+* @Author: 伟
+* @Date:   2016-08-09 11:06:46
+* @Last Modified by:   伟
+* @Last Modified time: 2016-08-09 11:06:55
+*/
+
+html,
+body {
+    overflow: hidden!important;
+}
+
+.cmp-content {
+    height: 100%;
+    overflow: hidden;
+    /*position:relative;*/
+}
+
+ul.search-company {
+    z-index: 96;/*比cmp-loading高1*/
+    height: 45px;
+    overflow: hidden;
+    background-color: #fff;
+    padding: 0 0.373rem;box-shadow: 0 0 14px rgba(0,0,0,0.06);z-index: 1;
+}
+
+.search-company li.cmp-table-view-cell {
+    /*height: 1.5rem;*/
+    padding: 0;
+    overflow-x: auto;
+    white-space: nowrap;
+    position: relative;
+    padding-right: 10px;
+}
+
+.search-company li.cmp-table-view-cell::-webkit-scrollbar {
+    height: 0;
+}
+
+.search-company li.cmp-table-view-cell span.common {
+    display: inline-block;
+    height: 45px;
+    line-height: 45px;
+    font-size: 16px;
+    color: #3aadfb;
+}
+
+.search-company li.cmp-table-view-cell span.common:last-child {
+    color: #666;
+}
+
+.search-company li.cmp-table-view-cell span.iconfont {
+    font-size: 14px;
+    color: #a1b0c5;
+}
+
+ul.search-people,ul.search-depart {
+    overflow: hidden;background-color: #fff;
+}
+ul.search-depart .cmp-table-view-cell{
+    background-color: transparent;
+}
+ul.search-people .cmp-table-view-cell{
+    background-color: transparent;
+}
+
+.search-person .search-company .cmp-pull-left div img {
+    width: 100%;
+    height: 100%;
+}
+
+.search-person .search-company .cmp-pull-left>span {
+    position: relative;
+    top: -0.3rem;
+}
+
+.search-person .search-company .cmp-pull-right {
+    position: absolute;
+    top: 0.625rem;
+    right: 0.25rem;
+}
+
+.search-person .cmp-pull-left div {
+    display: inline-block;
+    position: relative;
+    width: 0.65rem;
+    height: 0.65rem;
+    border-radius: 4px;
+}
+
+.search-person .cmp-pull-left div~span {
+    vertical-align: super;
+    margin-left: 0.25rem;
+    color: #333;
+    font-size: 16px;
+}
+
+.search-person .cmp-pull-left span.iconfont {
+    font-size: 16px;
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -0.25rem;
+    margin-left: -0.22rem;
+}
+
+ul.search-people .cmp-table-view-cell .cmp-pull-left {
+    height: 39px;background-position: center;background-size: 100%;
+    width: 39px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: .373rem;
+}
+
+.search-person .cmp-pull-left div.person {
+    background: #3eb0ff;
+}
+
+.search-person .cmp-pull-left div.company {
+    background: #ffd242;
+}
+
+.search-person .cmp-pull-left div.help {
+    background: #27e1b7;
+}
+
+.search-person .cmp-pull-left div.account {
+    background: #ff7faa;
+}
+
+.search-person .cmp-pull-left div.gov {
+    background: #8282F9;
+}
+
+.search-person .cmp-pull-left div.market {
+    background: #FF7F78;
+}
+
+.search-person .cmp-pull-left div.set {
+    background: #74d855;
+}
+
+.search-person .cmp-pull-left div.about {
+    background: #b865d4;
+}
+.search-person li .cmp-slider-right {
+    display: none;
+}
+.search-list-icon {
+    width: 1.066rem;
+    height: 1.066rem;
+    border-radius: 50%;
+    line-height: 1.066rem;
+}
+.search-list-icon.m3-header-department{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    line-height: 40px;
+    position: relative;
+    background-color: #fff;
+    background-image: url(../img/org1.png);
+    background-repeat: no-repeat;
+    background-position:center;
+    background-size: 40px 40px;
+    /*top: 5px;*/
+}
+.m3-department-out{
+    background-image: url(../img/Slice1.png)!important;
+}
+
+ul.margin_top10 {
+    margin-top: 10px;
+}
+
+.cmp-table-view .cmp-table-view-cell {
+    height: auto;
+    /* padding: 13px; */
+}
+
+.cmp-table-view-cell.m3-department{
+    /* height: 50px; */
+}
+
+.cmp-table-view .cmp-table-view-cell .cmp-pull-left {
+    height: 38px;
+    /*line-height: 1.065rem;*/
+    font-size: 16px;
+}
+.scroll-move ul.cmp-table-view::first-child{margin-top: 14px;;}
+ul.search-depart, .search-people{margin-bottom:14px;;}
+ul.search-depart li.cmp-table-view-cell .cmp-pull-right {
+    font-size: 14px;
+    color: #999;
+    height: 38px;
+    line-height: 38px;
+    display: inline-block;
+}
+
+ul.search-depart li.cmp-table-view-cell .cmp-pull-right span.num {
+    /* display: inline-block; */
+    /* height: 0.625rem; */
+    /* line-height: 0.625rem; */
+}
+
+ul.search-depart li .cmp-pull-right span.iconfont {
+    margin-left: 0.25rem;
+    position: relative;
+    /* top: -10px; */
+}
+
+.search-people li img {
+    width: 38px;
+    height: 38px;
+}
+
+.search-people li p.message_list_title {
+    font-size: 16px;
+    color: #333;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.search-people li p.cmp-ellipsis {
+    font-size: 14px;
+    color: #999;
+}
+
+span.see-icon-m3-searchperson-fill {
+    color: #565be5;
+}
+
+.cmp-table-view:after {
+    height: 0;
+}
+
+.tapLeft {
+    left: 0.2rem!important;
+}
+
+@media screen and (max-height: 500px) {
+    footer {
+        position: static!important;
+    }
+}
+
+.page_null {
+    width: 100%;
+    padding-top: 100px;
+    text-align: center;
+    background: #f4f4f4;
+}
+
+.page_null span {
+    font-size: 46px;
+    color: #b6b6b6;
+}
+
+.page_null div {
+    font-size: 14px;
+    color: #999;
+    margin-top: 16px;
+}
+
+.scroll {
+    overflow: hidden!important;
+}
+
+
+/*搜索框*/
+
+.cmp-search {
+    /*margin: .213rem .266rem;*/
+    display: inline-flex;
+}
+.cmp-search.m3-cmp-search-no-cancel{
+    width: 100%;
+}
+.cmp-search.m3-cmp-search-cancel{
+    width: 89%;
+}
+.cmp-search.m3-cancel{
+    display: inline-flex;;
+}
+input[type='search'] {
+    background-color: #EEF1F5;
+    color: #333;
+    height: .746rem;
+    line-height: .746rem;
+}
+
+/*.cmp-search .cmp-placeholder {*/
+    /*font-size: 14px;*/
+    /*height: .746rem;*/
+    /*line-height: .746rem;*/
+/*}*/
+
+.cmp-search .cmp-placeholder .cmp-icon {
+    margin-right: .266rem;
+}
+
+.cmp-input-row.cmp-search .cmp-icon-speech {
+    font-size: 20px;
+    position: absolute;
+    right: .4rem;
+    color: #bebebe;
+    top: 50%;
+    margin-top: -.266rem;
+    z-index: 2;
+}
+
+.cmp-input-row.cmp-search .cmp-icon-clear {
+    color: #bebebe;
+    top: 50%;
+    margin-top: -.266rem;
+}
+
+.cmp-table-view-cell:after {
+    z-index: 30;left: 64px;
+}
+
+.cmp-table-view:before {
+    height: 0;display: none;
+}
+.m3-bg-transparent{
+    background-color: transparent!important;
+}
+.cmp-search .cmp-placeholder {
+    font-size: 14px;
+    height: .746rem;
+    line-height: .746rem;
+}
+
+.cmp-search .cmp-placeholder {
+    font-size: 14px;
+    height: .746rem;
+    line-height: .746rem;
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: inline-block;
+    text-align: center;
+    color: #999;
+    border: 0;
+    border-radius: 6px;
+    background: none;
+}
+
+
+/* 搜索框部分 */
+.m3-search {
+    overflow: hidden;
+    padding:10px 10px;
+    /* margin: 0 20px */
+    z-index: 99;
+}
+/*
+.m3-search > input[type="search"] {
+    position: relative;
+    display: block;
+    height: 14px;
+    line-height: 14px;
+    margin: 0 auto;
+    margin-top: -25px;
+    padding: 5px 0;
+    background-color: transparent;
+    box-sizing: content-box;
+    text-indent: 35px;
+}
+*/
+
+
+.search-btn {
+    display: block;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    background-color: #EEF1F5;
+    margin: 0;
+    border-radius: 28px;
+}
+.search-btn > i {
+    display: inline-block;
+    font-style: normal;
+    font-size: 12px;
+    color: #A1B0C5;
+    vertical-align: middle;
+    max-width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.search-btn > .cmp-icon {
+    padding: 0;
+    margin: 0;
+/*
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    transition: all 300ms cubic-bezier(0,0,0.58,1);
+*/
+}
+/*
+.display-none {
+    display: none!important;
+}*/
+
+header.cmp-flex-header .cmp-header-left {
+    -webkit-flex: none;
+    width: 68px;
+}
+/*yb new add css start*/
+header.cmp-flex-header .organization-next-header-right{
+    width: 108px;
+    -webkit-flex: none;
+    -moz-flex: none;
+    -ms-flex: none;
+    -o-flex: none;
+    -khtml-flex: none;
+    flex: none;
+}
+/*yb new add css end*/
+.cmp-close {
+    line-height: 48px;font-weight: 700;
+    text-align: center;
+    width: 40px;
+    font-size: 16px;
+    color: #3AADFB;
+}
+.cmp-table-view .cmp-table-view-cell .cmp-pull-left {
+    color: #333333;
+    display: inline-block;
+    vertical-align: middle;
+    float: left;
+    height: 40px;
+    line-height: 40px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 65%
+}
+
+/* 新增加右滑快捷操作 */
+.operation-item{padding: 0 20px!important;background-color:#EBEBEB;}
+.operation-item .cmp-icon-plusnum{width:40px;height:40px;line-height:40px;}
+.operation-item span.icon{font-size: 20px;}
+
+
+.org-back{height: 100%;line-height: 44px;}
+.org-back .back{display: inline-block;}
+.org-back .back span.see-icon-v5-common-arrow-back{position: relative;top: 2px;}
+body.cmp-ios .org-back .back span.see-icon-v5-common-arrow-back{position: relative;top: 3px!important;}
+.org-back .org-close{display: inline-block;font-size: 16px;color: #3aadfb;line-height: 44px;
+    vertical-align: middle;width: initial;}
+.org-title{position: absolute;top:0;display: inline-block;width: 130px;left:50%;margin-left: -65px;
+    line-height: 44px;font-size: 20px;font-weight: bold;text-align: center;
+}
+body.cmp-ios .org-title{top:20px;}
+body.cmp-ios-x .org-title{top:44px;}
+.search-people-depart-warp ul.cmp-table-view:first-child{margin-top: 14px;}
+.from-page .cmp-header-backHandle{
+    display: -webkit-flex;
+}
+.from-app .cmp-header-backHandle{
+    display: none;
+}

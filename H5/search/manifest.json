@@ -1,0 +1,21 @@
+{
+  "buildVersion":"1.0.0",
+  "iconFiles":{"default":"","multi":[]},
+  "appName":"search",
+  "splashscreen":["img/spashscreen1.png","img/splashscreen2.png"],
+  "update":{"checkUpdateUrl":""},
+  "bundleIdentifier":"",
+  "serviceProvidear":"seeyon",
+  "team":"m3",
+  "cmpShellVersion":{"ios":"1.0.0","android":"1.0.0"},
+  "packageType":"APP",
+  "version":"1.0.0",
+  "entry":{"phone": "layout/address-index.html","jsapi":"m3-search-api.js","openAppMethod":"m3SearchApi.openApp"},
+  "compatibleVersion":["1.0.0","1.0.1","2.0.0"],
+  "appType":"default",
+  "appId":"57",
+  "urlSchemes":"search.m3.cmp",
+  "bundleName":"search",
+  "supportedPlatforms":["iOS_6.0","android_4.0"],
+  "desc":""
+}

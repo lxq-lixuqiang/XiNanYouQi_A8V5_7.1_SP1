@@ -1,0 +1,136 @@
+html,
+body {
+    overflow: hidden;
+}
+
+.cmp-content {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.search-company li.cmp-table-view-cell,
+ul.search-people>li.cmp-table-view-cell {
+    height: 60px;
+    line-height: 60px;
+    padding: 0 14px;
+    display: -webkit-flex;
+    display: flex;
+    position: relative;
+}
+.search-company li.cmp-table-view-cell {
+    /* padding-right: 36px; */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.search-company li.cmp-table-view-cell.is-select-active:before{
+    left: 0;
+    width: 5px;
+    height: 30px;
+    top: 15px;
+    content: "";
+    display: block;
+    background-color: #3aadfb;
+    position: absolute;
+}
+.search-company li > div:last-of-type{
+ padding-right: 22px;
+}
+.search-person{overflow-y: auto; -webkit-overflow-scrolling:touch;}
+.search-person .search-company .cmp-pull-left div {
+    height: 1.06rem;
+    width: 1.06rem;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.search-person .search-company .cmp-pull-left div img {
+    width: 100%;
+    height: 100%;
+}
+
+.search-person .search-company .cmp-pull-left>span {
+    position: relative;
+    top: -0.18rem;
+}
+
+.search-person .search-company .cmp-pull-right {
+    height: 60px;width: 50px;text-align: right;
+    line-height: 60px;
+    padding-left: 6px;
+    padding-right: 0px;
+    position: absolute;
+    top: 0;
+    right: 14px;
+    z-index: 2;
+}
+
+.search-person .cmp-pull-left div {
+    display: inline-block;
+    position: relative;
+    width: 0.65rem;
+    height: 0.65rem;
+    border-radius: 4px;
+}
+
+.search-person .cmp-pull-left div~span {
+    vertical-align: super;
+    margin-left: 0.25rem;
+    color: #333;
+    font-size: 16px;
+}
+
+.search-person .cmp-pull-left span.iconfont {
+    font-size: 16px;
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -0.25rem;
+    margin-left: -0.22rem;
+}
+
+.search-company li.cmp-table-view-cell:after {
+    content: "";
+    position: absolute;
+    height: 1px;
+    width: 100%;
+    -webkit-transform: scale(1,.5);
+    transform: scale(1,.5);
+    -webkit-transform-origin: center bottom;
+    transform-origin: center bottom;
+    background-color: #e4e4e4;
+    z-index: 30;
+}
+.search-company:before{
+    display: none;
+}
+.search-company {
+    overflow: visible;
+
+}
+
+.cmp-table-view:after {
+    height: 0!important;
+}
+
+.cmp-table-view-cell:after {
+    transform: scale(1);
+}
+
+.cmp-table-view .cmp-table-view-cell .cmp-pull-left {
+    position: relative;
+    line-height: inherit;
+    height: 60px;
+    flex: 1;
+    -webkit-flex: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.from-page .cmp-header-backHandle{
+    display: -webkit-flex;
+}
+.from-app .cmp-header-backHandle{
+    display: none;
+}

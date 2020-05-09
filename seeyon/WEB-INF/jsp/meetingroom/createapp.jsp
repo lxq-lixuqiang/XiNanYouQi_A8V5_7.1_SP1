@@ -64,6 +64,14 @@ function setBulPeopleFields(elements){
 		var element = elements[0];
 		document.getElementById("perId").value=element.id;
 		document.getElementById("perName").value=element.name;
+		$.ajaxSettings.async = false;
+		$.get("/seeyon/meeting.do?method=getOtherInfo&memberId="+element.id,
+				function(data){
+					var data1 = data.split(",");
+					document.getElementById("phone").value=data1[0];
+					document.getElementById("departmentName").value=data1[1];
+					$.ajaxSettings.async = true;
+		})
 	}
 }
 function submitForm(){
@@ -293,8 +301,8 @@ input {
     </td>
 </tr>
 <td nowrap="nowrap" class="bg-gray" style="padding:6px"><font color="red">*</font><fmt:message key="mr.label.appDept"/>:</td>
-    <td nowrap="nowrap" class="new-column"><input type="hidden" name="departmentId" value="${v3xOrgDepartment.id }" />
-        <input type="text" name="departmentName" onclick="selectPeopleFun_dep()" class="input-100per" 
+    <td nowrap="nowrap" class="new-column"><input type="hidden" id="departmentId" name="departmentId" value="${v3xOrgDepartment.id }" />
+        <input type="text" name="departmentName" id="departmentName" onclick="selectPeopleFun_dep()" class="input-100per" 
         inputName="<fmt:message key="mr.label.appDept"/>" deaultValue="<<fmt:message key="mr.alert.clickToSelectDept"/>>" validate="notNull,isDeaultValue" 
         value="${v3x:toHTML(v3xOrgDepartment.name)}" disabled />
     </td>
@@ -303,7 +311,7 @@ input {
  <td nowrap="nowrap" class="bg-gray" style="padding:6px"><font color="red">*</font>申请人联系方式:</td>
  <td nowrap="nowrap" class="new-column" >
     <%--  <input type='hidden' name='cellPhoneId' value='${cellPhoneId.id }' /> --%>
-    <input type="text" name="phone" maxSize="80" class="input-100per" value = "${phone }" disabled />
+    <input type="text" name="phone" id="phone" maxSize="80" class="input-100per" value = "${phone }" disabled />
      </td>
 </tr>
 <tr>

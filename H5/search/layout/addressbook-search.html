@@ -1,0 +1,118 @@
+<!--
+@Author: mashan <mars>
+@Date:   2016-08-25 10:49:34
+@Project: m3
+@Last modified by:   mars
+@Last modified time: 2016-08-29 11:31:10
+-->
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <script src="http://commons.m3.cmp/v1.0.0/js/flexible.js"></script>
+    <title>搜索人员</title>
+
+    <!--导入v5门户的图标库-->
+        <link rel="stylesheet" href="http://cmp/v1.0.0/css/cmp.css?buildversion=20329212720">
+    <link rel="stylesheet" href="http://cmp/v1.0.0/css/cmp-search.css?buildversion=20329212720">
+    <link rel="stylesheet" href="http://cmp/v1.0.0/css/cmp-listView.css?buildversion=20329212720">
+    <link rel="stylesheet" href="http://search.m3.cmp/v1.0.0/css/addressbook-search.css?buildversion=20329212720">
+
+</head>
+
+<body class="bg_gray">
+<script>
+    /**
+     * @description 优化IphoneX的头部交互，组织去抖动
+     */
+    ;(function() {
+        var ua = window.navigator.userAgent.toUpperCase();
+        if (ua.match(/IPHONEX/)) {
+            document.body.className += ' cmp-ios-x ';
+        }
+    })();
+</script>
+    <!-- <header class="cmp-bar cmp-bar-nav cmp-flex-header m3-iosx">
+        <div class="cmp-action-back cmp-header-left ">
+            <span class="cmp-icon see-icon-v5-common-arrow-back"></span>
+            <span class="nav-text"><i18n key="search.m3.h5.return"></i18n></span>
+        </div>
+        <div class="cmp-title">
+            <i18n key="search.m3.h5.change"></i18n>
+        </div>
+        <div class="cmp-header-right">
+        </div>
+    </header> -->
+    <div class="cmp-segmented_title_content background_fff " >
+		<form action="#" onsubmit="return false;">
+			<div class="cmp-content-title-search cmp-content-search-add">
+				<div class="cmp-input-row see-icon-search cmp-search">
+					<input id="searchInput" type="search" placeholder="" class="cmp-input-clear ">
+					<span class="cmp-icon cmp-hidden cmp-icon-clear"></span>
+                    <span class="cmp-placeholder">
+                        <span class="cmp-icon cmp-icon-search"></span>
+                        <span class="text-search">搜索</span>
+                    </span>
+				</div>
+				<div class="search-title-cancel">
+                    <span>取消</span>
+                </div>
+			</div>
+		</form>
+	</div>
+
+    <div class="cmp-content">
+        <div class="cmp-control-content cmp-active">
+            <div id="listViewData" class="cmp-scroll-wrapper">
+                <div class="scroll">
+                    <ul class="cmp-table-view search-people">
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="http://search.m3.cmp/v1.0.0/i18n/search_zh_CN.js?buildversion=20329212720"></script>
+    <script src="http://commons.m3.cmp/v1.0.0/i18n/commons_zh_CN.js?buildversion=20329212720"></script>
+    <script src="http://cmp/v1.0.0/js/cmp-i18n.js?buildversion=20329212720"></script>
+    <script>
+        cmp.i18n.load("http://commons.m3.cmp/v1.0.0/i18n/", "commons");
+        cmp.i18n.init("http://search.m3.cmp/v1.0.0/i18n/", "search");
+        var m3CommonsPath = "http://commons.m3.cmp/v1.0.0";
+        var m3SearchPath = "http://search.m3.cmp/v1.0.0";
+        var cmpPath = "http://cmp/v1.0.0";
+        // var v5TaskmanagerPath = "";
+        // var v5MeetingPath = "";
+        // var v5CalendarPath = "";
+    </script>
+    
+    <script src="http://cmp/v1.0.0/js/cordova/__CMPSHELL_PLATFORM__/cordova.js"></script>
+<script src="http://cmp/v1.0.0/js/cordova/cordova-plugins.js"></script>    <script src="http://cmp/v1.0.0/js/cmp.js?buildversion=20329212720"></script>
+    <!-- <script src="http://cmp/v1.0.0/js/cmp-app.js?buildversion=20329212720"></script> -->
+    <script src="http://cmp/v1.0.0/js/cmp-listView.js?buildversion=20329212720"></script>
+    <!-- <script src="http://cmp/v1.0.0/js/cmp-chat.js?buildversion=20329212720"></script> -->
+    <!-- <script src="http://cmp/v1.0.0/js/cmp-server.js?buildversion=20329212720"></script> -->
+    <!-- <script src="http://cmp/v1.0.0/js/cmp-webviewListener.js?buildversion=20329212720"></script> -->
+    <!-- <script src="http://cmp/v1.0.0/js/cmp-watermark.js?buildversion=20329212720"></script> -->
+    
+    <script src="http://commons.m3.cmp/v1.0.0/js/m3-path.s3js?buildversion=20329212720"></script>
+    <script type="text/javascript">
+    var _addressbookPath = "http://search.m3.cmp/v1.0.0";var _cmpSeeyonPath = "http://cmp/v1.0.0";;
+</script>    <!-- seajs -->
+    <script src="http://commons.m3.cmp/v1.0.0/lib/seajs-2.2.1.js?buildversion=20329212720"></script>
+    <script src="http://commons.m3.cmp/v1.0.0/config.js?buildversion=20329212720"></script>
+    <!--微协同导入app映射关系 xinpei 2019-10-21-->
+        <!-- 模块入口 -->
+    <script>seajs.use('http://search.m3.cmp/v1.0.0/js/addressbook-search.js')</script>
+</body>
+
+</html>

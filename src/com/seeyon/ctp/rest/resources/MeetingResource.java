@@ -2927,6 +2927,7 @@ public class MeetingResource extends BaseResource {
 			}
 		}
 		
+//		中国石油天然气股份有限公司西南油气田分公司  【增加申请人，申请部门，联系方式，参会领导预计人数，会议用品字段】  lixuqiang 2020年4月29日 start
 		String errorMsg = "";
 		JDBCAgent agent = new JDBCAgent();
 		try {
@@ -2934,10 +2935,10 @@ public class MeetingResource extends BaseResource {
 			list.add(ParamUtil.getString(params, "leaderValue"));
 			list.add(ParamUtil.getString(params, "num"));
 			list.add(ParamUtil.getString(params, "toolIds"));
-			if (appVo != null) {
-				list.add(appVo.getRoomAppId());
-				agent.execute("UPDATE meeting_room_app set leader = ?,numbers = ?,resources = ? where id = ?", list);
-			}
+			list.add(appVo.getRoomAppId());
+			LOGGER.debug("appVo:"+appVo+",appVo的Id:"+appVo.getRoomAppId());
+			System.out.println("appVo:"+appVo+",appVo的Id:"+appVo.getRoomAppId());
+			agent.execute("UPDATE meeting_room_app set leader = ?,numbers = ?,resources = ? where id = ?", list);
 			List list1 = new ArrayList();
 			list1.add(ParamUtil.getString(params, "num"));
 			list1.add(appVo.getMeetingId());
@@ -2947,6 +2948,7 @@ public class MeetingResource extends BaseResource {
 		}finally {
 			agent.close();
 		}
+//		中国石油天然气股份有限公司西南油气田分公司  【增加申请人，申请部门，联系方式，参会领导预计人数，会议用品字段】  lixuqiang 2020年4月29日 end
 		
 		return ok(r_map);
 	}

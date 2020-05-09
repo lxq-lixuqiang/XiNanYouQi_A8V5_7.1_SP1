@@ -1,0 +1,165 @@
+<!--
+@Author: mashan <mars>
+@Date:   2016-08-29 06:29:29
+@Project: m3
+@Last modified by:   mars
+@Last modified time: 2017-11-09 11:29:38
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <title>关注人员</title>
+    <script src="http://commons.m3.cmp/v1.0.0/js/flexible.js"></script>
+    <!--导入v5门户的图标库-->
+        <link rel="stylesheet" href="http://cmp/v1.0.0/css/cmp.css?buildversion=20329212720">
+    <link rel="stylesheet" href="http://cmp/v1.0.0/css/cmp-listView.css?buildversion=20329212720">
+    <link rel="stylesheet" href="http://search.m3.cmp/v1.0.0/css/aspersonnel.css?buildversion=20329212720">
+
+</head>
+
+<body class="bg_gray cmp-fullscreen">
+    <script>
+        /**
+         * @description 优化IphoneX的头部交互，组织去抖动
+         */
+        ;(function() {
+            var ua = window.navigator.userAgent.toUpperCase();
+            if (ua.match(/IPHONEX/)) {
+                document.body.className += ' cmp-ios-x ';
+            }
+        })();
+    </script>
+    <header class="cmp-bar cmp-bar-nav cmp-flex-header m3-iosx aspersonel-header overflow_hidden">
+        <div id="backBtn" class="cmp-action-back cmp-header-left ">
+            <span class="cmp-icon see-icon-v5-common-arrow-back"></span>
+            <span class="nav-text"><i18n key="search.m3.h5.return"></i18n></span>
+        </div>
+        <div class="cmp-title">
+            <span><i18n key="search.m3.h5.AssociatedPersonnel"></i18n></span>
+        </div>
+        <div class="cmp-header-right" id="getSelectOrg">
+            <span class="cmp-icon m3-icon-tianjiaguanzhurenyuan getSelectOrgIcon"></span>
+        </div>
+    </header>
+    <div class="cmp-content position_relative ">
+        <div class="cmp-control-content cmp-active" id="cmpControlContent">
+            <div id="aspersoner_scroll" class="cmp-scroll-wrapper">
+                <div class="scroll">
+                    <div class="aspersonel_conetent">
+
+                        <div class="asper-item-block">
+                            <ul class="cmp-table-view " id="aspersonel">
+                                
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+         
+            
+ <!-- <li id="1077065481485896086" class="cmp-table-view-cell aspersonnel-item-cell cmp-media">              
+                            <a href="javascript:;">                         
+                                <div class="personel_refer" style="background:url(http://10.5.1.204/seeyon/fontimage/person/45701757597dc3b83f5ff6b6ab939a95.png) no-repeat;">                
+                                    <span>山</span>                    
+                                </div>                   
+                                <div class="cmp-media-body personel_info"> 
+                                <span>马山</span>      
+                                <p class="cmp-ellipsis">前端开发</p>   
+                                </div>          
+                            </a>        
+                        </li> -->
+
+                <!-- 我的上级领导 -->
+                <!-- <div class="asper-item-block">
+                    <div class="aspersonel_title"><i18n key="search.m3.h5.leader"></i18n></div>
+                    <ul class="cmp-table-view aspersonel_props_master">
+                        
+                    </ul>
+                </div> -->
+                
+                <!-- <div  class="asper-item-block">
+                    <div class="aspersonel_title"><i18n key="search.m3.h5.subordinates"></i18n></div>
+                    <!-- 我的下级 -->
+                    <!-- <ul class="cmp-table-view aspersonel_props_next">
+
+                    </ul>
+                </div> -->
+                
+                <!-- <div class="asper-item-block">
+                    <div class="aspersonel_title"><i18n key="search.m3.h5.Assistant"></i18n></div> -->
+                    <!-- 助手/秘书 -->
+                    <!-- <ul class="cmp-table-view aspersonel_props_assistant">
+
+                    </ul>
+                </div> -->
+                
+                <!-- <div  class="asper-item-block">
+                    <div class="aspersonel_title"><i18n key="search.m3.h5.colleague"></i18n></div> -->
+                    <!-- 我的同事 -->
+                    <!-- <ul class="cmp-table-view aspersonel_props_colleagues"> 
+
+                    </ul>
+                </div> -->
+                
+           
+
+        
+        
+    </div>
+
+
+<script src="http://search.m3.cmp/v1.0.0/i18n/search_zh_CN.js?buildversion=20329212720"></script>
+<script src="http://commons.m3.cmp/v1.0.0/i18n/commons_zh_CN.js?buildversion=20329212720"></script>
+<script src="http://cmp/v1.0.0/js/cmp-i18n.js?buildversion=20329212720"></script>
+<script>
+    cmp.i18n.load("http://commons.m3.cmp/v1.0.0/i18n/", "commons");
+    cmp.i18n.init("http://search.m3.cmp/v1.0.0/i18n/", "search");
+    var m3CommonsPath = "http://commons.m3.cmp/v1.0.0";
+    var m3SearchPath = "http://search.m3.cmp/v1.0.0";
+    var cmpPath = "http://cmp/v1.0.0";
+    // var v5TaskmanagerPath = "";
+    // var v5MeetingPath = "";
+    // var v5CalendarPath = "";
+</script>
+
+<script src="http://cmp/v1.0.0/js/cordova/__CMPSHELL_PLATFORM__/cordova.js"></script>
+<script src="http://cmp/v1.0.0/js/cordova/cordova-plugins.js"></script><script src="http://cmp/v1.0.0/js/cmp.js?buildversion=20329212720"></script>
+<script src="http://cmp/v1.0.0/js/cmp-asyncLoad.js?buildversion=20329212720"></script>
+<script src="http://cmp/v1.0.0/js/cmp-listView.js?buildversion=20329212720"></script>
+<script src="http://cmp/v1.0.0/js/cmp-imgCache.js?buildversion=20329212720"></script>
+<script src="http://cmp/v1.0.0/js/cmp-webviewListener.js?buildversion=20329212720"></script>
+<script src="http://cmp/v1.0.0/js/cmp-watermark.js?buildversion=20329212720"></script>
+
+<script src="http://commons.m3.cmp/v1.0.0/js/m3-path.s3js?buildversion=20329212720"></script>
+<!-- seajs -->
+<script src="http://commons.m3.cmp/v1.0.0/lib/seajs-2.2.1.js?buildversion=20329212720"></script>
+<script src="http://commons.m3.cmp/v1.0.0/config.js?buildversion=20329212720"></script>
+<!--微协同导入app映射关系 xinpei 2019-10-21-->
+<!-- 模块入口 -->
+<script>
+    cmp.asyncLoad.js([
+        cmpPath+'/js/cmp-selectOrg.js'
+    ], function() {
+        window.componentsLoaded = true;
+    });
+    cmp.asyncLoad.css([
+        cmpPath+'/css/cmp-selectOrg.css'
+    ]);
+    seajs.use('http://search.m3.cmp/v1.0.0/js/aspersonel.js')
+</script>
+
+
+
+
+</body>
+
+</html>

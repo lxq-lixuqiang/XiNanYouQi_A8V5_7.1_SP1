@@ -9,7 +9,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.seeyon.ctp.util.*;
 import com.seeyon.ctp.util.annotation.AjaxAccess;
@@ -58,7 +57,6 @@ import com.seeyon.ctp.common.filemanager.domain.ReplaceBase64Result;
 import com.seeyon.ctp.common.filemanager.manager.AttachmentManager;
 import com.seeyon.ctp.common.filemanager.manager.FileManager;
 import com.seeyon.ctp.common.i18n.ResourceUtil;
-import com.seeyon.ctp.common.po.BasePO;
 import com.seeyon.ctp.organization.bo.V3xOrgDepartment;
 import com.seeyon.ctp.organization.bo.V3xOrgEntity;
 import com.seeyon.ctp.organization.bo.V3xOrgMember;
@@ -81,7 +79,6 @@ import com.seeyon.v3x.meeting.domain.MtReplyWithAgentInfo;
 import com.seeyon.v3x.meeting.manager.MtMeetingManager;
 import com.seeyon.v3x.meeting.manager.MtReplyManager;
 import com.seeyon.v3x.mobile.message.manager.MobileMessageManager;
-import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
 
 /**
  * 
