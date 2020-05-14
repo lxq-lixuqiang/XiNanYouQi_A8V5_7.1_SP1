@@ -2935,7 +2935,6 @@ public class MeetingResource extends BaseResource {
 			list.add(ParamUtil.getString(params, "leaderValue"));
 			list.add(ParamUtil.getString(params, "num"));
 			list.add(ParamUtil.getString(params, "toolIds"));
-			System.err.println("lxq--"+appVo.getRoomAppId());
 			
 			list.add(appVo.getRoomAppId());
 			agent.execute("UPDATE meeting_room_app set leader = ?,numbers = ?,resources = ? where id = ?", list);

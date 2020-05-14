@@ -321,6 +321,7 @@ public class MeetingController extends BaseController {
 		mav.addObject("newVo", newVo);
 		mav.addObject("isWaitSend", newVo.getMeeting().getState());
 		mav.addObject("attachments", newVo.getAttachmentList());
+		
 		//客开胡超 会议展示预计数量 start
 		JDBCAgent agent = new JDBCAgent();
 		try {
@@ -334,6 +335,56 @@ public class MeetingController extends BaseController {
 		}
 		//客开胡超 会议展示预计数量 end
 		mav.addObject("isMeetingPlaceInputAble",isMeetingPlaceInputAble);
+//		中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者、发起部门、联系方式”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 start
+		JDBCAgent agent2 = new JDBCAgent();
+		try {
+			agent2.execute("select update_user from meeting where id = ?", id);
+			Object object = agent2.resultSetToMap().get("update_user");
+        	V3xOrgMember v3xOrgMember22=orgManager.getMemberById(Long.valueOf(object.toString()));
+        	User user = new User();
+        	User user2 = AppContext.getCurrentUser();
+        	user.setAccountId(v3xOrgMember22.getOrgAccountId());
+        	user.setId(v3xOrgMember22.getId());
+        	user.setName(v3xOrgMember22.getName());
+        	user.setLoginTimestamp(user2.getLoginTimestamp().getTime());
+        	user.setSecurityKey(user2.getSecurityKey());
+        	user.setLoginName(user2.getLoginName());
+        	user.setLoginAccount(user2.getLoginAccount());
+        	user.setDepartmentId(v3xOrgMember22.getOrgDepartmentId());
+        	user.setLevelId(v3xOrgMember22.getOrgLevelId());
+        	user.setPostId(v3xOrgMember22.getOrgPostId());
+        	user.setExternalType(user2.getExternalType());
+        	user.setUserAgentFrom(user2.getUserAgentFrom());
+        	user.setSessionId(user2.getSessionId());
+        	user.setRemoteAddr(user2.getRemoteAddr());
+        	user.setLocale(user2.getLocale());
+        	user.setBrowser(user2.getBrowser());
+        	newVo.setCurrentUser(user);
+        	List<V3xOrgMember> V3xOrgMember = new ArrayList<V3xOrgMember>();
+        	V3xOrgMember.add(v3xOrgMember22);
+        	newVo.setEmceeList(V3xOrgMember);
+    		mav.addObject("user",user);
+    		mav.addObject("userList",newVo.getEmceeList());
+    		if(newVo.getEmceeList().size()>0){
+    			V3xOrgMember v3xOrgMember = newVo.getEmceeList().get(0);
+    			OrgMember orgMember = (OrgMember)v3xOrgMember.toPO();
+    			mav.addObject("userPhone",orgMember.getExtAttr1());
+    			V3xOrgDepartment v3xOrgDepartment=orgManager.getDepartmentById(user.getDepartmentId());	
+    			mav.addObject("userDepartment",v3xOrgDepartment.getName());
+    			String userDepartmentName = "发起部门";
+    			if(v3xOrgDepartment.getPath().length()>12){
+    				userDepartmentName = "科室名称";
+    			}else if(v3xOrgDepartment.getPath().length()>8){
+    				userDepartmentName = "处室名称";
+    			}
+    			mav.addObject("userDepartmentName",userDepartmentName);
+    		}
+		} catch (Exception e) {
+			logger.error("新建会议时增加“发起者、发起部门、联系方式”字段异常！",e);
+		}finally {
+			agent2.close();	
+		}
+//		中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者、发起部门、联系方式”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 end
     	
     	return mav;
     }
