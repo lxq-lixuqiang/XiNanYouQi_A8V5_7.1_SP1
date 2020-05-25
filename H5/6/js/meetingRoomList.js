@@ -339,10 +339,10 @@ function renderData(result, isRefresh){
 function searchFn(params){
 	if(params == null) {
 		var initDate = getInitDate();
-		params = {type : "date",condition : "time",text : cmp.i18n("meeting.meetingRoomList.queryTime"),value : [initDate, ""]};
+		params = {type : "text",condition : "roomName",text : cmp.i18n("meeting.meetingRoomList.queryName"),value : ""};
 	}
-	var searchObj = [{type:"date",condition:"time",text:cmp.i18n("meeting.meetingRoomList.queryTime")},
-	             {type:"text",condition:"roomName",text:cmp.i18n("meeting.meetingRoomList.queryName")}];
+	var searchObj = [{type:"text",condition:"roomName",text:cmp.i18n("meeting.meetingRoomList.queryName")},
+	                 {type:"date",condition:"time",text:cmp.i18n("meeting.meetingRoomList.queryTime")}];
 	if (urlParam['action'] == "createVideoMeeting") {
 		searchObj = [{type:"date",condition:"time",text:cmp.i18n("meeting.meetingRoomList.queryTime")}];
 	}

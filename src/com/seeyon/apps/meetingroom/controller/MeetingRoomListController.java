@@ -197,21 +197,32 @@ public class MeetingRoomListController extends BaseController {
 		conditionMap.put("textfield", textfield);
 		conditionMap.put("textfield1", textfield1);
 		List<MeetingRoomListVO> voList = this.meetingRoomListManager.findRoomPermList(conditionMap,null);
-		mav.addObject("list", voList);
+		
 //		中国石油天然气股份有限公司西南油气田分公司  【展示参会领导、参会人数、会议用品】  lixuqiang 2020年4月29日 start
 		List<Map<String,Object>> otherList = new ArrayList<Map<String,Object>>();
 		JDBCAgent agent2 = new JDBCAgent();
 		try {
+			logger.info("获取审核会议的数量："+voList.size());
 			for (int i = 0; i < voList.size(); i++) {
+				logger.info("审核会议的会议Id："+voList.get(i).getRoomAppId());
 				Map<String,Object> otherMap = new HashMap<String,Object>();
 				agent2.execute("select * from meeting_room_app where id = ?", voList.get(i).getRoomAppId());
 				Map map = agent2.resultSetToMap();
-				Long id = (Long) map.get("id");
-				String numbers = (String) map.get("numbers");
-				String leader = (String) map.get("leader");
-				String meetingToolIds = (String) map.get("resources");
+				logger.info("获取出来的map的集合："+map);
+				Object id = map.get("id");
+				Object numbers = map.get("numbers");
+				String leader = "";
+				if(map.get("leader")!=null){
+					leader =String.valueOf(map.get("leader"));
+				}
+				String meetingToolIds="";
+				if(map.get("resources")!=null){
+					meetingToolIds = String.valueOf(map.get("resources"));
+				}
+				
 				String name = "";
-				if (StringUtils.isNotBlank(leader)) {
+				if (!StringUtils.isEmpty(leader)) {
+					logger.info("获取出来的leader的集合："+leader);
 					String[] members = leader.split(",");
 					for (String m : members) {
 						String[] split = m.split("[|]");
@@ -226,8 +237,11 @@ public class MeetingRoomListController extends BaseController {
 				otherMap.put("id", id);
 				otherMap.put("numbers", numbers); //参与人数
 				otherMap.put("leaderNames", name); //参会领导
+				voList.get(i).setMngdepIds(String.valueOf(numbers));
+				voList.get(i).setImage(name);
+				logger.info("获取到id："+id+",参与人数："+numbers+",参会领导："+name);
 				String resourcesNames = new String();
-				if(!StringUtils.isBlank(meetingToolIds)){
+				if(!StringUtils.isEmpty(meetingToolIds)){
 					String[] meetingToolIds2 = meetingToolIds.split(",");
 					for (int j = 0; j < meetingToolIds2.length; j++) {
 						String res = String.valueOf(meetingToolIds2[j]);
@@ -244,15 +258,24 @@ public class MeetingRoomListController extends BaseController {
 					}
 				}
 				otherMap.put("resourcesName", resourcesNames); //会议用品
+				voList.get(i).setAdminIds(resourcesNames);
+				logger.info("获取到的会议用品："+resourcesNames);
+				logger.info("保存到List中的map数据："+otherMap);
+				logger.info("返回数据成功！");
 				otherList.add(otherMap);
 			}	
+			logger.info("返回并保存到otherList中的数据："+otherList);
+			logger.info("返回数据开始！");
 			mav.addObject("otherList", otherList);
+			logger.info("返回数据成功！");
 		} catch (Exception e) {
 			logger.error("展示参会领导、参会人数、会议用品异常",e);
+			mav.addObject("otherList", otherList);
 		}finally {
 			agent2.close();
 		}
-//				中国石油天然气股份有限公司西南油气田分公司  【展示参会领导、参会人数、会议用品】  lixuqiang 2020年4月29日 end
+//		中国石油天然气股份有限公司西南油气田分公司  【展示参会领导、参会人数、会议用品】  lixuqiang 2020年4月29日 end
+		mav.addObject("list", voList);
 		
 		mav.addObject("selectCondition", condition);
 		mav.addObject("textfield", textfield);
@@ -262,6 +285,7 @@ public class MeetingRoomListController extends BaseController {
 
 //		中国石油天然气股份有限公司西南油气田分公司  【会议室审核导出】  lixuqiang 2020年4月30日 stater
 		String doExecl = request.getParameter("doExecl");
+		logger.info("获取到的doExecl数据："+doExecl);
 		if(doExecl!=null && doExecl!="" && doExecl.equals("1")){
 			mav.addObject("currentExecl", "");
 			JDBCAgent agent = new JDBCAgent();
@@ -269,7 +293,7 @@ public class MeetingRoomListController extends BaseController {
 	    		String[] colNames = new String[12];
 	    		colNames[0] = ResourceUtil.getString("会议名称", new Object[0]);
 	    		colNames[1] = ResourceUtil.getString("申请人", new Object[0]);
-	    		colNames[2] = ResourceUtil.getString("处室名称", new Object[0]);
+	    		colNames[2] = ResourceUtil.getString("申请部门", new Object[0]);
 	    		colNames[3] = ResourceUtil.getString("会议名称", new Object[0]);
 	    		colNames[4] = ResourceUtil.getString("申请时间", new Object[0]);
 	    		colNames[5] = ResourceUtil.getString("开始使用时间", new Object[0]);
@@ -279,6 +303,7 @@ public class MeetingRoomListController extends BaseController {
 	    		colNames[9] = ResourceUtil.getString("参会领导", new Object[0]);
 	    		colNames[10] = ResourceUtil.getString("预计人数", new Object[0]);
 	    		colNames[11] = ResourceUtil.getString("会议用品", new Object[0]);
+				logger.info("获取到的列名数据："+colNames);
 	    		
 	    		DataRecord dr = new DataRecord();
 	    		dr.setColumnName(colNames);
@@ -296,6 +321,7 @@ public class MeetingRoomListController extends BaseController {
 	    				obj = new Object[12];
 	    				obj[0] = voList1.get(i).getRoomName();
 	    				V3xOrgMember v3xOrgMember = orgManager.getMemberById(voList1.get(i).getAppPerId());
+	    				logger.info("获取到的v3xOrgMember数据："+v3xOrgMember);
 	    				obj[1] = v3xOrgMember.getName();
 	    				V3xOrgDepartment v3xOrgDepartment =  orgManager.getDepartmentById(v3xOrgMember.getOrgDepartmentId());
 	    				obj[2] = v3xOrgDepartment.getName();
@@ -308,10 +334,16 @@ public class MeetingRoomListController extends BaseController {
 	    				
 	    				agent.execute("select * from meeting_room_app where id = ?", voList1.get(i).getRoomAppId());
 	    				Map map = agent.resultSetToMap();
-	    				Long id = (Long) map.get("id");
+	    				Object id = map.get("id");
 	    				String numbers = (String) map.get("numbers");
-	    				String leader = (String) map.get("leader");
-	    				String meetingToolIds = (String) map.get("resources");
+	    				String leader = "";
+	    				if(map.get("leader")!=null){
+	    					leader =String.valueOf(map.get("leader"));
+	    				}
+	    				String meetingToolIds="";
+	    				if(map.get("resources")!=null){
+	    					meetingToolIds = String.valueOf(map.get("resources"));
+	    				}
 	    				String name = "";
 	    				if (StringUtils.isNotBlank(leader)) {
 	    					String[] members = leader.split(",");
@@ -328,7 +360,7 @@ public class MeetingRoomListController extends BaseController {
 	    				obj[9] = name;
 	    				obj[10] = numbers;
 	    				String resourcesNames = new String();
-	    				if(!StringUtils.isBlank(meetingToolIds)){
+	    				if(!StringUtils.isEmpty(meetingToolIds)){
 	    					String[] meetingToolIds2 = meetingToolIds.split(",");
 	    					for (int j = 0; j < meetingToolIds2.length; j++) {
 	    						String res = String.valueOf(meetingToolIds2[j]);
@@ -345,11 +377,13 @@ public class MeetingRoomListController extends BaseController {
 	    					}
 	    				}
 	    				obj[11] = resourcesNames;
+	    				logger.info("获取到的obj数据："+obj);
 	    				rows.add(obj);
 	    			}
 	    		}
+	    		logger.info("当前的rows数据为："+rows);
 	    		this.workflowManageManager.exportToExcel(response, this.fileToExcelManager, "会议室审核", rows, colNames, "会议室审核", "sheet1");
-	    		
+				logger.info("会议室审核导出成功!");
 	        }catch(Exception e){
 	        	logger.error("会议室审核导出异常",e);
 	        }finally {

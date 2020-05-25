@@ -153,7 +153,7 @@ function _submitCallback(errorMsg) {
 	<td width="35%" nowrap="nowrap" class="new-column ${isProxy }">
 		<input type="text" name="asset_name" inputName="<fmt:message key='mr.label.appPerson'/>" class="input-300px" value="${v3x:toHTML(v3x:showMemberNameOnly(bean.meetingRoomApp.perId))}" readonly />
 	</td>
-	<td width="12%" nowrap="nowrap" class="bg-gray"><fmt:message key='mr.label.appDept'/>:</td>
+	<td width="12%" nowrap="nowrap" class="bg-gray">${userDepartmentName }:</td>
 	<td width="35%" nowrap="nowrap" class="new-column ${isProxy }">
 		<input type="text" name="asset_name" inputName="<fmt:message key='mr.label.appDept'/>" class="input-300px" value="${v3x:toHTML(departmentName) }" readonly />
 	</td>

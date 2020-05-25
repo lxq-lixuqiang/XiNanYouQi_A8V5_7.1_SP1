@@ -69,9 +69,11 @@ import com.seeyon.ctp.common.po.filemanager.Attachment;
 import com.seeyon.ctp.organization.OrgConstants.MemberPostType;
 import com.seeyon.ctp.organization.OrgConstants.Role_NAME;
 import com.seeyon.ctp.organization.bo.MemberPost;
+import com.seeyon.ctp.organization.bo.V3xOrgAccount;
 import com.seeyon.ctp.organization.bo.V3xOrgDepartment;
 import com.seeyon.ctp.organization.bo.V3xOrgMember;
 import com.seeyon.ctp.organization.manager.OrgManager;
+import com.seeyon.ctp.organization.po.OrgMember;
 import com.seeyon.ctp.util.DBAgent;
 import com.seeyon.ctp.util.DateUtil;
 import com.seeyon.ctp.util.Datetimes;
@@ -462,6 +464,31 @@ public class MeetingRoomController extends BaseController {
 		mav.addObject("user", v3xOrgMember);
 		mav.addObject("v3xOrgDepartment", this.orgManager.getDepartmentById(deptId));
 		mav.addObject("meetingRoomAdmin", MeetingRoomRoleUtil.isMeetingRoomAdminRole());
+		
+//		中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者、发起部门、联系方式”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 start
+		JDBCAgent agent = new JDBCAgent();
+		try {
+        	User user =AppContext.getCurrentUser();
+    		V3xOrgAccount v3xOrgAccount=orgManager.getAccountById(user.getAccountId());	
+//    		List list = new ArrayList<>();
+//    		list.add("Account");
+//    		list.add(v3xOrgAccount.getPath()+'%');
+//    		agent.execute("select count(*) count from org_unit where type = ? and path like ?", list);
+//    		Map resultMap = agent.resultSetToMap();
+			String userDepartmentName = "申请部门";
+//    		if(Integer.valueOf(resultMap.get("count").toString())>1){
+//    			userDepartmentName = "科室名称";
+//    		}else{
+//    			userDepartmentName = "处室名称";
+//    		}
+    		mav.addObject("userDepartmentName",userDepartmentName);
+		} catch (Exception e) {
+			logger.error("新建会议时增加“发起者、发起部门、联系方式”字段异常！",e);
+		}finally {
+			agent.close();
+		}
+//		中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者、发起部门、联系方式”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 end
+    	
 		return mav;
 	}
 	
@@ -876,6 +903,31 @@ public class MeetingRoomController extends BaseController {
 					agent.close();
 				}
 		//客开 胡超 展示参会领导和参会人数  2020-4-7 end
+//				中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者、发起部门、联系方式”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 start
+				JDBCAgent agent2 = new JDBCAgent();
+				try {
+		        	User user =AppContext.getCurrentUser();
+		    		V3xOrgAccount v3xOrgAccount=orgManager.getAccountById(room.getAccountId());	
+//		    		List list = new ArrayList<>();
+//		    		list.add("Account");
+//		    		list.add(v3xOrgAccount.getPath()+'%');
+//		    		agent2.execute("select count(*) count from org_unit where type = ? and path like ?", list);
+//		    		Map resultMap = agent2.resultSetToMap();
+	    			String userDepartmentName = "申请部门";
+//		    		if(Integer.valueOf(resultMap.get("count").toString())>1){
+//		    			userDepartmentName = "科室名称";
+//		    		}else{
+//		    			userDepartmentName = "处室名称";
+//		    		}
+		    		mav.addObject("userDepartmentName",userDepartmentName);
+				} catch (Exception e) {
+					logger.error("新建会议时增加“发起者、发起部门、联系方式”字段异常！",e);
+				}finally {
+					agent2.close();
+				}
+//				中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者、发起部门、联系方式”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 end
+		    			
+		
 		// 谁审核的 原逻辑取的是perid,现在的逻辑是在perm表中添加审核人字段，如果审核人为空，取会议室的全部管理员
 		if (appVo.getMeetingRoomApp().getAuditingId() != null) {
 			mav.addObject("peradmin", appVo.getMeetingRoomApp().getAuditingId());

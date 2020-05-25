@@ -1198,7 +1198,8 @@ function hasEmpty(){
 	var reg= /^[1-9]\d*$/;
 	var num = _$("#number").value
 	if(!reg.test(num)){
-		createAlter("预计人数" + empty, null);
+//		createAlter("预计人数" + empty, null);
+		createAlter("请填写预计参会人数", null);
 		return true;
 	}
 	//胡超客开 数据校验 end 2020-4-24

@@ -47,7 +47,7 @@ function doExport() {
 	doSearch();
 	setTimeout(function(){
 		window.location.reload();
-	},250)
+	},1000)
 }
 <!-- 中国石油天然气股份有限公司西南油气田分公司  【增加导出功能】  lixuqiang 2020年4月29日 end --> 
 
@@ -239,7 +239,7 @@ function _submitCallback(msgType, msg) {
 	  					<option value="">--<fmt:message key='mr.label.querycondition'/>--</option>
 	  					<option value="1"><fmt:message key='mr.label.meetingroom'/></option>
 	  					<option value="2"><fmt:message key='mr.label.appPerson'/></option>
-	  					<option value="3"><fmt:message key='mr.label.appDept'/></option>
+	  					<option value="3">申请部门</option>
 	  					<option value="4"><fmt:message key='meeting.panel.label.holdingTime'/></option>
 	  					<option value="5"><fmt:message key='mr.label.checkStatus'/></option>
  					</select>
@@ -304,9 +304,24 @@ function _submitCallback(msgType, msg) {
 		${v3x:toHTML(v3x:showMemberName(bean.appPerId))}
 	</v3x:column>
 	
-	<v3x:column width="10%" type="String" onClick="${onClick }" label="处室名称" className="cursor-hand sort" alt="">
+	<v3x:column width="10%" type="String" onClick="${onClick }" label="申请部门" className="cursor-hand sort" alt="">
 		${v3x:toHTML(v3x:getDepartment(v3x:getMember(bean.appPerId).orgDepartmentId).name)}
 	</v3x:column>
+	
+	<!-- 中国石油天然气股份有限公司西南油气田分公司  【会议审核列表需要看见参会领导，预计人数，会议用品，申请部门显示处室名称】  lixuqiang 2020年4月29日 start -->
+	<v3x:column width="7%" type="String" onClick="${onClick }" label="参会领导" className="cursor-hand sort" alt="">
+		<c:out value="${bean.image }" />
+	</v3x:column>
+	
+	<v3x:column width="7%" type="String" onClick="${onClick }" label="预计人数" className="cursor-hand sort" alt="" nowarp="nowarp">
+		<c:out value="${bean.mngdepIds }" />
+	</v3x:column>
+	
+	<v3x:column width="10%" type="String" onClick="${onClick }" label="会议用品" className="cursor-hand sort" alt="" nowarp="nowarp">
+		<c:out value="${bean.adminIds }" />
+	</v3x:column>
+	<!-- 中国石油天然气股份有限公司西南油气田分公司  【会议审核列表需要看见参会领导，预计人数，会议用品，申请部门显示处室名称】  lixuqiang 2020年4月29日 start -->                 
+		
 	
 	<v3x:column width="20%" type="String" onClick="${onClick }" label="mr.label.meetName" className="cursor-hand sort" alt="${bean.meetingName}">
 		<c:out value="${bean.meetingName }" />
@@ -332,22 +347,6 @@ function _submitCallback(msgType, msg) {
 		<c:out value="${bean.usedStatusName }" />
 	</v3x:column>
 	
-	<!-- 中国石油天然气股份有限公司西南油气田分公司  【会议审核列表需要看见参会领导，预计人数，会议用品，申请部门显示处室名称】  lixuqiang 2020年4月29日 start -->                 
-    <c:forEach items="${otherList}" var="list" >
-    	<c:if test="${list.id == bean.roomAppId }">
-	    	<v3x:column width="7%" type="String" onClick="${onClick }" label="参会领导" className="cursor-hand sort" alt="" nowarp="nowarp">
-				<c:out value="${list.leaderNames}"/>
-			</v3x:column>
-			<v3x:column width="7%" type="String" onClick="${onClick }" label="预计人数" className="cursor-hand sort" alt="" nowarp="nowarp">
-				<c:out value="${list.numbers}" />
-			</v3x:column>
-			<v3x:column width="7%" type="String" onClick="${onClick }" label="会议用品" className="cursor-hand sort" alt="" nowarp="nowarp">
-				<c:out value="${list.resourcesName}" />
-			</v3x:column>
-    	</c:if>
-    </c:forEach>
-	<!-- 中国石油天然气股份有限公司西南油气田分公司  【会议审核列表需要看见参会领导，预计人数，会议用品，申请部门显示处室名称】  lixuqiang 2020年4月29日 start -->                 
-		
 </v3x:table>
 </form>
 </div><!-- center_div_row2 -->

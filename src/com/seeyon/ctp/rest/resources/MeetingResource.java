@@ -31,6 +31,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import sun.util.logging.resources.logging;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
@@ -3194,15 +3196,24 @@ public class MeetingResource extends BaseResource {
 		V3xOrgMember v3xOrgMember = orgManager.getMemberById(user.getId());
 		OrgMember orgMember = (OrgMember)v3xOrgMember.toPO();
 		r_map.put("userPhone", orgMember.getExtAttr1());
-		V3xOrgDepartment v3xOrgDepartment=orgManager.getDepartmentById(user.getDepartmentId());	
-		r_map.put("userDepartment",v3xOrgDepartment.getName());
-		String userDepartmentName = "发起部门";
-		if(v3xOrgDepartment.getPath().length()>12){
-			userDepartmentName = "科室名称";
-		}else if(v3xOrgDepartment.getPath().length()>8){
-			userDepartmentName = "处室名称";
-		}
-		r_map.put("userDepartmentName",userDepartmentName);
+		JDBCAgent agent = new JDBCAgent();
+		try{
+			V3xOrgDepartment v3xOrgDepartment=orgManager.getDepartmentById(user.getDepartmentId());	
+			r_map.put("userDepartment",v3xOrgDepartment.getName());
+			V3xOrgAccount v3xOrgAccount=orgManager.getAccountById(user.getAccountId());	
+//			List list = new ArrayList<>();
+//			list.add("Account");
+//			list.add(v3xOrgAccount.getPath()+'%');
+//			agent.execute("select count(*) count from org_unit where type = ? and path like ?", list);
+//			Map resultMap = agent.resultSetToMap();
+			String userDepartmentName = "申请部门";
+//			if(Integer.valueOf(resultMap.get("count").toString())>1){
+//				userDepartmentName = "科室名称";
+//			}else{
+//				userDepartmentName = "处室名称";
+//			}
+			r_map.put("userDepartmentName",userDepartmentName);
+		}catch(Exception e){}
 		
 		List<MeetingType> meetingTypeList = meetingTypeManager.getMeetingTypeList(user.getLoginAccount());
 		for (MeetingType meetingType : meetingTypeList) {
@@ -3250,15 +3261,25 @@ public class MeetingResource extends BaseResource {
 		V3xOrgMember v3xOrgMember = orgManager.getMemberById(id);
 		OrgMember orgMember = (OrgMember)v3xOrgMember.toPO();
 		r_map.put("userPhone", orgMember.getExtAttr1());
-		V3xOrgDepartment v3xOrgDepartment=orgManager.getDepartmentById(orgMember.getOrgDepartmentId());	
-		r_map.put("userDepartment",v3xOrgDepartment.getName());
-		String userDepartmentName = "发起部门";
-		if(v3xOrgDepartment.getPath().length()>12){
-			userDepartmentName = "科室名称";
-		}else if(v3xOrgDepartment.getPath().length()>8){
-			userDepartmentName = "处室名称";
-		}
-		r_map.put("userDepartmentName",userDepartmentName);
+		JDBCAgent agent = new JDBCAgent();
+		try{
+			V3xOrgDepartment v3xOrgDepartment=orgManager.getDepartmentById(orgMember.getOrgDepartmentId());	
+			r_map.put("userDepartment",v3xOrgDepartment.getName());
+			V3xOrgAccount v3xOrgAccount=orgManager.getAccountById(orgMember.getOrgAccountId());	
+//			List list = new ArrayList<>();
+//			list.add("Account");
+//			list.add(v3xOrgAccount.getPath()+'%');
+//			agent.execute("select count(*) count from org_unit where type = ? and path like ?", list);
+//			Map resultMap = agent.resultSetToMap();
+			String userDepartmentName = "申请部门";
+//			if(Integer.valueOf(resultMap.get("count").toString())>1){
+//				userDepartmentName = "科室名称";
+//			}else{
+//				userDepartmentName = "处室名称";
+//			}
+			r_map.put("userDepartmentName",userDepartmentName);
+		}catch(Exception e){}
+		
 		return ok(JSONUtil.toJSONString(r_map));
 	}
 	

@@ -57,9 +57,11 @@ import com.seeyon.ctp.common.filemanager.domain.ReplaceBase64Result;
 import com.seeyon.ctp.common.filemanager.manager.AttachmentManager;
 import com.seeyon.ctp.common.filemanager.manager.FileManager;
 import com.seeyon.ctp.common.i18n.ResourceUtil;
+import com.seeyon.ctp.organization.bo.V3xOrgAccount;
 import com.seeyon.ctp.organization.bo.V3xOrgDepartment;
 import com.seeyon.ctp.organization.bo.V3xOrgEntity;
 import com.seeyon.ctp.organization.bo.V3xOrgMember;
+import com.seeyon.ctp.organization.bo.V3xOrgUnit;
 import com.seeyon.ctp.organization.manager.OrgManager;
 import com.seeyon.ctp.portal.api.PortalApi;
 import com.seeyon.ctp.organization.po.OrgMember;
@@ -69,6 +71,7 @@ import com.seeyon.ctp.util.DBAgent;
 import com.seeyon.ctp.util.DateUtil;
 import com.seeyon.ctp.util.Datetimes;
 import com.seeyon.ctp.util.FlipInfo;
+import com.seeyon.ctp.util.JDBCAgent;
 import com.seeyon.ctp.util.ParamUtil;
 import com.seeyon.ctp.util.ReqUtil;
 import com.seeyon.ctp.util.Strings;
@@ -208,7 +211,8 @@ public class MeetingController extends BaseController {
     	mav.addObject("from", from);
 		mav.addObject("isMeetingPlaceInputAble",isMeetingPlaceInputAble);
 //		中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者、发起部门、联系方式”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 start
-        try {
+		JDBCAgent agent = new JDBCAgent();
+		try {
         	User user =AppContext.getCurrentUser();
     		mav.addObject("user",user);
     		mav.addObject("userList",newVo.getEmceeList());
@@ -218,16 +222,24 @@ public class MeetingController extends BaseController {
     			mav.addObject("userPhone",orgMember.getExtAttr1());
     			V3xOrgDepartment v3xOrgDepartment=orgManager.getDepartmentById(user.getDepartmentId());	
     			mav.addObject("userDepartment",v3xOrgDepartment.getName());
-    			String userDepartmentName = "发起部门";
-    			if(v3xOrgDepartment.getPath().length()>12){
-    				userDepartmentName = "科室名称";
-    			}else if(v3xOrgDepartment.getPath().length()>8){
-    				userDepartmentName = "处室名称";
-    			}
+    			V3xOrgAccount v3xOrgAccount=orgManager.getAccountById(user.getAccountId());	
+//    			List list = new ArrayList<>();
+//    			list.add("Account");
+//    			list.add(v3xOrgAccount.getPath()+'%');
+//    			agent.execute("select count(*) count from org_unit where type = ? and path like ?", list);
+//    			Map resultMap = agent.resultSetToMap();
+    			String userDepartmentName = "申请部门";
+//    			if(Integer.valueOf(resultMap.get("count").toString())>1){
+//    				userDepartmentName = "科室名称";
+//    			}else{
+//    				userDepartmentName = "处室名称";
+//    			}
     			mav.addObject("userDepartmentName",userDepartmentName);
     		}
 		} catch (Exception e) {
 			logger.error("新建会议时增加“发起者、发起部门、联系方式”字段异常！",e);
+		}finally {
+			agent.close();
 		}
 //		中国石油天然气股份有限公司西南油气田分公司  【新建会议时增加“发起者、发起部门、联系方式”字段、发起人字段必填，默认是登录人，可以修改。】  lixuqiang 2020年4月29日 end
     	return mav;
@@ -237,6 +249,7 @@ public class MeetingController extends BaseController {
 	@AjaxAccess
 	public Map<String,Object> getOtherInfo(HttpServletRequest request, HttpServletResponse response){
 		PrintWriter out = null;
+		JDBCAgent agent = new JDBCAgent();
 		try {
 			Map<String,Object> map = new HashMap<String, Object>();
 			String memberId2 = request.getParameter("memberId");
@@ -245,12 +258,18 @@ public class MeetingController extends BaseController {
 			map.put("userPhone",orgMember.getExtAttr1());
 			V3xOrgDepartment v3xOrgDepartment=orgManager.getDepartmentById(v3xOrgMember.getOrgDepartmentId());	
 			map.put("userDepartment",v3xOrgDepartment.getName());
-			String userDepartmentName = "发起部门";
-			if(v3xOrgDepartment.getPath().length()>12){
-				userDepartmentName = "科室名称";
-			}else if(v3xOrgDepartment.getPath().length()>8){
-				userDepartmentName = "处室名称";
-			}
+			V3xOrgAccount v3xOrgAccount=orgManager.getAccountById(v3xOrgMember.getOrgAccountId());	
+//			List list = new ArrayList<>();
+//			list.add("Account");
+//			list.add(v3xOrgAccount.getPath()+'%');
+//			agent.execute("select count(*) count from org_unit where type = ? and path like ?", list);
+//			Map resultMap = agent.resultSetToMap();
+			String userDepartmentName = "申请部门";
+//			if(Integer.valueOf(resultMap.get("count").toString())>1){
+//				userDepartmentName = "科室名称";
+//			}else{
+//				userDepartmentName = "处室名称";
+//			}
 			response.setCharacterEncoding("UTF-8");
 			response.setContentType("text/html;charset=UTF-8");
 			out = response.getWriter();
@@ -260,6 +279,7 @@ public class MeetingController extends BaseController {
 		} catch (Exception e) {
 			logger.error("发起部门和联系方式系统自动带出！",e);
 		}finally{
+			agent.close();
 			if(out != null){
 				out.flush();
 				out.close();
@@ -371,12 +391,18 @@ public class MeetingController extends BaseController {
     			mav.addObject("userPhone",orgMember.getExtAttr1());
     			V3xOrgDepartment v3xOrgDepartment=orgManager.getDepartmentById(user.getDepartmentId());	
     			mav.addObject("userDepartment",v3xOrgDepartment.getName());
-    			String userDepartmentName = "发起部门";
-    			if(v3xOrgDepartment.getPath().length()>12){
-    				userDepartmentName = "科室名称";
-    			}else if(v3xOrgDepartment.getPath().length()>8){
-    				userDepartmentName = "处室名称";
-    			}
+    			V3xOrgAccount v3xOrgAccount=orgManager.getAccountById(user.getAccountId());	
+//    			List list = new ArrayList<>();
+//    			list.add("Account");
+//    			list.add(v3xOrgAccount.getPath()+'%');
+//    			agent2.execute("select count(*) count from org_unit where type = ? and path like ?", list);
+//    			Map resultMap = agent2.resultSetToMap();
+    			String userDepartmentName = "申请部门";
+//    			if(Integer.valueOf(resultMap.get("count").toString())>1){
+//    				userDepartmentName = "科室名称";
+//    			}else{
+//    				userDepartmentName = "处室名称";
+//    			}
     			mav.addObject("userDepartmentName",userDepartmentName);
     		}
 		} catch (Exception e) {

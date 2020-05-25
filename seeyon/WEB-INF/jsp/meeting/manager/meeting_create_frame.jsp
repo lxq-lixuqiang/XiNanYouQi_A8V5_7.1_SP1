@@ -154,7 +154,7 @@
                     <th style="padding-left:0px;">
                         <div class="padding_r_5">${fn:escapeXml(endDateLabel) }${colonLabel }</div>
                     </th>
-                    <td style="width: 120px;">
+                    <td colspan="2" style="min-width: 120px;">
                         <div class="common_txtbox_wrap">
                             <input type="text" class="cursor-hand" name="endDate" id="endDate" value="${fn:escapeXml(endDateValue) }" readonly validate="notNull" />
                         </div>
@@ -186,7 +186,7 @@
                         <div class="padding_r_5">发起者${colonLabel }</div>
                     </th>
                     <td>
-                        <div class="common_txtbox_wrap" >
+                        <div style="min-width: 80px;" class="common_txtbox_wrap" >
                         	<input type="hidden" id="userId" name="userId" value="${user.id}" />
 							<input type="text" class="cursor-hand" id="userName" name="userName" readonly="true" />
                         </div>
@@ -218,7 +218,7 @@
                     <th>
                         <div class="padding_r_5">${placeLabel }${colonLabel }</div>
                     </th>
-                    <td colspan="1" style="width: 200px;">
+                    <td colspan="2" style="min-width: 200px;">
                         <div class="common_selectbox_wrap">
                             <select id="selectRoomType" name="selectRoomType">
                                 <c:choose>
@@ -252,7 +252,7 @@
                         </div>
                     </td>
                     <!-- 申请会议室 -->
-                    <td style="width: 120px;"><c:if test="${newVo.isShowRoom}">
+                    <td colspan="1"><c:if test="${newVo.isShowRoom}">
                         <div class="padding_l_20" style="width: 70px;">
                             <div id="chooseMeetingRoom" class="common_button common_button_icon comp" style="width: auto;"> <em class="ico16 process_16"> </em>${roomAppLabel }
                             </div>
@@ -277,8 +277,8 @@
                         <div class="padding_r_5">联系方式${colonLabel }</div>
                     </th>
                     <td>
-                        <div class="common_txtbox_wrap" style="background: #D4D4D4">
-                            <input id="phoneInfo" disabled="disabled" style="background: #D4D4D4" name="phoneInfo" value="${userPhone}" type="text" />
+                        <div class="common_txtbox_wrap" style="background: #fff">
+                            <input id="phoneInfo" disabled="disabled" style="background: #fff;color:#000;" name="phoneInfo" value="${userPhone}" type="text" />
                         </div>
                     </td>
                 	<!-- 中国石油天然气股份有限公司西南油气田分公司  【参会领导字段放在与会人员前边，且该字段为非必填项】  lixuqiang 2020年4月28日 start -->
@@ -348,8 +348,8 @@
                         <div class="padding_r_5" id="userDepartmentName">${userDepartmentName}${colonLabel }</div>
                     </th>
                     <td>
-                        <div class="common_txtbox_wrap" style="background: #D4D4D4">
-                            <input type="text" style="background: #D4D4D4" id="currentDepartment" disabled="disabled" name="currentDepartment" value="${userDepartment }"/>
+                        <div class="common_txtbox_wrap" style="background: #fff">
+                            <input type="text" style="background: #fff;color:#000;" id="currentDepartment" disabled="disabled" name="currentDepartment" value="${userDepartment }"/>
                         </div>
                     </td>
                     <!-- 会议格式 -->

@@ -70,6 +70,7 @@ function setBulPeopleFields(elements){
 					var data1 = data.split(",");
 					document.getElementById("phone").value=data1[0];
 					document.getElementById("departmentName").value=data1[1];
+					$("#userDepartmentName").text(data1[2]);
 					$.ajaxSettings.async = true;
 		})
 	}
@@ -300,7 +301,7 @@ input {
     	<!-- 中国石油天然气股份有限公司西南油气田分公司  【将用途改为“备注”，并且框内提示“请填写桌牌详情和会标内容”。申请人可以选择其他人】  lixuqiang 2020年4月29日 end -->                 
     </td>
 </tr>
-<td nowrap="nowrap" class="bg-gray" style="padding:6px"><font color="red">*</font><fmt:message key="mr.label.appDept"/>:</td>
+<td nowrap="nowrap" class="bg-gray" style="padding:6px"><font color="red">*</font><span id="userDepartmentName">${userDepartmentName}</span>:</td>
     <td nowrap="nowrap" class="new-column"><input type="hidden" id="departmentId" name="departmentId" value="${v3xOrgDepartment.id }" />
         <input type="text" name="departmentName" id="departmentName" onclick="selectPeopleFun_dep()" class="input-100per" 
         inputName="<fmt:message key="mr.label.appDept"/>" deaultValue="<<fmt:message key="mr.alert.clickToSelectDept"/>>" validate="notNull,isDeaultValue" 
